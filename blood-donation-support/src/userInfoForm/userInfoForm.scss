@@ -1,0 +1,34 @@
+.user-info-form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.user-info-form {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  padding: 32px 36px 24px 36px;
+  min-width: 340px;
+  max-width: 420px;
+  width: 100%;
+}
+
+.form-title {
+  color: #169cf3;
+  text-align: center;
+  margin-bottom: 18px;
+  font-size: 1.5rem;
+  font-family: 'Times New Roman', serif;
+  font-weight: 600;
+}
+
+.form-label {
+  text-align: left !important;
+  display: block;
+  font-family: 'Times New Roman', serif;
+  font-size: 1.25rem;
+  margin-bottom: 2px;
+  font-weight: 500;
+}
