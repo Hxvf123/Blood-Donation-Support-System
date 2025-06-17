@@ -1,0 +1,13 @@
+.donation-history {
+    min-height: 100vh;
+    background: #FFFFFF;
+    padding: 40px 0;
+
+    &__title {
+        text-align: center;
+        font-size: 40px;
+        font-weight: bold;
+        color: #3b82f6;
+        margin-bottom: 32px;
+    }
+}

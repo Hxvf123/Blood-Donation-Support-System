@@ -1,0 +1,74 @@
+.donation-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+    padding: 16px 20px;
+    border-radius: 20px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05);
+    margin-bottom: 15px;
+}
+
+.donation-card__left {
+    flex: 0 0 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.donation-card__image {
+    width: 200px;
+    height: 160px;
+}
+
+.donation-card__middle {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 0 10px;
+}
+
+.donation-card__center {
+    font-weight: bold;
+    color: #2563eb;
+    font-size: 18px;
+}
+
+.donation-card__detail {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    color: #333;
+}
+
+.donation-card__right {
+    flex: 0 0 100px;
+    display: flex;
+    justify-content: center;
+}
+
+.donation-card__button {
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    border: none;
+    white-space: nowrap;
+    cursor: default;
+    color: white;
+}
+
+.donation-card__button--yellow {
+    background-color: #facc15;
+    color: black;
+}
+
+.donation-card__button--red {
+    background-color: #ef4444;
+}
+
+.donation-card__button--green {
+    background-color: #22c55e;
+}
