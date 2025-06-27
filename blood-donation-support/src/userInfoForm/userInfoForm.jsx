@@ -93,24 +93,6 @@ const UserInfoForm = () => {
                 </Form.Group>
 
                 <Form.Group className="mb-2">
-                    <Form.Label className="form-label">Email</Form.Label>
-                    <Form.Control
-                        type="email"
-                        {...register("email", {
-                            required: "Vui lòng nhập email",
-                            pattern: {
-                                value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
-                                message: "Email không hợp lệ"
-                            }
-                        })}
-                        isInvalid={!!errors.email}
-                    />
-                    <Form.Control.Feedback type="invalid">
-                        {errors.email?.message}
-                    </Form.Control.Feedback>
-                </Form.Group>
-
-                <Form.Group className="mb-2">
                     <Form.Label className="form-label">Địa chỉ</Form.Label>
                     <Form.Control
                         type="text"

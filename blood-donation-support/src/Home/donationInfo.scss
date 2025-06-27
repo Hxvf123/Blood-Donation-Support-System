@@ -1,0 +1,68 @@
+.donation-info {
+  display: flex;
+  gap: 2rem;
+  padding: 2rem;
+  justify-content: center;
+
+  &__sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+
+    .tab-box {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: #f4f4f4;
+      border-radius: 10px;
+      padding: 1rem;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+      &:hover {
+        background: #e0f2fe;
+      }
+
+      &.active {
+        background: #cdeffc;
+        border-left: 4px solid #0284c7;
+      }
+
+      .tab-icon {
+        width: 40px;
+        height: 40px;
+        object-fit: contain;
+      }
+
+      .tab-label {
+        font-weight: bold;
+        font-size: 1rem;
+        color: #333;
+        text-align: left;
+      }
+    }
+  }
+
+  &__detail {
+    flex: 1;
+    background: #fff;
+    padding: 1.5rem 2rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+    .tab-content {
+      font-size: 1rem;
+
+      ul {
+        padding-left: 1.5rem;
+        list-style-type: disc;
+
+        li {
+          margin-bottom: 0.6rem;
+        }
+      }
+    }
+  }
+
+}
