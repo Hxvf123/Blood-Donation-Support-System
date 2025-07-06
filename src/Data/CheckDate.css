@@ -1,0 +1,128 @@
+.form-container {
+  background: #ffffff url('https://i.pinimg.com/736x/21/6e/73/216e731f800453e35ac3497ea8ba2b32.jpg') no-repeat center/cover;
+  max-width: 520px;
+  width: 95%;
+  margin: 60px auto;
+  padding: 40px 32px;
+  border-radius: 20px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(4px);
+  color: #1c1c1c;
+  font-family: 'Segoe UI', sans-serif;
+  box-sizing: border-box;
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+h2 {
+  text-align: center;
+  font-size: 2.2rem;
+  color: #aa0f17;
+  font-weight: 800;
+  margin-bottom: 36px;
+  letter-spacing: 1.3px;
+  text-shadow: 0 2px 8px #f0f8ff;
+}
+
+.info-group {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.info-group label {
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 6px;
+  font-size: 0.95rem;
+}
+
+.info-group input,
+.info-group select,
+.info-group .form-control {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  transition: border-color 0.3s, box-shadow 0.2s;
+  background-color: #fff;
+  outline: none;
+}
+
+.info-group input:focus,
+.info-group select:focus,
+.info-group .form-control:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.register-button {
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+  color: #fff;
+  flex: 1;
+}
+
+.register-button:hover {
+  transform: translateY(-1px);
+}
+
+.back-button {
+  background-color: #6c757d;
+}
+
+.back-button:hover {
+  background-color: #5a6268;
+}
+
+.continue-button {
+  background-color: #007bff;
+}
+
+.continue-button:hover {
+  background-color: #0056b3;
+}
+
+/* DatePicker specific tweaks */
+.react-datepicker-wrapper {
+  width: 100%;
+}
+
+.react-datepicker__input-container input {
+  width: 100%;
+}
+
+/* Mobile responsive */
+@media (max-width: 600px) {
+  .form-container {
+    padding: 24px 16px;
+  }
+  .buttons {
+    flex-direction: column;
+  }
+  .register-button {
+    width: 100%;
+  }
+}

@@ -1,0 +1,178 @@
+.register-page {
+  background-color: #fbf8f7;
+  background-image: url("./3.jpg");
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.register-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.register-box {
+  background-color: #ffffff77;
+  padding: 40px 32px 32px 32px;
+  border-radius: 18px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.13);
+  max-width: 420px;
+  width: 100%;
+}
+
+.register-title {
+  text-align: center;
+  color: #aa0f17;
+  font-weight: 700;
+  font-size: 2rem;
+  margin-bottom: 28px;
+  letter-spacing: 1px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  margin-bottom: 6px;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"] {
+  padding: 11px 12px;
+  margin-bottom: 16px;
+  border: 1.5px solid #dbe2ea;
+  border-radius: 6px;
+  width: 100%;
+  font-size: 15px;
+  background: #f9fbfc;
+  transition: border-color 0.2s;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus {
+  border-color: #007bff;
+  outline: none;
+  background: #fff;
+}
+
+.password-input {
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.password-input input {
+  padding-right: 38px;
+}
+
+.toggle-eye {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  font-size: 18px;
+}
+
+.register-button {
+   background: linear-gradient(90deg, #1877f2 60%, #3498db 100%);
+  color: #fff;
+  padding: 12px 0;
+  border: none;
+  border-radius: 7px;
+  font-weight: 700;
+  font-size: 17px;
+  cursor: pointer;
+  transition: background-color 0.25s;
+  margin-top: 5px;
+}
+
+.register-button:hover {
+  background: linear-gradient(90deg, #3498db 60%, #1877f2 100%);
+  box-shadow: 0 4px 16px rgba(30,144,255,0.13);}
+
+.required {
+  color: #d32424;
+  margin-left: 2px;
+}
+
+.error-message, .error {
+  color: #d32424;
+  font-size: 13px;
+  margin-top: -10px;
+  margin-bottom: 10px;
+  padding-left: 2px;
+}
+
+.register-link {
+  text-align: center;
+  font-size: 15px;
+  margin-top: 18px;
+  color: #444;
+}
+
+.register-link a {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: 600;
+  margin-left: 3px;
+}
+
+.register-link a:hover {
+  text-decoration: underline;
+}
+
+select {
+  padding: 11px 12px;
+  margin-bottom: 16px;
+  border: 1.5px solid #dbe2ea;
+  border-radius: 6px;
+  width: 100%;
+  font-size: 15px;
+  background: #f9fbfc;
+  transition: border-color 0.2s;
+}
+
+select:focus {
+  border-color: #007bff;
+  outline: none;
+  background: #fff;
+}
+
+/* Optional: Nếu muốn căn đều label + input */
+form label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+input[type="date"] {
+  padding: 11px 12px;
+  margin-bottom: 16px;
+  border: 1.5px solid #dbe2ea;
+  border-radius: 6px;
+  width: 100%;
+  font-size: 15px;
+  background: #f9fbfc;
+  transition: border-color 0.2s;
+}
+
+input[type="date"]:focus {
+  border-color: #007bff;
+  outline: none;
+  background: #fff;
+}
