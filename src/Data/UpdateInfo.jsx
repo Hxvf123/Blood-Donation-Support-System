@@ -35,7 +35,7 @@ const UpdateInfo = ({ data, onBack, onUpdate }) => {
       ...formData,
       birthDate: formData.birthDate ? formData.birthDate.toISOString() : null,
     };
-    onUpdate(submitData); // ✅ CHỈNH SỬA Ở ĐÂY
+    onUpdate(submitData); // CHỈNH SỬA Ở ĐÂY
   };
 
   if (!data) return null;

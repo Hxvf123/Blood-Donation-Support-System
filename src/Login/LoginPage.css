@@ -1,7 +1,6 @@
 .login-page {
   background-color: #fbf8f7;
   background-image: url("./3.jpg");
-  
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -150,4 +149,19 @@ input[type="password"]:focus {
   margin-top: -10px;
   margin-bottom: 10px;
   padding-left: 2px;
+}
+
+.login-google-button {
+  background-color: #4285F4;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  font-size: 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.login-google-button:hover {
+  background-color: #357ae8;
 }

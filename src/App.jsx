@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.css';
-
 import LoginPage from "./Login/LoginPage";
+import ForgotPassword from './Login/ForgotPassword';
 import Registermem from "./Login/Registermem";
 import Header from './components/Header';
 import Footer from './components/Footer';
 import BloodDonationPage from './Data/BloodDonationPage';
 import BloodReceiveForm from './BloodReceive/BloodReceiveForm';
-import CheckDate from './Data/CheckDate'; 
-
+import Logout from './Login/Logout';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
 
 function App() {
@@ -17,16 +18,11 @@ function App() {
   const [userName, setUserName] = useState("");
   const [formData, setFormData] = useState(null);
 
-  const handleDateSubmit = (dataWithDate) => {
-    console.log("Dữ liệu hoàn tất:", dataWithDate);
-    alert("Thông tin đã được xác nhận!");
-    // TODO: Gửi dữ liệu tới backend nếu cần
-  };
-
   return (
     <Router>
       <div>
-        {isLoggedIn && <Header username={userName} />}
+        {/*  Header luôn hiển thị, truyền thêm isLoggedIn */}
+        <Header username={userName} isLoggedIn={isLoggedIn} />
 
         <Routes>
           <Route path="/" element={<Navigate to="/register" replace />} />
@@ -34,19 +30,19 @@ function App() {
 
           <Route
             path="/login"
-            element={
-              !isLoggedIn ? (
-                <LoginPage
-                  onLoginSuccess={(name) => {
-                    setIsLoggedIn(true);
-                    setUserName(name);
-                  }}
-                />
-              ) : (
-                <Navigate to="/donation" replace />
-              )
-            }
+            element={!isLoggedIn ? (
+              <LoginPage
+                onLoginSuccess={(name) => {
+                  setIsLoggedIn(true);
+                  setUserName(name);
+                }}
+              />
+            ) : (
+              <Navigate to="/donation" replace />
+            )}
           />
+
+          <Route path="/forgot-password" element={<ForgotPassword />} />
 
           <Route
             path="/donation"
@@ -63,36 +59,46 @@ function App() {
           />
 
           <Route
-            path="/check-date"
-            element={
-              isLoggedIn && formData ? (
-                <CheckDate
-                  data={formData}
-                  onBack={() => window.history.back()}
-                  onSubmit={handleDateSubmit}
-                />
-              ) : (
-                <Navigate to="/donation" replace />
-              )
-            }
-          />
-
-          <Route
             path="/register-receive"
             element={
               isLoggedIn ? (
                 <BloodReceiveForm
                   userId="USR001"
-                  onSuccess={() => alert("Đã gửi yêu cầu nhận máu thành công.")}
+                  onSuccess={() => toast.success("Đã gửi yêu cầu nhận máu thành công.")}
                 />
               ) : (
                 <Navigate to="/login" replace />
               )
             }
           />
-        </Routes>
 
-        {isLoggedIn && <Footer />}
+          <Route
+            path="/logout"
+            element={
+              <Logout
+                onLogout={() => {
+                  setIsLoggedIn(false);
+                  setUserName("");
+                  toast.success("Đăng xuất thành công!");
+                }}
+              />
+            }
+          />
+        </Routes>
+        <Footer />
+      
+        <ToastContainer
+          position="top-center"
+          autoClose={3000} //3s
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="colored"
+        />
       </div>
     </Router>
   );

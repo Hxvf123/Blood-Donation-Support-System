@@ -1,24 +1,36 @@
 .input-group {
-    display: flex;
-    flex-direction: column; /* Dàn theo chiều dọc */
-    margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
 }
 
 .input-group label {
-    margin-bottom: 5px;
-    font-weight: bold;
-    color: #2a7fe6;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #2a7fe6;
+  font-size: 1rem;
 }
 
 .input-group input,
-.input-group select,    
+.input-group select,
 .input-group .date-picker {
-    width: 100%;
-    padding: 10px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  transition: border 0.3s ease, box-shadow 0.3s ease;
+  box-sizing: border-box;
+}
+
+.input-group input:focus,
+.input-group select:focus,
+.input-group .date-picker:focus {
+  border-color: #2a7fe6;
+  box-shadow: 0 0 0 3px rgba(42, 127, 230, 0.2);
+  outline: none;
 }
 
 .input-group .date-picker {
-    display: block;
+  display: block;
 }

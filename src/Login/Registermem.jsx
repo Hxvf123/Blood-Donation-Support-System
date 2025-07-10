@@ -2,9 +2,8 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useNavigate } from "react-router-dom"; // ✅ Thêm dòng này
+import { useNavigate } from "react-router-dom"; 
 import "./Registermem.css";
-import Header from '../components/Header';
 import Footer from '../components/Footer';
 
 // ✅ Chỉ cho phép nhập số điện thoại hợp lệ (bắt đầu bằng 0, tổng 10 số)
@@ -46,7 +45,7 @@ function Registermem() {
 
     return (
         <div className="register-page">
-            <Header />
+            
             <div className="register-content">
                 <div className="register-box">
                     <h2 className="register-title">Đăng ký</h2>

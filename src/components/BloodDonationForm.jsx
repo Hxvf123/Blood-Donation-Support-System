@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Button } from 'react-bootstrap';
+import { Form} from 'react-bootstrap';
 import { Controller, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -8,8 +8,6 @@ import 'react-datepicker/dist/react-datepicker.css';
 import './BloodDonationForm.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { differenceInYears } from 'date-fns';
-
-
 
 const schema = yup.object({
     fullName: yup.string().required('Vui lòng nhập Họ và Tên'),
@@ -34,9 +32,7 @@ const schema = yup.object({
     address: yup.string().required('Vui lòng nhập địa chỉ'),
 
     bloodGroup: yup.string().required('Vui lòng nhập nhóm máu'),
-
-})
-    .required();
+}).required();
 
 const BloodDonationForm = ({ onSubmit }) => {
     const {
@@ -46,7 +42,7 @@ const BloodDonationForm = ({ onSubmit }) => {
     } = useForm({
         defaultValues: {
             fullName: '',
-            birthDate: '',
+            birthDate: null,
             gender: '',
             phone: '',
             email: '',
@@ -56,10 +52,9 @@ const BloodDonationForm = ({ onSubmit }) => {
         resolver: yupResolver(schema)
     });
 
-
     const onHandleSubmit = (data) => {
         if (onSubmit) {
-            onSubmit(data); // truyền dữ liệu lên component cha
+            onSubmit(data); // Truyền dữ liệu lên component cha
         }
     };
 
@@ -87,30 +82,30 @@ const BloodDonationForm = ({ onSubmit }) => {
                 </Form.Group>
 
                 <Form.Group className="mb-3">
-                    <Form.Label>Ngày sinh</Form.Label>
-                    <Controller
-                        name="birthDate"
-                        control={control}
-                        render={({ field }) => (
-                            <DatePicker
-                                {...field}
-                                selected={field.value}
-                                onChange={field.onChange}
-                                onChangeRaw={(e) => e.preventDefault()} // Cho phép nhập tay
-                                dateFormat="dd/MM/yyyy"
-                                placeholderText=" Chọn ngày sinh"
-                                showMonthDropdown
-                                showYearDropdown
-                                dropdownMode="select"
-                                className={`form-control ${errors.birthDate ? 'is-invalid' : ''}`}
-                                maxDate={new Date()}
-                            />
-                        )}
-                    />
-                    <div className="invalid-feedback d-block">
-                        {errors.birthDate?.message}
-                    </div>
-                </Form.Group>
+    <Form.Label>Ngày sinh</Form.Label>
+    <Controller
+        name="birthDate"
+        control={control}
+        render={({ field }) => (
+            <DatePicker
+                {...field}
+                selected={field.value ? new Date(field.value) : null}
+                onChange={field.onChange}
+                dateFormat="dd/MM/yyyy"
+                placeholderText="dd/MM/yyyy"
+                showMonthDropdown
+                showYearDropdown
+                dropdownMode="select"
+                className={`form-control ${errors.birthDate ? 'is-invalid' : ''}`}
+                maxDate={new Date()}
+                autoComplete="off"
+            />
+        )}
+    />
+    <div className="invalid-feedback d-block">
+        {errors.birthDate?.message}
+    </div>
+</Form.Group>
 
 
                 <Form.Group className="mb-4 gender-group">
@@ -130,7 +125,6 @@ const BloodDonationForm = ({ onSubmit }) => {
                         {errors.gender?.message}
                     </Form.Control.Feedback>
                 </Form.Group>
-
 
                 <Form.Group className="mb-3">
                     <Form.Label>Số điện thoại</Form.Label>
@@ -213,7 +207,6 @@ const BloodDonationForm = ({ onSubmit }) => {
                         Lưu thông tin
                     </button>
                 </div>
-
             </Form>
         </div>
     );

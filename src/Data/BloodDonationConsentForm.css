@@ -1,0 +1,249 @@
+.form-container {
+  background: #ffffff url('https://i.pinimg.com/736x/21/6e/73/216e731f800453e35ac3497ea8ba2b32.jpg') no-repeat center/cover;
+  max-width: 520px;
+  width: 95%;
+  margin: 60px auto;
+  padding: 40px 32px;
+  border-radius: 20px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(4px);
+  color: #1c1c1c;
+  font-family: 'Segoe UI', sans-serif;
+  box-sizing: border-box;
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+h2 {
+  text-align: center;
+  font-size: 2.2rem;
+  color: #aa0f17;
+  font-weight: 800;
+  margin-bottom: 36px;
+  letter-spacing: 1.3px;
+  text-shadow: 0 2px 8px #f0f8ff;
+}
+
+.question {
+  margin-bottom: 28px;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.6;
+  color: #2c3e50;
+}
+
+.question span {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.sub-question {
+  margin-left: 12px;
+  margin-top: 10px;
+  font-weight: 500;
+}
+
+.yes-no-row {
+  display: flex;
+  justify-content: space-evenly;
+  margin-top: 4px;
+  margin-bottom: 12px;
+}
+
+.yes-no-row label {
+  font-weight: 500;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.yes-no-row input[type="radio"] {
+  margin-right: 6px;
+  accent-color: #007bff;
+  transform: scale(1.2);
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.register-button {
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+  color: #fff;
+  flex: 1;
+}
+
+.register-button:hover {
+  transform: translateY(-1px);
+}
+
+.back-button {
+  background-color: #6c757d;
+}
+
+.back-button:hover {
+  background-color: #5a6268;
+}
+
+.register-button:not(.back-button) {
+  background-color: #007bff;
+}
+
+.register-button:not(.back-button):hover {
+  background-color: #0056b3;
+}
+
+@media (max-width: 600px) {
+  .form-container {
+    padding: 24px 16px;
+  }
+
+  .buttons {
+    flex-direction: column;
+  }
+
+  .register-button {
+    width: 100%;
+  }
+}
+
+.alert-box {
+  display: flex;
+  align-items: center;
+  background-color: #f8d7da;
+  border: 1px solid #f5c2c7;
+  border-radius: 8px;
+  padding: 16px;
+  margin-top: 24px;
+  position: relative;
+  color: #842029;
+  font-weight: 500;
+  animation: fadeIn 0.3s ease-in;
+  gap: 10px;
+}
+
+.alert-box .icon {
+  font-size: 28px;
+}
+
+.alert-box .message {
+  flex: 1;
+}
+
+.progress-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 4px;
+  width: 100%;
+  background-color: #f5c2c7;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 100%;
+  background-color: #d63384;
+  animation: loadProgress 3s ease-out;
+}
+
+@keyframes loadProgress {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+
+/* Thêm phần chung cho alert-box */
+.alert-box {
+  display: flex;
+  align-items: center;
+  border-radius: 8px;
+  padding: 16px;
+  margin-top: 24px;
+  position: relative;
+  font-weight: 500;
+  gap: 10px;
+  animation: fadeIn 0.3s ease-in;
+}
+
+.alert-box .icon {
+  font-size: 26px;
+}
+
+.alert-box .message {
+  flex: 1;
+}
+
+/* Lỗi (❌) */
+.alert-box.error {
+  background-color: #f8d7da;
+  border: 1px solid #f5c2c7;
+  color: #842029;
+}
+
+.progress-bar.error {
+  background-color: #f5c2c7;
+}
+
+.progress-bar.error .progress-fill {
+  background-color: #d63384;
+}
+
+/* Thành công (✅) */
+.alert-box.success {
+  background-color: #d1e7dd;
+  border: 1px solid #badbcc;
+  color: #0f5132;
+}
+
+.progress-bar.success {
+  background-color: #badbcc;
+}
+
+.progress-bar.success .progress-fill {
+  background-color: #198754;
+}
+
+/* Thanh tiến trình */
+.progress-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 4px;
+  width: 100%;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 100%;
+  animation: loadProgress 3s ease-out;
+}
+
+@keyframes loadProgress {
+  from { width: 0; }
+  to { width: 100%; }
+}
+

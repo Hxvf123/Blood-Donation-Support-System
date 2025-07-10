@@ -7,7 +7,11 @@ import "./BloodReceiveForm.css";
 const schema = yup.object().shape({
   bloodTypeId: yup.string().required("Vui lòng chọn nhóm máu"),
   componentTypeId: yup.string().required("Vui lòng chọn loại chế phẩm"),
-  quantity: yup.number().positive("Phải lớn hơn 0").required("Vui lòng nhập số lượng"),
+  quantity: yup
+    .number()
+    .typeError("Vui lòng nhập số")
+    .positive("Phải lớn hơn 0")
+    .required("Vui lòng nhập số lượng"),
   requestDate: yup.string().required("Vui lòng chọn ngày"),
 });
 
@@ -16,7 +20,6 @@ const BloodReceiveForm = ({ userId, onSuccess }) => {
     register,
     handleSubmit,
     reset,
-    watch,
     formState: { errors },
   } = useForm({ resolver: yupResolver(schema) });
 
@@ -24,6 +27,7 @@ const BloodReceiveForm = ({ userId, onSuccess }) => {
   const [components, setComponents] = useState([]);
   const [selectedBloodType, setSelectedBloodType] = useState("");
   const [compatibleDonors, setCompatibleDonors] = useState([]);
+  const [imageFile, setImageFile] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -57,18 +61,26 @@ const BloodReceiveForm = ({ userId, onSuccess }) => {
   };
 
   const onSubmit = async (data) => {
-    const payload = { ...data, userId };
-
     try {
+      const formData = new FormData();
+      formData.append("bloodTypeId", data.bloodTypeId);
+      formData.append("componentTypeId", data.componentTypeId);
+      formData.append("quantity", data.quantity);
+      formData.append("requestDate", data.requestDate);
+      formData.append("userId", userId);
+      if (imageFile) {
+        formData.append("image", imageFile);
+      }
+
       const res = await fetch("/api/blood-receive", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: formData,
       });
 
       if (res.ok) {
         alert("Gửi yêu cầu nhận máu thành công!");
         reset();
+        setImageFile(null);
         onSuccess();
       } else {
         alert("Gửi yêu cầu thất bại.");
@@ -128,8 +140,21 @@ const BloodReceiveForm = ({ userId, onSuccess }) => {
 
       <div className="blood-form-group">
         <label>Ngày yêu cầu</label>
-        <input type="date" {...register("requestDate")} defaultValue={new Date().toISOString().split("T")[0]} />
+        <input
+          type="date"
+          {...register("requestDate")}
+          defaultValue={new Date().toISOString().split("T")[0]}
+        />
         {errors.requestDate && <p className="error">{errors.requestDate.message}</p>}
+      </div>
+
+      <div className="blood-form-group">
+        <label>Tải ảnh liên quan đến bệnh lí (bắt buộc) </label>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => setImageFile(e.target.files[0])}
+        />
       </div>
 
       <button type="submit" className="blood-submit-btn">Gửi yêu cầu</button>
