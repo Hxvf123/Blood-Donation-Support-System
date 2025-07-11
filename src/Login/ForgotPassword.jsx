@@ -1,10 +1,12 @@
-
 import React, { useState } from "react";
 import "./LoginPage.css";
 import Footer from "../components/Footer";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { sendPasswordResetEmail } from "firebase/auth";
+import { auth } from "../FireBase/firebase";
+import { toast } from "react-toastify";
 
 const schema = yup.object({
   email: yup.string().email("Email không hợp lệ").required("Vui lòng nhập email"),
@@ -22,9 +24,15 @@ function ForgotPassword() {
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = (data) => {
-    console.log("🔐 Yêu cầu khôi phục:", data.email);
-    setSubmitted(true);
+  const onSubmit = async (data) => {
+    try {
+      await sendPasswordResetEmail(auth, data.email);
+      setSubmitted(true);
+      toast.success("Đã gửi email đặt lại mật khẩu!");
+    } catch (error) {
+      console.error("Lỗi gửi yêu cầu:", error);
+      toast.error("Không thể gửi yêu cầu. Hãy kiểm tra email.");
+    }
   };
 
   return (

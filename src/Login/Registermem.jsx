@@ -1,103 +1,101 @@
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { useNavigate } from "react-router-dom"; 
 import "./Registermem.css";
-import Footer from '../components/Footer';
-
-// ✅ Chỉ cho phép nhập số điện thoại hợp lệ (bắt đầu bằng 0, tổng 10 số)
-const schema = yup.object({
-    emailOrPhone: yup
-        .string()
-        .required('Vui lòng nhập SĐT')
-        .matches(/^0\d{9}$/, 'Số điện thoại không hợp lệ'),
-    password: yup
-        .string()
-        .min(8, 'Mật khẩu phải có ít nhất 8 ký tự')
-        .matches(/[!@#$%^&*(),.?":{}|<>]/, 'Mật khẩu phải chứa ít nhất 1 ký tự đặc biệt')
-        .required('Vui lòng nhập mật khẩu'),
-    confirmPassword: yup
-        .string()
-        .oneOf([yup.ref('password'), null], 'Mật khẩu xác nhận không khớp')
-        .required('Vui lòng xác nhận mật khẩu'),
-}).required();
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import {
+  GoogleAuthProvider,
+  signInWithPopup,
+  createUserWithEmailAndPassword,
+} from "firebase/auth";
+import { auth } from "../FireBase/firebase";
 
 function Registermem() {
-    const [showPassword, setShowPassword] = useState(false);
-    const navigate = useNavigate(); // ✅ Dùng hook điều hướng
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
-    const { register, handleSubmit, formState: { errors } } = useForm({
-        resolver: yupResolver(schema)
-    });
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    if (password !== confirmPassword) {
+      toast.error("Mật khẩu không khớp");
+      return;
+    }
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      toast.success("Đăng ký thành công!");
+      navigate("/login");
+    } catch (error) {
+      console.error("Đăng ký lỗi:", error);
+      toast.error("Đăng ký thất bại!");
+    }
+  };
 
-    const togglePassword = () => {
-        setShowPassword(!showPassword);
-    };
+  const handleGoogleRegister = async () => {
+    const provider = new GoogleAuthProvider();
+    try {
+      const result = await signInWithPopup(auth, provider);
+      console.log("Đăng ký bằng Google:", result.user);
+      toast.success("Đăng ký bằng Google thành công!");
+      navigate("/login");
+    } catch (error) {
+      console.error("Đăng ký Google lỗi:", error);
+      toast.error("Đăng ký Google thất bại!");
+    }
+  };
 
-    const onSubmit = (data) => {
-        alert("Đăng ký thành công!");
-        console.log("Thông tin đăng ký:", data);
+  return (
+    <div className="register-page">
+      <div className="register-content">
+        <div className="register-box">
+          <h2 className="register-title">Đăng ký tài khoản</h2>
 
-        // ✅ Chuyển hướng sang trang đăng nhập sau khi đăng ký
-        navigate("/login");
-    };
+          <form onSubmit={handleRegister}>
+            <label>Email</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
 
-    return (
-        <div className="register-page">
-            
-            <div className="register-content">
-                <div className="register-box">
-                    <h2 className="register-title">Đăng ký</h2>
-                    <form onSubmit={handleSubmit(onSubmit)}>
-                        <label htmlFor="emailOrPhone">
-                            Số điện thoại<span className="required">*</span>
-                        </label>
-                        <input
-                            type="text"
-                            id="emailOrPhone"
-                            placeholder="Nhập số điện thoại của bạn"
-                            {...register("emailOrPhone")}
-                        />
-                        {errors.emailOrPhone && <p className="error">{errors.emailOrPhone.message}</p>}
+            <label>Mật khẩu</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
 
-                        <label htmlFor="password">
-                            Mật khẩu<span className="required">*</span>
-                        </label>
-                        <div className="password-input">
-                            <input
-                                type={showPassword ? "text" : "password"}
-                                id="password"
-                                placeholder="Nhập mật khẩu của bạn"
-                                {...register("password")}
-                            />
-                            <span className="toggle-eye" onClick={togglePassword}></span>
-                        </div>
-                        {errors.password && <p className="error">{errors.password.message}</p>}
+            <label>Xác nhận mật khẩu</label>
+            <input
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+            />
 
-                        <label htmlFor="confirmPassword">
-                            Xác nhận mật khẩu<span className="required">*</span>
-                        </label>
-                        <input
-                            type={showPassword ? "text" : "password"}
-                            id="confirmPassword"
-                            placeholder="Nhập lại mật khẩu"
-                            {...register("confirmPassword")}
-                        />
-                        {errors.confirmPassword && <p className="error">{errors.confirmPassword.message}</p>}
+            <button type="submit" className="primary-button">
+              Đăng ký
+            </button>
+          </form>
 
-                        <button type="submit" className="register-button">
-                            Đăng ký
-                        </button>
-                    </form>
-                    <div className="register-link">
-                        Đã có tài khoản? <a href="/login">Quay về đăng nhập</a>
-                    </div>
-                </div>
-            </div>
-            <Footer />
+          <button onClick={handleGoogleRegister} className="google-register-button">
+            <img
+              src="https://png.pngtree.com/png-clipart/20230916/original/pngtree-google-logo-vector-png-image_12256710.png"
+              alt="Google"
+              className="google-icon"
+            />
+            Đăng ký bằng Google
+          </button>
+
+          <div className="register-link">
+            Đã có tài khoản? <a href="/login">Đăng nhập tại đây</a>
+          </div>
         </div>
-    );
+      </div>
+    </div>
+  );
 }
 
 export default Registermem;
