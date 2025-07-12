@@ -1,103 +1,180 @@
-import React from "react";
-import { useForm } from "react-hook-form";
-import { Form, Button, Row, Col } from "react-bootstrap";
-import "./userInfoForm.scss";
+import React from 'react';
+import { Form } from 'react-bootstrap';
+import { Controller, useForm } from 'react-hook-form';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+import DatePicker from 'react-datepicker';
+import './userInfoForm.scss';
+import { differenceInYears } from 'date-fns';
 
-const UserInfoForm = () => {
-    const { register, handleSubmit, formState: { errors } } = useForm();
+const schema = yup.object({
+    fullName: yup.string().required('Vui lòng nhập Họ và Tên'),
 
-    const onSubmit = (data) => {
-        console.log(data);
-        // Xử lý dữ liệu ở đây
+    birthDate: yup
+        .date()
+        .nullable()
+        .required('Vui lòng chọn ngày sinh')
+        .test('is-18', 'Bạn phải đủ 18 tuổi', function (value) {
+            return value && differenceInYears(new Date(), value) >= 18;
+        }),
+
+    gender: yup.string().required('Vui lòng chọn giới tính'),
+
+    phone: yup
+        .string()
+        .matches(/^(0|\+84)[3|5|7|8|9][0-9]{8}$/, 'Số điện thoại không hợp lệ')
+        .required('Bắt buộc nhập số điện thoại'),
+
+    email: yup.string().email('Email không hợp lệ').required('Vui lòng nhập email'),
+
+    address: yup.string().required('Vui lòng nhập địa chỉ'),
+
+    bloodGroup: yup.string().required('Vui lòng nhập nhóm máu'),
+}).required();
+
+const BloodDonationForm = ({ onSubmit }) => {
+    const {
+        control,
+        handleSubmit,
+        formState: { errors }
+    } = useForm({
+        defaultValues: {
+            fullName: '',
+            birthDate: null,
+            gender: '',
+            phone: '',
+            email: '',
+            address: '',
+            bloodGroup: '',
+        },
+        resolver: yupResolver(schema)
+    });
+
+    const onHandleSubmit = (data) => {
+        if (onSubmit) {
+            onSubmit(data); // Truyền dữ liệu lên component cha
+        }
     };
 
-    const BLOOD_GROUPS = ["A", "B", "AB", "O"];
-
     return (
-        <div className="user-info-form-container">
-            <Form className="user-info-form" onSubmit={handleSubmit(onSubmit)}>
-                <h2 className="form-title">Thông Tin Của Bạn</h2>
-
-                <Form.Group className="mb-2">
-                    <Form.Label className="form-label">Họ và tên</Form.Label>
-                    <Form.Control
-                        type="text"
-                        {...register("fullName", { required: "Vui lòng nhập họ và tên" })}
-                        isInvalid={!!errors.fullName}
+        <div className="form-container">
+            <h2>Thông Tin Của Bạn</h2>
+            <Form onSubmit={handleSubmit(onHandleSubmit)}>
+                <Form.Group className="mb-3">
+                    <Form.Label>Họ và tên</Form.Label>
+                    <Controller
+                        name="fullName"
+                        control={control}
+                        render={({ field }) => (
+                            <Form.Control
+                                {...field}
+                                type="text"
+                                placeholder="Nhập họ và tên"
+                                isInvalid={!!errors.fullName}
+                            />
+                        )}
                     />
                     <Form.Control.Feedback type="invalid">
                         {errors.fullName?.message}
                     </Form.Control.Feedback>
                 </Form.Group>
 
-                <Row>
-                    <Col>
-                        <Form.Group className="mb-2">
-                            <Form.Label className="form-label">Ngày sinh</Form.Label>
-                            <Form.Control
-                                type="date"
-                                {...register("dob", { required: "Vui lòng chọn ngày sinh" })}
-                                isInvalid={!!errors.dob}
+                <Form.Group className="mb-3">
+                    <Form.Label>Ngày sinh</Form.Label>
+                    <Controller
+                        name="birthDate"
+                        control={control}
+                        render={({ field }) => (
+                            <DatePicker
+                                {...field}
+                                selected={field.value ? new Date(field.value) : null}
+                                onChange={field.onChange}
+                                dateFormat="dd/MM/yyyy"
+                                placeholderText="dd/MM/yyyy"
+                                showMonthDropdown
+                                showYearDropdown
+                                dropdownMode="select"
+                                className={`form-control ${errors.birthDate ? 'is-invalid' : ''}`}
+                                maxDate={new Date()}
+                                autoComplete="off"
                             />
-                            <Form.Control.Feedback type="invalid">
-                                {errors.dob?.message}
-                            </Form.Control.Feedback>
-                        </Form.Group>
-                    </Col>
-                    <Col>
-                        <Form.Group className="mb-2">
-                            <Form.Label className="form-label">Giới tính</Form.Label>
-                            <div>
-                                <Form.Check
-                                    inline
-                                    type="radio"
-                                    label="Nam"
-                                    value="Nam"
-                                    {...register("gender", { required: "Chọn giới tính" })}
-                                    id="gender-male"
-                                />
-                                <Form.Check
-                                    inline
-                                    type="radio"
-                                    label="Nữ"
-                                    value="Nữ"
-                                    {...register("gender", { required: "Chọn giới tính" })}
-                                    id="gender-female"
-                                />
-                            </div>
-                            {errors.gender && (
-                                <div className="invalid-feedback d-block">
-                                    {errors.gender.message}
-                                </div>
-                            )}
-                        </Form.Group>
-                    </Col>
-                </Row>
+                        )}
+                    />
+                    <div className="invalid-feedback d-block">
+                        {errors.birthDate?.message}
+                    </div>
+                </Form.Group>
 
-                <Form.Group className="mb-2">
-                    <Form.Label className="form-label">Số điện thoại</Form.Label>
-                    <Form.Control
-                        type="tel"
-                        {...register("phone", {
-                            required: "Vui lòng nhập số điện thoại",
-                            pattern: {
-                                value: /^0\d{9}$/,
-                                message: "Số điện thoại phải gồm 10 số và bắt đầu bằng số 0"
-                            }
-                        })}
-                        isInvalid={!!errors.phone}
+
+                <Form.Group className="mb-4 gender-group">
+                    <Form.Label>Giới tính</Form.Label>
+                    <Controller
+                        name="gender"
+                        control={control}
+                        render={({ field }) => (
+                            <Form.Select {...field} isInvalid={!!errors.gender}>
+                                <option value="">--Chọn--</option>
+                                <option value="Nam">Nam</option>
+                                <option value="Nữ">Nữ</option>
+                            </Form.Select>
+                        )}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                        {errors.gender?.message}
+                    </Form.Control.Feedback>
+                </Form.Group>
+
+                <Form.Group className="mb-3">
+                    <Form.Label>Số điện thoại</Form.Label>
+                    <Controller
+                        name="phone"
+                        control={control}
+                        render={({ field }) => (
+                            <Form.Control
+                                {...field}
+                                type="tel"
+                                placeholder="Nhập số điện thoại"
+                                isInvalid={!!errors.phone}
+                            />
+                        )}
                     />
                     <Form.Control.Feedback type="invalid">
                         {errors.phone?.message}
                     </Form.Control.Feedback>
                 </Form.Group>
 
-                <Form.Group className="mb-2">
-                    <Form.Label className="form-label">Địa chỉ</Form.Label>
-                    <Form.Control
-                        type="text"
-                        {...register("address", { required: "Vui lòng nhập địa chỉ" })}
-                        isInvalid={!!errors.address}
+                <Form.Group className="mb-3">
+                    <Form.Label>Email</Form.Label>
+                    <Controller
+                        name="email"
+                        control={control}
+                        render={({ field }) => (
+                            <Form.Control
+                                {...field}
+                                type="email"
+                                placeholder="Nhập email"
+                                isInvalid={!!errors.email}
+                            />
+                        )}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                        {errors.email?.message}
+                    </Form.Control.Feedback>
+                </Form.Group>
+
+                <Form.Group className="mb-3">
+                    <Form.Label>Địa chỉ</Form.Label>
+                    <Controller
+                        name="address"
+                        control={control}
+                        render={({ field }) => (
+                            <Form.Control
+                                {...field}
+                                type="text"
+                                placeholder="Nhập địa chỉ"
+                                isInvalid={!!errors.address}
+                            />
+                        )}
                     />
                     <Form.Control.Feedback type="invalid">
                         {errors.address?.message}
@@ -105,32 +182,40 @@ const UserInfoForm = () => {
                 </Form.Group>
 
                 <Form.Group className="mb-3">
-                    <Form.Label className="form-label">Nhóm máu</Form.Label>
-                    <Form.Select
-                        {...register("bloodGroup", {
-                            required: "Vui lòng chọn nhóm máu",
-                            validate: value =>
-                                BLOOD_GROUPS.includes(value)
-                        })}
-                        isInvalid={!!errors.bloodGroup}
-                        defaultValue=""
-                    >
-                        <option value="" disabled>Chọn nhóm máu</option>
-                        {BLOOD_GROUPS.map(group => (
-                            <option key={group} value={group}>{group}</option>
-                        ))}
-                    </Form.Select>
+                    <Form.Label>Nhóm máu</Form.Label>
+                    <Controller
+                        name="bloodGroup"
+                        control={control}
+                        render={({ field }) => (
+                            <Form.Select
+                                {...field}
+                                isInvalid={!!errors.bloodGroup}
+                            >
+                                <option value="">-- Chọn nhóm máu --</option>
+                                <option value="A+">A+</option>
+                                <option value="A-">A−</option>
+                                <option value="B+">B+</option>
+                                <option value="B-">B−</option>
+                                <option value="O+">O+</option>
+                                <option value="O-">O−</option>
+                                <option value="AB+">AB+</option>
+                                <option value="AB-">AB−</option>
+                            </Form.Select>
+                        )}
+                    />
                     <Form.Control.Feedback type="invalid">
                         {errors.bloodGroup?.message}
                     </Form.Control.Feedback>
                 </Form.Group>
 
-                <Button variant="primary" type="submit" className="w-100">
-                    Cập nhật thông tin
-                </Button>
+                <div className="buttons">
+                    <button type="submit" className="register-button">
+                        Lưu thông tin
+                    </button>
+                </div>
             </Form>
         </div>
     );
 };
 
-export default UserInfoForm;
+export default BloodDonationForm;

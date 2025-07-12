@@ -1,0 +1,126 @@
+.login-page {
+    background-color: #fbf8f7;
+    background-image: url("../Img/backgroundLogin.jpg");
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.login-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+}
+
+.login-box {
+    background-color: #ffffffcc;
+    /* nền trắng mờ rõ hơn */
+    padding: 60px 48px;
+    /* tăng padding để thoáng và đều */
+    border-radius: 24px;
+    /* bo góc mềm mại hơn */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    /* đổ bóng nhẹ nhưng rõ hơn */
+    max-width: 520px;
+    /* tăng chiều rộng */
+    width: 100%;
+}
+
+.login-title {
+    text-align: center;
+    color: #aa0f17;
+    font-weight: 700;
+    font-size: 2rem;
+    margin-bottom: 28px;
+    letter-spacing: 1px;
+}
+
+input {
+    padding: 11px 12px;
+    margin-bottom: 16px;
+    border: 1.5px solid #dbe2ea;
+    border-radius: 6px;
+    width: 100%;
+    font-size: 15px;
+    background: #f9fbfc;
+    transition: border-color 0.2s;
+}
+
+input:focus {
+    border-color: #007bff;
+    outline: none;
+    background: #fff;
+}
+
+.google-login-button {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(90deg, #1877f2 60%, #3498db 100%);
+    color: #fff;
+    padding: 12px 0;
+    border: none;
+    border-radius: 7px;
+    font-weight: 700;
+    font-size: 17px;
+    cursor: pointer;
+    transition: background-color 0.25s;
+    margin-top: 5px;
+}
+
+.google-login-button:hover {
+    background: linear-gradient(90deg, #3498db 60%, #1877f2 100%);
+    box-shadow: 0 4px 16px rgba(30, 144, 255, 0.13);
+}
+
+.register {
+    text-align: center;
+    font-size: 15px;
+    margin-top: 18px;
+    color: #444;
+}
+
+.register a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 600;
+    margin-left: 3px;
+}
+
+.register a:hover {
+    text-decoration: underline;
+}
+
+.google-icon {
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+    background-color: white;
+    border-radius: 50%;
+}
+
+.login-button-2 {
+    width: 100%;
+    background-color: #007bff;
+    color: #fff;
+    padding: 12px 0;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 16px;
+
+    &:hover {
+        background-color: #0056d2;
+        box-shadow: 0 4px 16px rgba(0, 123, 255, 0.2);
+    }
+
+    &:active {
+        transform: scale(0.98);
+    }
+}

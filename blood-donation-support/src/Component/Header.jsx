@@ -85,14 +85,14 @@ export default function Header() {
 
                             {showUserMenu && (
                                 <div className="user-menu">
-                                    <div onClick={() => navigate("/profile")}>Thông tin cá nhân</div>
+                                    <div onClick={() => navigate(ROUTE_PATH.PROFILE)}>Thông tin cá nhân</div>
                                     <div onClick={() => navigate(ROUTE_PATH.HISTORY)}>Lịch sử hiến máu</div>
                                     <div className="logout" onClick={handleLogout}>Đăng xuất</div>
                                 </div>
                             )}
                         </div>
                     ) : (
-                        <button className="login-button" onClick={() => navigate("/login")}>
+                        <button className="login-button" onClick={() => navigate(ROUTE_PATH.LOGIN)}>
                             <LogIn size={18} />
                             <span>Đăng Nhập</span>
                         </button>
@@ -110,8 +110,8 @@ export default function Header() {
                         </span>
                         {showRegisterMenu && (
                             <div className="register-dropdown">
-                                <a href="/donate/register">Hiến máu</a>
-                                <a href="/receive/register">Nhận máu</a>
+                                <a href={ROUTE_PATH.BLOOD_DONATION}>Hiến máu</a>
+                                <a href={ROUTE_PATH.BLOOD_RECEIVE}>Nhận máu</a>
                             </div>
                         )}
                     </li>

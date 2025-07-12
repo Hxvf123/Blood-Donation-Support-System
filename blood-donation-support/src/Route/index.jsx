@@ -3,6 +3,12 @@ import ROUTE_PATH from "../Constants/route";
 import MainLayout from "../Layout";
 import Home from "../Home/Home";
 import History from "../History/History";
+import Registermem from "../RegisterMem/Register";
+import Login from "../Login/Login";
+import ForgotPass from "../Login/ForgotPass";
+import Profile from "../userInfoForm/userInfoForm";
+import Receive from "../BloodReceive/Receive";
+import Donation from "../BloodDonation/Donation";
 
 function Routes() {
     const route = createBrowserRouter([
@@ -12,6 +18,12 @@ function Routes() {
             children: [
                 { index: true, element: <Home />},
                 {path: ROUTE_PATH.HISTORY, element: <History />},
+                {path: ROUTE_PATH.REGISTER, element: <Registermem />},
+                {path: ROUTE_PATH.LOGIN, element: <Login />},
+                {path: ROUTE_PATH.FORGOT_PASSWORD, element: <ForgotPass />},
+                {path: ROUTE_PATH.PROFILE, element: <Profile />},
+                {path: ROUTE_PATH.BLOOD_RECEIVE, element: <Receive />},
+                {path: ROUTE_PATH.BLOOD_DONATION, element: <Donation />},
             ]
         }
     ]);
