@@ -151,50 +151,7 @@
 .donation_info {
     padding: 2rem;
     background: #f0f9ff;
-}
-
-/* News */
-.news {
     margin-bottom: 2rem;
-
-    h2 {
-        color: #0284c7;
-        margin-bottom: 1rem;
-        text-align: center;
-    }
-
-    &__items {
-        display: flex;
-        gap: 1rem;
-        justify-content: center;
-    }
-
-    &__item {
-        background: #e0f2fe;
-        border-radius: 8px;
-        padding: 1rem;
-        width: 30%;
-        box-shadow: 0 0 5px rgba(2, 132, 199, 0.3);
-        text-align: center;
-
-        img {
-            width: 100%;
-            height: 140px;
-            object-fit: cover;
-            border-radius: 6px;
-            margin-bottom: 0.5rem;
-        }
-
-        h4 {
-            color: #0369a1;
-            margin-bottom: 0.5rem;
-        }
-
-        p {
-            font-size: 0.9rem;
-            color: #333;
-        }
-    }
 }
 
 /* Blog */

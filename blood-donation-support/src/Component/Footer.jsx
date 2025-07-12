@@ -22,9 +22,9 @@ const Footer = () => (
                 <div className="col-md-4 mb-3">
                     <h5 className="mb-2">Liên kết nhanh</h5>
                     <ul className="list-unstyled mb-2">
-                        <li><a href="#" className="footer-link">Trang chủ</a></li>
-                        <li><a href="#" className="footer-link">Về chúng tôi</a></li>
-                        <li><a href="#" className="footer-link">Blog chia sẻ</a></li>
+                        <li><a href="/" className="footer-link">Trang chủ</a></li>
+                        <li><a href="#about-us" className="footer-link">Về chúng tôi</a></li>
+                        <li><a href="#blog" className="footer-link">Blog chia sẻ</a></li>
                         <li><a href="#" className="footer-link">Chính sách bảo mật</a></li>
                     </ul>
                 </div>
