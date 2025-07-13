@@ -7,6 +7,7 @@ const ROUTE_PATH = {
     PROFILE: "/user-info",
     BLOOD_RECEIVE: "/blood-receive",
     BLOOD_DONATION: "/blood-donation",
+    CONTACT: "/contact",
 };
 
 export default ROUTE_PATH;

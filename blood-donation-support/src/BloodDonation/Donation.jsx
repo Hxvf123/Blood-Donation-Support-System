@@ -4,10 +4,12 @@ import CheckDate from "./CheckDate";
 import UpdateInfo from "../userInfoForm/updateUser";
 import ConsentForm from "./ConsentForm";
 import "../userInfoForm/userInfoForm.scss";
+import { useNavigate } from "react-router";
 
 const BloodDonationPage = ({ formData, setFormData }) => {
   const [step, setStep] = useState(1);
   const [localData, setLocalData] = useState(formData || null);
+  const navigate = useNavigate();
 
   // Nếu có dữ liệu ban đầu => sang bước 2
   useEffect(() => {
@@ -74,7 +76,7 @@ const BloodDonationPage = ({ formData, setFormData }) => {
             console.log("Dữ liệu cuối cùng:", finalConsentData);
             setLocalData(null);
             setFormData?.(null);
-            setStep(1);
+            navigate("/");
           }}
         />
       )}

@@ -1,5 +1,8 @@
 import React from "react";
 import "./Home.scss";
+import { useLocation } from "react-router";
+import { useEffect } from "react";
+import { toast } from "react-toastify";
 import DonationInfo from "./donationInfo";
 import Event from "./Event";
 
@@ -7,6 +10,14 @@ import Banner from "../Img/banner.jpg";
 import aboutUs from "../Img/aboutUs.jpg";
 
 const Home = () => {
+    const location = useLocation();
+
+    useEffect(() => {
+        if (location.state?.message) {
+            toast.success(location.state.message);
+            window.history.replaceState({}, document.title);
+        }
+    }, [location]);
     return (
         <div className="home-container">
             <section className="banner">

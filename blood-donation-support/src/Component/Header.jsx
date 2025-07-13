@@ -7,6 +7,7 @@ import logo from "../Img/logo.png";
 import defaultAvatar from "../Img/user.png";
 import NotificationPopup from "./notiPopup";
 import ROUTE_PATH from "../Constants/route";
+import { auth } from "../Firebase/firebase";
 
 export default function Header() {
     const [showPopup, setShowPopup] = useState(false);
@@ -20,20 +21,6 @@ export default function Header() {
 
     const user = JSON.parse(localStorage.getItem("user"));
 
-    const scrollToNews = () => {
-        const newsSection = document.getElementById("news-section");
-        if (newsSection) {
-            newsSection.scrollIntoView({ behavior: "smooth" });
-        }
-    };
-
-    useEffect(() => {
-        const mockUser = { name: "Nguyễn Văn A" };
-        if (!localStorage.getItem("user")) {
-            localStorage.setItem("user", JSON.stringify(mockUser));
-        }
-    }, []);
-
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (bellRef.current && !bellRef.current.contains(event.target)) {
@@ -46,15 +33,21 @@ export default function Header() {
                 setShowUserMenu(false);
             }
         };
-
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
     const handleLogout = () => {
-        localStorage.removeItem("user");
-        navigate("/");
-        window.location.reload();
+        auth.signOut().then(() => {
+            localStorage.removeItem("user");
+            navigate("/");
+            window.location.reload();
+        });
+    };
+
+    const scrollToEvents = () => {
+        const section = document.getElementById("news-section");
+        if (section) section.scrollIntoView({ behavior: "smooth" });
     };
 
     return (
@@ -74,15 +67,10 @@ export default function Header() {
 
                     {user ? (
                         <div className="user-avatar" ref={userMenuRef}>
-                            <img
-                                src={defaultAvatar}
-                                alt="avatar"
-                                onClick={() => setShowUserMenu((prev) => !prev)}
-                            />
+                            <img src={defaultAvatar} alt="avatar" onClick={() => setShowUserMenu((prev) => !prev)} />
                             <span className="username" onClick={() => setShowUserMenu((prev) => !prev)}>
-                                {user.name}
+                                {user.name || "Người dùng"}
                             </span>
-
                             {showUserMenu && (
                                 <div className="user-menu">
                                     <div onClick={() => navigate(ROUTE_PATH.PROFILE)}>Thông tin cá nhân</div>
@@ -103,19 +91,49 @@ export default function Header() {
             <nav className="header__nav">
                 <ul>
                     <li onClick={() => navigate("/")}>Trang chủ</li>
-                    <li onClick={scrollToNews}>Tin tức</li>
+                    <li onClick={scrollToEvents}>Sự kiện</li>
                     <li ref={registerRef} className="register-menu-parent">
-                        <span className="register-menu-btn" onClick={() => setShowRegisterMenu((prev) => !prev)}>
-                            Đăng ký
-                        </span>
+                        <span className="register-menu-btn" onClick={() => setShowRegisterMenu((prev) => !prev)}>Đăng ký</span>
                         {showRegisterMenu && (
                             <div className="register-dropdown">
-                                <a href={ROUTE_PATH.BLOOD_DONATION}>Hiến máu</a>
-                                <a href={ROUTE_PATH.BLOOD_RECEIVE}>Nhận máu</a>
+                                <a
+                                    href={ROUTE_PATH.LOGIN}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        const user = JSON.parse(localStorage.getItem("user"));
+                                        if (!user) {
+                                            navigate(ROUTE_PATH.LOGIN, {
+                                                state: { message: "Bạn phải đăng nhập trước!" },
+                                            });
+                                        } else {
+                                            navigate(ROUTE_PATH.BLOOD_DONATION);
+                                        }
+                                    }}
+                                >
+                                    Hiến máu
+                                </a>
+
+                                <a
+                                    href={ROUTE_PATH.LOGIN}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        const user = JSON.parse(localStorage.getItem("user"));
+                                        if (!user) {
+                                            navigate(ROUTE_PATH.LOGIN, {
+                                                state: { message: "Bạn phải đăng nhập trước!" },
+                                            });
+                                        } else {
+                                            navigate(ROUTE_PATH.BLOOD_RECEIVE);
+                                        }
+                                    }}
+                                >
+                                    Nhận máu
+                                </a>
+
                             </div>
                         )}
                     </li>
-                    <li onClick={() => navigate("/contact")}>Liên hệ</li>
+                    <li onClick={() => navigate(ROUTE_PATH.CONTACT)}>Liên hệ</li>
                 </ul>
             </nav>
         </header>

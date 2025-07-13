@@ -9,6 +9,7 @@ import ForgotPass from "../Login/ForgotPass";
 import Profile from "../userInfoForm/userInfoForm";
 import Receive from "../BloodReceive/Receive";
 import Donation from "../BloodDonation/Donation";
+import Contact from "../Contact/Contact";
 
 function Routes() {
     const route = createBrowserRouter([
@@ -24,6 +25,7 @@ function Routes() {
                 {path: ROUTE_PATH.PROFILE, element: <Profile />},
                 {path: ROUTE_PATH.BLOOD_RECEIVE, element: <Receive />},
                 {path: ROUTE_PATH.BLOOD_DONATION, element: <Donation />},
+                {path: ROUTE_PATH.CONTACT, element: <Contact />},
             ]
         }
     ]);

@@ -61,7 +61,7 @@ const NewsCarousel = () => {
 
     return (
         <section className="news">
-            <h2>Tin tức</h2>
+            <h2>Sự kiện</h2>
             <div
                 className="news-carousel-container"
                 onMouseEnter={() => setIsPaused(true)}
