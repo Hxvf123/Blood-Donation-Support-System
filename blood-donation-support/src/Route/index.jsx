@@ -10,6 +10,8 @@ import Profile from "../userInfoForm/userInfoForm";
 import Receive from "../BloodReceive/Receive";
 import Donation from "../BloodDonation/Donation";
 import Contact from "../Contact/Contact";
+import RequestList from "../Request/RequestList";
+import RequestDetail from "../Request/RequestDetail";
 
 function Routes() {
     const route = createBrowserRouter([
@@ -26,6 +28,8 @@ function Routes() {
                 {path: ROUTE_PATH.BLOOD_RECEIVE, element: <Receive />},
                 {path: ROUTE_PATH.BLOOD_DONATION, element: <Donation />},
                 {path: ROUTE_PATH.CONTACT, element: <Contact />},
+                {path: ROUTE_PATH.REQUEST_LIST, element: <RequestList />},
+                {path: ROUTE_PATH.REQUEST_DETAIL, element: <RequestDetail />},
             ]
         }
     ]);

@@ -42,7 +42,7 @@ const CheckDate = ({ data, onSubmit, onBack }) => {
       <div className="info-group"><strong>Nhóm máu:</strong> {data.bloodGroup}</div>
 
       <div className="info-group">
-        <strong>Chọn ngày hiến máu:</strong>
+        <label><strong>Chọn ngày hiến máu:</strong></label>
         <DatePicker
           selected={selectedDate}
           onChange={(date) => setSelectedDate(date)}

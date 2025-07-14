@@ -4,8 +4,8 @@ import { toast } from 'react-toastify';
 
 const BloodDonationConsentForm = ({ data, onSubmit, onBack }) => {
   const [answers, setAnswers] = useState({
-    q1: "", q2: "", q3: "", q4a: "", q4b: "", q4c: "", q4d: "",
-    q5: "", q6: "", q7: "",
+    q1: "", q2: "", q3: "", q4: "",q5: "", q6: "", q7: "", 
+    q8: "", q9: "", q10: "", q11: "", q12: "", q13: "", q14: "",
   });
 
   const [isIneligible, setIsIneligible] = useState(false);
@@ -17,20 +17,20 @@ const BloodDonationConsentForm = ({ data, onSubmit, onBack }) => {
   const handleSubmit = async () => {
     const unanswered = Object.entries(answers).filter(([_, v]) => v === "");
     if (unanswered.length > 0) {
-      toast.error("⚠️ Vui lòng trả lời tất cả các câu hỏi trước khi đăng ký.");
+      toast.error("Vui lòng trả lời tất cả các câu hỏi trước khi đăng ký.");
       return;
     }
 
     if (isIneligible) {
-      toast.error("❌ Bạn không đủ điều kiện để hiến máu.");
+      toast.error("Bạn không đủ điều kiện để hiến máu.");
       return;
     }
 
     try {
       await onSubmit({ ...data, healthAnswers: answers });
-      toast.success("✅ Đăng ký hiến máu thành công! Cảm ơn bạn 💖");
+      toast.success("Đăng ký hiến máu thành công! Cảm ơn bạn");
     } catch (error) {
-      toast.error("😓 Đăng ký thất bại. Vui lòng thử lại sau.");
+      toast.error("Đăng ký thất bại. Vui lòng thử lại sau.");
     }
   };
 
@@ -67,30 +67,58 @@ const BloodDonationConsentForm = ({ data, onSubmit, onBack }) => {
       </div>
 
       <div className="question">
-        <span>4. Trong vòng <strong>6 tháng</strong> gần đây, anh/chị có:</span>
-        <div className="sub-question">a. Phẫu thuật, truyền máu, xăm mình, xỏ khuyên?</div>
-        {renderYesNoOptions("q4a")}
-        <div className="sub-question">b. Quan hệ tình dục không an toàn hoặc có nguy cơ cao nhiễm HIV?</div>
-        {renderYesNoOptions("q4b")}
-        <div className="sub-question">c. Sử dụng ma túy hoặc chất kích thích qua đường tiêm?</div>
-        {renderYesNoOptions("q4c")}
-        <div className="sub-question">d. Không có yếu tố trên?</div>
-        {renderYesNoOptions("q4d")}
+        <span>4. Trong <strong>12 tháng</strong>, anh/chị có thực hiện phẫu thuật, truyền máu, xăm mình, xỏ khuyên không?</span>
+        {renderYesNoOptions("q4")}
       </div>
 
       <div className="question">
-        <span>5. Trong <strong>14 ngày</strong> gần đây, anh/chị có cảm cúm?</span>
+        <span>5. Trong <strong>6 tháng</strong> gần đây, anh/chị có hành vi nguy cơ cao nhiễm HIV không?</span>
         {renderYesNoOptions("q5")}
       </div>
 
       <div className="question">
-        <span>6. Trong <strong>7 ngày</strong> gần đây, anh/chị có dùng kháng sinh hoặc thuốc điều trị đặc biệt (Corticoid)?</span>
+        <span>6. Anh/chị có từng tiếp xúc trực tiếp với máu người khác không?</span>
         {renderYesNoOptions("q6")}
       </div>
 
       <div className="question">
-        <span>7. (Dành cho nữ giới) Hiện có thai, hoặc nuôi con dưới 12 tháng tuổi?</span>
+        <span>7. Anh/chị có đi đến khu vực có dịch bệnh truyền nhiễm không?</span>
         {renderYesNoOptions("q7")}
+      </div>
+
+      <div className="question">
+        <span>8. Trong <strong>14 ngày</strong> gần đây, anh/chị có triệu chứng cảm cúm không?</span>
+        {renderYesNoOptions("q8")}
+      </div>
+
+      <div className="question">
+        <span>9. Trong <strong>7 ngày</strong> gần đây, anh/chị có đang sử dụng kháng sinh hoặc thuốc điều trị đặc biệt không?</span>
+        {renderYesNoOptions("q9")}
+      </div>
+
+      <div className="question">
+        <span>10. (Dành cho nữ) Chị đang mang thai hoặc đang cho con bú dưới 12 tháng tuổi không?</span>
+        {renderYesNoOptions("q10")}
+      </div>
+
+      <div className="question">
+        <span>11. (Dành cho nữ) Trong <strong>12 tháng</strong> gần đây, anh/chị có phá thai không?</span>
+        {renderYesNoOptions("q11")}
+      </div>
+
+      <div className="question">
+        <span>12. (Dành cho nữ) Hiện tại có đang trong kỳ kinh nguyệt không?</span>
+        {renderYesNoOptions("q12")}
+      </div>
+
+      <div className="question">
+        <span>13. Anh/chị có đồng ý thực hiện xét nghiệm HIV trên mẫu máu được lấy không?</span>
+        {renderYesNoOptions("q13")}
+      </div>
+
+      <div className="question">
+        <span>14. Vui lòng ghi rõ lí do:</span>
+        <textarea name="q14" onChange={(e) => handleChange("q14", e.target.value)} />
       </div>
 
       <div className="buttons">

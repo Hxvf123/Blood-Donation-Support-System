@@ -24,20 +24,23 @@
 }
 
 .input-group {
+  display: flex;
+  align-items: center;
   margin-bottom: 18px;
 }
 
 .input-group label {
-  display: block;
+  width: 150px;
+  margin-right: 12px;
   font-weight: 600;
-  margin-bottom: 6px;
   color: #34495e;
+  text-align: left;
 }
 
 .input-group input,
 .input-group select,
 .input-group textarea {
-  width: 100%;
+  flex: 1;
   padding: 10px 12px;
   border-radius: 6px;
   border: 1.5px solid #dbe2ea;
@@ -96,16 +99,34 @@ button.submit-btn:hover,
   padding-left: 2px;
 }
 
-@media (max-width: 600px) {
-  .form-container {
-    padding: 24px 16px;
-  }
+.form-container form .form-group {
+  display: block;
+}
 
-  .form-container h2 {
-    font-size: 1.4rem;
-  }
+.form-container form .form-group label {
+  display: block;
+  margin-bottom: 6px;
+  text-align: left;
+  padding-left: 0;
+  width: 100%;
+  font-weight: 600;
+  color: #2c3e50;
+}
 
-  button.submit-btn {
-    font-size: 0.95rem;
-  }
+.form-container form .form-control,
+.form-container form .form-select {
+  width: 100%;
+  display: block;
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: 1.5px solid #dbe2ea;
+  background: #f9fbfd;
+  font-size: 1rem;
+}
+
+.form-container form .form-control:focus,
+.form-container form .form-select:focus {
+  border-color: #1e90ff;
+  outline: none;
+  background: #fff;
 }

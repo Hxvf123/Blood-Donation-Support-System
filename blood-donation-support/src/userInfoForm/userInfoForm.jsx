@@ -60,7 +60,7 @@ const BloodDonationForm = ({ onSubmit }) => {
         <div className="form-container">
             <h2>Thông Tin Của Bạn</h2>
             <Form onSubmit={handleSubmit(onHandleSubmit)}>
-                <Form.Group className="mb-3">
+                <Form.Group className="mb-3 input-group">
                     <Form.Label>Họ và tên</Form.Label>
                     <Controller
                         name="fullName"
@@ -79,7 +79,7 @@ const BloodDonationForm = ({ onSubmit }) => {
                     </Form.Control.Feedback>
                 </Form.Group>
 
-                <Form.Group className="mb-3">
+                <Form.Group className="mb-3 input-group">
                     <Form.Label>Ngày sinh</Form.Label>
                     <Controller
                         name="birthDate"
@@ -106,7 +106,7 @@ const BloodDonationForm = ({ onSubmit }) => {
                 </Form.Group>
 
 
-                <Form.Group className="mb-4 gender-group">
+                <Form.Group className="mb-4 gender-group input-group">
                     <Form.Label>Giới tính</Form.Label>
                     <Controller
                         name="gender"
@@ -124,7 +124,7 @@ const BloodDonationForm = ({ onSubmit }) => {
                     </Form.Control.Feedback>
                 </Form.Group>
 
-                <Form.Group className="mb-3">
+                <Form.Group className="mb-3 input-group">
                     <Form.Label>Số điện thoại</Form.Label>
                     <Controller
                         name="phone"
@@ -143,7 +143,7 @@ const BloodDonationForm = ({ onSubmit }) => {
                     </Form.Control.Feedback>
                 </Form.Group>
 
-                <Form.Group className="mb-3">
+                <Form.Group className="mb-3 input-group">
                     <Form.Label>Email</Form.Label>
                     <Controller
                         name="email"
@@ -162,7 +162,7 @@ const BloodDonationForm = ({ onSubmit }) => {
                     </Form.Control.Feedback>
                 </Form.Group>
 
-                <Form.Group className="mb-3">
+                <Form.Group className="mb-3 input-group">
                     <Form.Label>Địa chỉ</Form.Label>
                     <Controller
                         name="address"
@@ -181,7 +181,7 @@ const BloodDonationForm = ({ onSubmit }) => {
                     </Form.Control.Feedback>
                 </Form.Group>
 
-                <Form.Group className="mb-3">
+                <Form.Group className="mb-3 input-group">
                     <Form.Label>Nhóm máu</Form.Label>
                     <Controller
                         name="bloodGroup"

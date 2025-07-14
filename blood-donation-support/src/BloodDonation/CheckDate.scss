@@ -18,6 +18,7 @@
     opacity: 0;
     transform: translateY(12px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -37,7 +38,17 @@ h2 {
 .info-group {
   margin-bottom: 20px;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  font-size: 1rem;
+  color: #2c3e50;
+
+  strong {
+    font-weight: 600;
+    min-width: 140px; // chiều rộng cố định để canh thẳng label
+    display: inline-block;
+  }
 }
 
 .info-group label {
@@ -45,6 +56,7 @@ h2 {
   color: #2c3e50;
   margin-bottom: 6px;
   font-size: 0.95rem;
+  display: block;
 }
 
 .info-group input,
@@ -112,17 +124,4 @@ h2 {
 
 .react-datepicker__input-container input {
   width: 100%;
-}
-
-/* Mobile responsive */
-@media (max-width: 600px) {
-  .form-container {
-    padding: 24px 16px;
-  }
-  .buttons {
-    flex-direction: column;
-  }
-  .register-button {
-    width: 100%;
-  }
 }
