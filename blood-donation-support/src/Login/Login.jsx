@@ -11,6 +11,8 @@ import { useLocation } from "react-router";
 import { auth, db } from "../Firebase/firebase";
 import ROUTE_PATH from "../Constants/route";
 import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
+// import userApi from "../api/userApi";
+import axios from "axios";
 
 function LoginPage({ onLoginSuccess }) {
   const navigate = useNavigate();
@@ -37,44 +39,17 @@ function LoginPage({ onLoginSuccess }) {
 
   const handleEmailLogin = async (e) => {
     e.preventDefault();
-    const found = testAccounts.find(
-      (acc) => acc.email === email && acc.password === password
-    );
-
-    if (found) {
+    try {
+      const response = await axios.post("http://localhost:5294/api/User/login-email", {email, password});
       const userInfo = {
-        name: found.name,
-        email: found.email,
-        role: found.role,
+        name: response.data.name,
+        token: response.data.token,
       };
+      console.log(response.data);
       localStorage.setItem("user", JSON.stringify(userInfo));
 
       toast.success("Đăng nhập thành công!");
-
-      if (userInfo.role === "manager") {
-        navigate("/dashboard");
-      } else {
-        navigate("/");
-      }
-      return;
-    }
-    try {
-      const result = await signInWithEmailAndPassword(auth, email, password);
-      const user = result.user;
-
-      // Kiểm tra nếu user chưa tồn tại trong Firestore
-      const userDoc = await getDoc(doc(db, "users", user.uid));
-      if (!userDoc.exists()) {
-        await setDoc(doc(db, "users", user.uid), {
-          uid: user.uid,
-          email: user.email,
-          createdAt: serverTimestamp(),
-          method: "email",
-        });
-      }
-
-      toast.success("Đăng nhập thành công!");
-      onLoginSuccess?.(user.displayName || "Người dùng");
+      onLoginSuccess?.(userInfo.displayName || "Người dùng");
       navigate("/");
     } catch (error) {
       console.error("Lỗi đăng nhập:", error);
