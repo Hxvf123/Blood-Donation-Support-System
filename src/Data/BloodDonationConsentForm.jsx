@@ -48,7 +48,7 @@ const BloodDonationConsentForm = ({ data, onSubmit, onBack }) => {
   }, [answers]);
 
   return (
-    <div className="form-container">
+    <div className="form-consentForm">
       <h2>Đơn đăng kí hiến máu</h2>
 
       <div className="question">
@@ -68,15 +68,28 @@ const BloodDonationConsentForm = ({ data, onSubmit, onBack }) => {
 
       <div className="question">
         <span>4. Trong vòng <strong>6 tháng</strong> gần đây, anh/chị có:</span>
-        <div className="sub-question">a. Phẫu thuật, truyền máu, xăm mình, xỏ khuyên?</div>
-        {renderYesNoOptions("q4a")}
-        <div className="sub-question">b. Quan hệ tình dục không an toàn hoặc có nguy cơ cao nhiễm HIV?</div>
-        {renderYesNoOptions("q4b")}
-        <div className="sub-question">c. Sử dụng ma túy hoặc chất kích thích qua đường tiêm?</div>
-        {renderYesNoOptions("q4c")}
-        <div className="sub-question">d. Không có yếu tố trên?</div>
-        {renderYesNoOptions("q4d")}
+
+        <div className="sub-question-row">
+          <span className="sub-question">a. Phẫu thuật, truyền máu, xăm mình, xỏ khuyên?</span>
+          {renderYesNoOptions("q4a")}
+        </div>
+
+        <div className="sub-question-row">
+          <span className="sub-question">b. Quan hệ tình dục không an toàn hoặc có nguy cơ cao nhiễm HIV?</span>
+          {renderYesNoOptions("q4b")}
+        </div>
+
+        <div className="sub-question-row">
+          <span className="sub-question">c. Sử dụng ma túy hoặc chất kích thích qua đường tiêm?</span>
+          {renderYesNoOptions("q4c")}
+        </div>
+
+        <div className="sub-question-row">
+          <span className="sub-question">d. Không có yếu tố trên?</span>
+          {renderYesNoOptions("q4d")}
+        </div>
       </div>
+
 
       <div className="question">
         <span>5. Trong <strong>14 ngày</strong> gần đây, anh/chị có cảm cúm?</span>

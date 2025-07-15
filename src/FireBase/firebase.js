@@ -1,6 +1,7 @@
+// File: firebase.js
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
-import { getFirestore } from "firebase/firestore"; 
+import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAsmIe3LqhqfWZ2D6Vwl-h08kasS2dWju0",
@@ -12,14 +13,9 @@ const firebaseConfig = {
   measurementId: "G-MHDZJDG04M",
 };
 
-// Khởi tạo Firebase App
 const app = initializeApp(firebaseConfig);
-
-// Khởi tạo Auth và Google Provider
 const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
-
-//  Khởi tạo Firestore
 const db = getFirestore(app);
 
 export { auth, googleProvider, db };

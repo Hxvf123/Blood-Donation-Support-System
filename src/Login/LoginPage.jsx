@@ -2,8 +2,13 @@ import React, { useState } from "react";
 import "./LoginPage.css";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import { auth } from "../FireBase/firebase";
+import {
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider,
+} from "firebase/auth";
+import { auth, db } from "../FireBase/firebase";
+import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 
 function LoginPage({ onLoginSuccess }) {
   const navigate = useNavigate();
@@ -14,8 +19,21 @@ function LoginPage({ onLoginSuccess }) {
     e.preventDefault();
     try {
       const result = await signInWithEmailAndPassword(auth, email, password);
+      const user = result.user;
+
+      // Kiểm tra nếu user chưa tồn tại trong Firestore
+      const userDoc = await getDoc(doc(db, "users", user.uid));
+      if (!userDoc.exists()) {
+        await setDoc(doc(db, "users", user.uid), {
+          uid: user.uid,
+          email: user.email,
+          createdAt: serverTimestamp(),
+          method: "email",
+        });
+      }
+
       toast.success("Đăng nhập thành công!");
-      onLoginSuccess?.(result.user.displayName || "Người dùng");
+      onLoginSuccess?.(user.displayName || "Người dùng");
       navigate("/");
     } catch (error) {
       console.error("Lỗi đăng nhập:", error);
@@ -27,8 +45,23 @@ function LoginPage({ onLoginSuccess }) {
     const provider = new GoogleAuthProvider();
     try {
       const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+
+      // Kiểm tra nếu user chưa tồn tại trong Firestore
+      const userDoc = await getDoc(doc(db, "users", user.uid));
+      if (!userDoc.exists()) {
+        await setDoc(doc(db, "users", user.uid), {
+          uid: user.uid,
+          email: user.email,
+          displayName: user.displayName,
+          photoURL: user.photoURL,
+          createdAt: serverTimestamp(),
+          method: "google",
+        });
+      }
+
       toast.success("Đăng nhập Google thành công!");
-      onLoginSuccess?.(result.user.displayName || "Người dùng Google");
+      onLoginSuccess?.(user.displayName || "Người dùng Google");
       navigate("/");
     } catch (error) {
       console.error("Lỗi đăng nhập Google:", error);
@@ -71,6 +104,7 @@ function LoginPage({ onLoginSuccess }) {
               src="https://png.pngtree.com/png-clipart/20230916/original/pngtree-google-logo-vector-png-image_12256710.png"
               alt="Google"
               className="google-icon"
+              style={{ width: "40px", marginRight: "20px" }}
             />
             Đăng nhập bằng Google
           </button>

@@ -7,7 +7,8 @@ import {
   signInWithPopup,
   createUserWithEmailAndPassword,
 } from "firebase/auth";
-import { auth } from "../FireBase/firebase";
+import { auth, db } from "../FireBase/firebase";
+import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 
 function Registermem() {
   const navigate = useNavigate();
@@ -15,19 +16,44 @@ function Registermem() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  const isValidPassword = (password) => {
+    // Ít nhất 6 ký tự, ít nhất 1 ký tự đặc biệt
+    const regex = /^(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{6,}$/;
+    return regex.test(password);
+  };
+
   const handleRegister = async (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
       toast.error("Mật khẩu không khớp");
       return;
     }
+    if (!isValidPassword(password)) {
+      toast.error("Mật khẩu phải có ít nhất 6 ký tự và 1 ký tự đặc biệt");
+      return;
+    }
+
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // ✅ Lưu thông tin vào Firestore
+      await setDoc(doc(db, "users", user.uid), {
+        uid: user.uid,
+        email: user.email,
+        createdAt: serverTimestamp(),
+        method: "email",
+      });
+
       toast.success("Đăng ký thành công!");
       navigate("/login");
     } catch (error) {
       console.error("Đăng ký lỗi:", error);
-      toast.error("Đăng ký thất bại!");
+      if (error.code === "auth/email-already-in-use") {
+        toast.error("Email đã được sử dụng.");
+      } else {
+        toast.error("Đăng ký thất bại!");
+      }
     }
   };
 
@@ -35,12 +61,27 @@ function Registermem() {
     const provider = new GoogleAuthProvider();
     try {
       const result = await signInWithPopup(auth, provider);
-      console.log("Đăng ký bằng Google:", result.user);
+      const user = result.user;
+
+      // ✅ Lưu thông tin vào Firestore
+      await setDoc(doc(db, "users", user.uid), {
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName,
+        photoURL: user.photoURL,
+        createdAt: serverTimestamp(),
+        method: "google",
+      });
+
       toast.success("Đăng ký bằng Google thành công!");
       navigate("/login");
     } catch (error) {
       console.error("Đăng ký Google lỗi:", error);
-      toast.error("Đăng ký Google thất bại!");
+      if (error.code === "auth/account-exists-with-different-credential") {
+        toast.error("Email đã được đăng ký bằng phương thức khác. Vui lòng dùng cách đăng nhập phù hợp.");
+      } else {
+        toast.error("Đăng ký Google thất bại!");
+      }
     }
   };
 
@@ -85,6 +126,7 @@ function Registermem() {
               src="https://png.pngtree.com/png-clipart/20230916/original/pngtree-google-logo-vector-png-image_12256710.png"
               alt="Google"
               className="google-icon"
+              style={{ width: "40px", marginRight: "20px" }}
             />
             Đăng ký bằng Google
           </button>
