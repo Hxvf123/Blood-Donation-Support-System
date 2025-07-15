@@ -1,82 +1,102 @@
 .request-list-container {
-  max-width: 800px;
+  max-width: 900px;
   margin: 60px auto;
-  padding: 16px;
+  padding: 20px;
   font-family: 'Segoe UI', sans-serif;
 }
 
 .request-card {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  background: #fff;
-  padding: 16px 24px;
+  align-items: flex-start; // 🔄 căn theo trên cùng
+  background: #ffffff;
+  padding: 18px 28px;
   margin-bottom: 20px;
   border-radius: 12px;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
   transition: transform 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
 }
 
-.request-card:hover {
-  transform: translateY(-2px);
+.request-info p {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 6px 0;
+  color: #333;
 }
 
 .request-info {
   flex: 1;
-}
+  text-align: left;
 
-.request-info .line {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 4px 0;
-}
+  .line {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 6px 0;
+    font-size: 1rem;
+    color: #2c3e50;
 
-.request-info .line i {
-  color: #333;
+    i {
+      color: #888;
+    }
+  }
 }
 
 .request-actions {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 8px;
-}
+  gap: 10px;
+  text-align: left;
 
-.status-badge {
-  padding: 6px 12px;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 0.9rem;
-  color: #fff;
-  text-align: center;
-}
+  .status-label {
+    padding: 6px 12px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #fff;
+    min-width: 120px;
+    text-align: center;
+  }
 
-.status-dang-ky {
-  background-color: #f0ad4e;
-}
+  .status-label.yellow {
+    background-color: #f0ad4e;
+  }
 
-.status-xac-nhan {
-  background-color: #5cb85c;
-}
+  .status-label.green {
+    background-color: #5cb85c;
+  }
 
-.status-tien-hanh {
-  background-color: #0275d8;
-}
+  .status-label.blue {
+    background-color: #0275d8;
+  }
 
-.status-bi-huy {
-  background-color: #d9534f;
-}
+  .status-label.red {
+    background-color: #d9534f;
+  }
 
-.detail-button {
-  padding: 6px 14px;
-  background-color: #e0e0e0;
-  border: none;
-  border-radius: 6px;
-  font-weight: 500;
-  cursor: pointer;
-}
+  .status-label.gray {
+    background-color: #999;
+  }
 
-.detail-button:hover {
-  background-color: #ccc;
+
+  .detail-button {
+    padding: 8px 16px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: #2c80c8;
+    }
+  }
 }

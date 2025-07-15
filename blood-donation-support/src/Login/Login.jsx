@@ -8,24 +8,73 @@ import {
   GoogleAuthProvider,
 } from "firebase/auth";
 import { useLocation } from "react-router";
-import { auth } from "../Firebase/firebase";
+import { auth, db } from "../Firebase/firebase";
 import ROUTE_PATH from "../Constants/route";
+import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
 
 function LoginPage({ onLoginSuccess }) {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const location = useLocation();
+  const hasShownToast = useRef(false);
+
+  const testAccounts = [
+    {
+      email: "manager@example.com",
+      password: "123456",
+      name: "Quản lý hệ thống",
+      role: "manager",
+    },
+    {
+      email: "user@example.com",
+      password: "123456",
+      name: "Người dùng thường",
+      role: "user",
+    },
+  ];
+
 
   const handleEmailLogin = async (e) => {
     e.preventDefault();
+    const found = testAccounts.find(
+      (acc) => acc.email === email && acc.password === password
+    );
+
+    if (found) {
+      const userInfo = {
+        name: found.name,
+        email: found.email,
+        role: found.role,
+      };
+      localStorage.setItem("user", JSON.stringify(userInfo));
+
+      toast.success("Đăng nhập thành công!");
+
+      if (userInfo.role === "manager") {
+        navigate("/dashboard");
+      } else {
+        navigate("/");
+      }
+      return;
+    }
     try {
       const result = await signInWithEmailAndPassword(auth, email, password);
-      const userInfo = {
-        name: result.user.displayName || email.split("@")[0], // 👉 lấy tên nếu có
-      };
-      localStorage.setItem("user", JSON.stringify(userInfo)); // 👉 lưu vào localStorage
+      const user = result.user;
+
+      // Kiểm tra nếu user chưa tồn tại trong Firestore
+      const userDoc = await getDoc(doc(db, "users", user.uid));
+      if (!userDoc.exists()) {
+        await setDoc(doc(db, "users", user.uid), {
+          uid: user.uid,
+          email: user.email,
+          createdAt: serverTimestamp(),
+          method: "email",
+        });
+      }
+
       toast.success("Đăng nhập thành công!");
-      onLoginSuccess?.(userInfo.name); // 👉 gọi callback nếu có
+      onLoginSuccess?.(user.displayName || "Người dùng");
       navigate("/");
     } catch (error) {
       console.error("Lỗi đăng nhập:", error);
@@ -49,9 +98,6 @@ function LoginPage({ onLoginSuccess }) {
       toast.error("Đăng nhập Google thất bại!");
     }
   };
-
-  const location = useLocation();
-  const hasShownToast = useRef(false);
 
   useEffect(() => {
     if (location.state?.message && !hasShownToast.current) {
@@ -108,7 +154,7 @@ function LoginPage({ onLoginSuccess }) {
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 }
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router';
-import ROUTE_PATH from '../Constants/route';
 import './RequestList.scss';
+import { User, Phone, Mail, CalendarDays } from "lucide-react";
 
 const mockRequests = [
   {
@@ -12,21 +12,44 @@ const mockRequests = [
     date: '23/06/2025',
     status: 'Đã đăng kí',
   },
-  // Có thể thêm nhiều dữ liệu khác...
+  {
+    id: 2,
+    name: 'Trần Thị B',
+    phone: '0987 654 321',
+    email: 'example@gmail.com',
+    date: '24/06/2025',
+    status: 'Đã xác nhận',
+  },
+  {
+    id: 3,
+    name: 'Lê Văn C',
+    phone: '0365 987 123',
+    email: 'le@example.com',
+    date: '25/06/2025',
+    status: 'Đang tiến hành',
+  },
+  {
+    id: 4,
+    name: 'Phạm Thị D',
+    phone: '0912 345 678',
+    email: 'pham@example.com',
+    date: '26/06/2025',
+    status: 'Đã bị hủy',
+  },
 ];
 
 const getStatusClass = (status) => {
   switch (status) {
     case 'Đã đăng kí':
-      return 'status yellow';
+      return 'status-label yellow';
     case 'Đã xác nhận':
-      return 'status green';
+      return 'status-label green';
     case 'Đang tiến hành':
-      return 'status blue';
+      return 'status-label blue';
     case 'Đã bị hủy':
-      return 'status red';
+      return 'status-label red';
     default:
-      return 'status gray';
+      return 'status-label gray';
   }
 };
 
@@ -37,15 +60,22 @@ const RequestList = () => {
     <div className="request-list">
       {mockRequests.map((req) => (
         <div key={req.id} className="request-card">
-          <div className="info">
-            <div><i className="fas fa-user"></i> {req.name}</div>
-            <div><i className="fas fa-phone"></i> {req.phone}</div>
-            <div><i className="fas fa-envelope"></i> {req.email}</div>
-            <div><i className="fas fa-calendar-alt"></i> {req.date}</div>
+          <div className="request-info">
+            <p><User size={16} style={{ marginRight: 6 }} /> <strong>{req.name}</strong></p>
+            <p><Phone size={16} style={{ marginRight: 6 }} /> {req.phone}</p>
+            <p><Mail size={16} style={{ marginRight: 6 }} /> {req.email}</p>
+            <p><CalendarDays size={16} style={{ marginRight: 6 }} /> {req.date}</p>
           </div>
-          <div className="actions">
+          <div className="request-actions">
             <span className={getStatusClass(req.status)}>{req.status}</span>
-            <button onClick={() => navigate(`${ROUTE_PATH.REQUEST_DETAIL.replace(':id', req.id)}`)}>Chi tiết</button>
+            <button
+              className="detail-button"
+              onClick={() =>
+                navigate(`${req.id}`)
+              }
+            >
+              Chi tiết
+            </button>
           </div>
         </div>
       ))}
@@ -54,3 +84,4 @@ const RequestList = () => {
 };
 
 export default RequestList;
+

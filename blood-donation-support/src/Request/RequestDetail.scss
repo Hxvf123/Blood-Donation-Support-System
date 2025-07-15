@@ -1,59 +1,71 @@
 .request-detail-container {
-  max-width: 700px;
-  margin: 60px auto;
-  padding: 32px;
+  display: flex;
+  justify-content: center;
+  padding: 40px 20px;
+  background: #f6f6f6;
+  min-height: 100vh;
+}
+
+.request-card-detail {
   background: #fff;
+  padding: 32px;
   border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-  font-family: 'Segoe UI', sans-serif;
-}
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  width: 100%;
 
-.section-title {
-  text-align: center;
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: #337ab7;
-  margin-bottom: 28px;
-}
+  h2 {
+    margin-bottom: 24px;
+    font-size: 1.8rem;
+    text-align: center;
+    color: #333;
+  }
 
-.section-subtitle {
-  font-weight: 600;
-  font-size: 1.2rem;
-  margin-top: 24px;
-  margin-bottom: 8px;
-  border-bottom: 1px solid #ccc;
-  padding-bottom: 4px;
-}
+  p {
+    font-size: 1rem;
+    margin-bottom: 16px;
 
-.info-row {
-  margin: 6px 0;
-}
+    strong {
+      margin-right: 8px;
+    }
 
-.info-row strong {
-  display: inline-block;
-  min-width: 120px;
-}
+    select {
+      margin-left: 12px;
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+  }
 
-.status-select {
-  margin-top: 6px;
-  padding: 6px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  font-weight: 500;
-  background-color: #f9f9f9;
-}
+  .button-group {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 24px;
 
-.save-button {
-  margin-top: 20px;
-  background-color: #337ab7;
-  color: #fff;
-  border: none;
-  padding: 10px 20px;
-  font-weight: 600;
-  border-radius: 8px;
-  cursor: pointer;
-}
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+    }
 
-.save-button:hover {
-  background-color: #286090;
+    .back-btn {
+      background-color: #ccc;
+      color: #000;
+
+      &:hover {
+        background-color: #bbb;
+      }
+    }
+
+    .save-btn {
+      background-color: #007bff;
+      color: #fff;
+
+      &:hover {
+        background-color: #0056b3;
+      }
+    }
+  }
 }
