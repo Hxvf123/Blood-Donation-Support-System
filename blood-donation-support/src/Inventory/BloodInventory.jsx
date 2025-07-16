@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell
@@ -7,38 +8,34 @@ import "./BloodInventory.scss";
 
 const COLORS = ["#FF6384", "#36A2EB", "#FFCE56"];
 
-const bloodGroupData = [
-  { group: "A", amount: 120 },
-  { group: "B", amount: 95 },
-  { group: "AB", amount: 60 },
-  { group: "O", amount: 150 }
-];
-
-// Thành phần máu theo từng nhóm
-const bloodComponentsByGroup = {
-  A: [
-    { name: "Hồng cầu", value: 60 },
-    { name: "Tiểu cầu", value: 20 },
-    { name: "Huyết tương", value: 40 },
-  ],
-  B: [
-    { name: "Hồng cầu", value: 50 },
-    { name: "Tiểu cầu", value: 25 },
-    { name: "Huyết tương", value: 35 },
-  ],
-  AB: [
-    { name: "Hồng cầu", value: 30 },
-    { name: "Tiểu cầu", value: 15 },
-    { name: "Huyết tương", value: 25 },
-  ],
-  O: [
-    { name: "Hồng cầu", value: 70 },
-    { name: "Tiểu cầu", value: 30 },
-    { name: "Huyết tương", value: 50 },
-  ],
-};
-
 const BloodInventory = () => {
+  const [summaryData, setSummaryData] = useState(null);
+
+  useEffect(() => {
+    axios.get("http://localhost:5294/api/BloodInventory/summary-blood-inventory", {
+      params: { userId: "USR001" }
+    })
+    .then(res => {
+      const data = res.data.data.InventorySummary; 
+      setSummaryData(data);
+    })
+    .catch(err => console.error("Lỗi khi gọi API:", err));
+  }, []);
+
+  if (!summaryData) return <p>Đang tải dữ liệu kho máu...</p>;
+
+  const bloodGroupData = Object.entries(summaryData.totalVolumeByBloodType).map(([group, amount]) => ({
+    group,
+    amount
+  }));
+
+  const bloodComponentsByGroup = Object.entries(summaryData.totalVolumeByComponentType).reduce((acc, [component, volume]) => {
+    const group = component === "Whole Blood" ? "O" : "A"; 
+    if (!acc[group]) acc[group] = [];
+    acc[group].push({ name: component, value: volume });
+    return acc;
+  }, {});
+
   return (
     <div className="blood-inventory">
       <h2>Quản lý kho máu</h2>
@@ -58,7 +55,7 @@ const BloodInventory = () => {
       <div className="chart-section">
         <h4>Thành phần máu theo từng nhóm máu</h4>
         <div className="blood-group-charts">
-          {Object.entries(bloodComponentsByGroup).map(([group, data], index) => (
+          {Object.entries(bloodComponentsByGroup).map(([group, data]) => (
             <div className="blood-group-chart" key={group}>
               <h5>Nhóm máu {group}</h5>
               <ResponsiveContainer width="100%" height={250}>
