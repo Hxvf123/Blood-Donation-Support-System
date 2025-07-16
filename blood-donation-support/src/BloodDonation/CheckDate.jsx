@@ -4,6 +4,17 @@ import { format } from "date-fns";
 import "../userInfoForm/userInfoForm.scss";
 import './CheckDate.scss';
 
+const bloodTypes = [
+  { id: "BTI001", name: "A+" },
+  { id: "BTI002", name: "A−" },
+  { id: "BTI003", name: "B+" },
+  { id: "BTI004", name: "B−" },
+  { id: "BTI005", name: "O+" },
+  { id: "BTI006", name: "O−" },
+  { id: "BTI007", name: "AB+" },
+  { id: "BTI008", name: "AB−" }
+];
+
 const CheckDate = ({ data, onSubmit, onBack }) => {
   const [selectedDate, setSelectedDate] = useState(null);
 
@@ -39,7 +50,7 @@ const CheckDate = ({ data, onSubmit, onBack }) => {
       <div className="info-group"><strong>Số điện thoại:</strong> {data.phone}</div>
       <div className="info-group"><strong>Email:</strong> {data.email}</div>
       <div className="info-group"><strong>Địa chỉ:</strong> {data.address}</div>
-      <div className="info-group"><strong>Nhóm máu:</strong> {data.bloodGroup}</div>
+      <div className="info-group"><strong>Nhóm máu:</strong> {bloodTypes.find(bt => bt.id === data.bloodGroup)?.name}</div>
 
       <div className="info-group">
         <label><strong>Chọn ngày hiến máu:</strong></label>

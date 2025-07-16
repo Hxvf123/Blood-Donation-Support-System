@@ -9,6 +9,18 @@ import { differenceInYears } from 'date-fns';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
+const bloodTypes = [
+  { id: "BTI001", name: "A+" },
+  { id: "BTI002", name: "A−" },
+  { id: "BTI003", name: "B+" },
+  { id: "BTI004", name: "B−" },
+  { id: "BTI005", name: "O+" },
+  { id: "BTI006", name: "O−" },
+  { id: "BTI007", name: "AB+" },
+  { id: "BTI008", name: "AB−" }
+];
+
+
 const schema = yup.object({
   fullName: yup.string().required('Vui lòng nhập Họ và Tên'),
   birthDate: yup
@@ -25,7 +37,7 @@ const schema = yup.object({
     .required('Bắt buộc nhập số điện thoại'),
   email: yup.string().email('Email không hợp lệ').required('Vui lòng nhập email'),
   address: yup.string().required('Vui lòng nhập địa chỉ'),
-  bloodGroup: yup.string().required('Vui lòng nhập nhóm máu'),
+  bloodGroup: yup.string(),
 }).required();
 
 const UserInfoForm = ({ onSubmit }) => {
@@ -38,7 +50,7 @@ const UserInfoForm = ({ onSubmit }) => {
     defaultValues: {
       fullName: '',
       birthDate: null,
-      gender: '',
+      gender: null,
       phone: '',
       email: '',
       address: '',
@@ -50,19 +62,20 @@ const UserInfoForm = ({ onSubmit }) => {
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
-        // 👉 Lấy accessToken từ localStorage
-        const accessToken = JSON.parse(localStorage.getItem("user"))?.accessToken;
+        const user = JSON.parse(localStorage.getItem('user'));
+      const token = user?.accessToken;
 
-        if (!accessToken) {
-          toast.error('Không tìm thấy accessToken. Vui lòng đăng nhập lại.');
-          return;
-        }
+      if (!token) {
+        toast.warning("Không tìm thấy accessToken. Vui lòng đăng nhập lại.");
+        return;
+      }
 
-        const response = await axios.get('http://localhost:5294/api/User/get-by-id', {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
+      const response = await axios.get("http://localhost:5294/api/User/get-by-id", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
 
         const data = response.data.data;
 
@@ -140,10 +153,10 @@ const UserInfoForm = ({ onSubmit }) => {
             control={control}
             render={({ field }) => (
               <Form.Select {...field} isInvalid={!!errors.gender}>
-                <option value="">--Chọn--</option>
-                <option value="Nam">Nam</option>
-                <option value="Nữ">Nữ</option>
-              </Form.Select>
+                    <option value="">--Chọn--</option>
+                    <option value="Male">Nam</option>
+                    <option value="Female">Nữ</option>
+                </Form.Select>
             )}
           />
           <Form.Control.Feedback type="invalid">{errors.gender?.message}</Form.Control.Feedback>
@@ -196,16 +209,11 @@ const UserInfoForm = ({ onSubmit }) => {
             control={control}
             render={({ field }) => (
               <Form.Select {...field} isInvalid={!!errors.bloodGroup}>
-                <option value="">-- Chọn nhóm máu --</option>
-                <option value="A+">A+</option>
-                <option value="A-">A−</option>
-                <option value="B+">B+</option>
-                <option value="B-">B−</option>
-                <option value="O+">O+</option>
-                <option value="O-">O−</option>
-                <option value="AB+">AB+</option>
-                <option value="AB-">AB−</option>
-              </Form.Select>
+        <option value="">-- Chọn nhóm máu --</option>
+        {bloodTypes.map(bt => (
+          <option key={bt.id} value={bt.id}>{bt.name}</option>
+        ))}
+      </Form.Select>
             )}
           />
           <Form.Control.Feedback type="invalid">{errors.bloodGroup?.message}</Form.Control.Feedback>

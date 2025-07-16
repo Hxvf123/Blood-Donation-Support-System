@@ -4,25 +4,30 @@ import { toast } from 'react-toastify';
 
 const BloodDonationConsentForm = ({ data, onSubmit, onBack }) => {
   const [answers, setAnswers] = useState({
-    q1: "", q2: "", q3: "", q4: "",q5: "", q6: "", q7: "", 
+    q1: "", q2: "", q3: "", q4: "", q5: "", q6: "", q7: "",
     q8: "", q9: "", q10: "", q11: "", q12: "", q13: "", q14: "",
   });
 
   const [isIneligible, setIsIneligible] = useState(false);
+  const [showReasonField, setShowReasonField] = useState(false);
 
   const handleChange = (question, value) => {
     setAnswers(prev => ({ ...prev, [question]: value }));
   };
 
   const handleSubmit = async () => {
-    const unanswered = Object.entries(answers).filter(([_, v]) => v === "");
+    const unanswered = Object.entries(answers).filter(([key, v]) => {
+      if (key === "q14" && !showReasonField) return false; // Bỏ qua q14 nếu không cần
+      return v === "";
+    });
+
     if (unanswered.length > 0) {
       toast.error("Vui lòng trả lời tất cả các câu hỏi trước khi đăng ký.");
       return;
     }
 
-    if (isIneligible) {
-      toast.error("Bạn không đủ điều kiện để hiến máu.");
+    if (isIneligible && !answers.q14.trim()) {
+      toast.error("Vui lòng ghi rõ lý do nếu không đủ điều kiện hiến máu.");
       return;
     }
 
@@ -42,9 +47,10 @@ const BloodDonationConsentForm = ({ data, onSubmit, onBack }) => {
   );
 
   useEffect(() => {
-    const riskQuestions = ["q2", "q3", "q4a", "q4b", "q4c", "q5", "q6"];
+    const riskQuestions = ["q2", "q3", "q4", "q5", "q6", "q7", "q8", "q9", "q10", "q11", "q12", "q13"];
     const hasRisk = riskQuestions.some(q => answers[q] === "Có");
     setIsIneligible(hasRisk);
+    setShowReasonField(hasRisk);
   }, [answers]);
 
   return (
@@ -77,7 +83,7 @@ const BloodDonationConsentForm = ({ data, onSubmit, onBack }) => {
       </div>
 
       <div className="question">
-        <span>6. Anh/chị có từng tiếp xúc trực tiếp với máu người khác không?</span>
+<span>6. Anh/chị có từng tiếp xúc trực tiếp với máu người khác không?</span>
         {renderYesNoOptions("q6")}
       </div>
 
@@ -116,10 +122,17 @@ const BloodDonationConsentForm = ({ data, onSubmit, onBack }) => {
         {renderYesNoOptions("q13")}
       </div>
 
-      <div className="question">
-        <span>14. Vui lòng ghi rõ lí do:</span>
-        <textarea name="q14" onChange={(e) => handleChange("q14", e.target.value)} />
-      </div>
+      {showReasonField && (
+        <div className="question">
+          <span>14. Vui lòng ghi rõ lí do:</span>
+          <textarea
+            name="q14"
+            value={answers.q14}
+            onChange={(e) => handleChange("q14", e.target.value)}
+            placeholder="Nhập lý do tại đây..."
+          />
+        </div>
+      )}
 
       <div className="buttons">
         <button className="register-button back-button" onClick={onBack}>Quay lại</button>
