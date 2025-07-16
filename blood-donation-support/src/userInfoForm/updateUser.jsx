@@ -1,16 +1,31 @@
 import React, { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import { Form } from "react-bootstrap";
+import { toast } from "react-toastify";
+import axios from "axios";
 import "./userInfoForm.scss";
 
-const UpdateInfo = ({ data, onBack, onUpdate }) => {
+const bloodTypes = [
+  { id: "BTI001", name: "A+" },
+  { id: "BTI002", name: "A−" },
+  { id: "BTI003", name: "B+" },
+  { id: "BTI004", name: "B−" },
+  { id: "BTI005", name: "O+" },
+  { id: "BTI006", name: "O−" },
+  { id: "BTI007", name: "AB+" },
+  { id: "BTI008", name: "AB−" },
+];
+
+const UpdateInfo = ({ data, onBack }) => {
   const [formData, setFormData] = useState({});
 
   useEffect(() => {
     if (data) {
+      const bloodTypeName = bloodTypes.find(bt => bt.id === data.bloodTypeId)?.name || '';
       setFormData({
         ...data,
-        birthDate: data.birthDate ? new Date(data.birthDate) : null,
+        birthDate: data.dayOfBirth ? new Date(data.dayOfBirth) : null,
+        bloodTypeId: bloodTypeName,
       });
     }
   }, [data]);
@@ -30,21 +45,46 @@ const UpdateInfo = ({ data, onBack, onUpdate }) => {
     }));
   };
 
-  const handleContinue = () => {
+  const handleSubmit = async () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const token = user?.accessToken;
+
+    if (!token) {
+      toast.error("Bạn chưa đăng nhập. Vui lòng đăng nhập lại.");
+      return;
+    }
+
+    const bloodId = bloodTypes.find(bt => bt.name === formData.bloodTypeId)?.id;
+
     const submitData = {
-      ...formData,
-      birthDate: formData.birthDate ? formData.birthDate.toISOString() : null,
+      fullName: formData.fullName,
+      phoneNumber: formData.phoneNumber,
+      address: formData.address,
+      dayOfBirth: formData.birthDate ? formData.birthDate.toISOString() : null,
+      gender: formData.gender,
+      role: "Member",
+      bloodId: bloodId,
     };
-    onUpdate(submitData);
+
+    try {
+      const res = await axios.put("http://localhost:5294/api/User/update", submitData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      toast.success("Cập nhật thành công!");
+    } catch (err) {
+      toast.error("Lỗi khi cập nhật thông tin.");
+      console.error(err);
+    }
   };
 
   if (!data) return null;
 
   return (
     <div className="form-container">
-      <h2>Chỉnh sửa thông tin hiến máu</h2>
+      <h2>Cập nhật thông tin</h2>
       <Form>
-
         <Form.Group className="mb-3 input-group">
           <Form.Label>Họ và tên</Form.Label>
           <Form.Control
@@ -79,8 +119,8 @@ const UpdateInfo = ({ data, onBack, onUpdate }) => {
             onChange={handleChange}
           >
             <option value="">-- Chọn giới tính --</option>
-            <option value="Nam">Nam</option>
-            <option value="Nữ">Nữ</option>
+            <option value="Male">Nam</option>
+            <option value="Female">Nữ</option>
           </Form.Select>
         </Form.Group>
 
@@ -88,8 +128,8 @@ const UpdateInfo = ({ data, onBack, onUpdate }) => {
           <Form.Label>Số điện thoại</Form.Label>
           <Form.Control
             type="tel"
-            name="phone"
-            value={formData.phone || ""}
+            name="phoneNumber"
+            value={formData.phoneNumber || ""}
             onChange={handleChange}
             placeholder="Nhập số điện thoại"
           />
@@ -101,8 +141,8 @@ const UpdateInfo = ({ data, onBack, onUpdate }) => {
             type="email"
             name="email"
             value={formData.email || ""}
-            onChange={handleChange}
-            placeholder="Nhập email"
+            disabled
+            placeholder="Email không thể chỉnh sửa"
           />
         </Form.Group>
 
@@ -120,28 +160,31 @@ const UpdateInfo = ({ data, onBack, onUpdate }) => {
         <Form.Group className="mb-3 input-group">
           <Form.Label>Nhóm máu</Form.Label>
           <Form.Select
-            name="bloodGroup"
-            value={formData.bloodGroup || ""}
+            name="bloodTypeId"
+            value={formData.bloodTypeId || ""}
             onChange={handleChange}
           >
             <option value="">-- Chọn nhóm máu --</option>
-            <option value="A+">A+</option>
-            <option value="A-">A-</option>
-            <option value="B+">B+</option>
-            <option value="B-">B-</option>
-            <option value="AB+">AB+</option>
-            <option value="AB-">AB-</option>
-            <option value="O+">O+</option>
-            <option value="O-">O-</option>
+            {bloodTypes.map(bt => (
+              <option key={bt.id} value={bt.name}>{bt.name}</option>
+            ))}
           </Form.Select>
         </Form.Group>
 
         <div className="buttons">
-          <button className="register-button back-button" onClick={onBack} type="button">
+          <button
+            className="register-button back-button"
+            onClick={onBack}
+            type="button"
+          >
             Quay lại
           </button>
-          <button className="register-button continue-button" onClick={handleContinue} type="button">
-            Tiếp tục
+          <button
+            className="register-button continue-button"
+            onClick={handleSubmit}
+            type="button"
+          >
+            Lưu thay đổi
           </button>
         </div>
       </Form>

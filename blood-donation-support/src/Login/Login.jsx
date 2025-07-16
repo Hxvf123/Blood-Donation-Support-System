@@ -19,30 +19,43 @@ function LoginPage({ onLoginSuccess }) {
 
   // ✅ Login bằng Email
   const handleEmailLogin = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post("http://localhost:5294/api/User/login-email", {
-        email,
-        password
-      });
+  e.preventDefault();
+  try {
+    const response = await axios.post("http://localhost:5294/api/User/login-email", {
+      email,
+      password,
+    });
 
-      const { token, name } = response.data;
-
-      const userInfo = {
-        name: name || "Người dùng",
-        accessToken: token,
-      };
-
-      localStorage.setItem("user", JSON.stringify(userInfo));
-
-      toast.success("Đăng nhập thành công!");
-      onLoginSuccess?.(userInfo.name);
-      navigate("/");
-    } catch (error) {
-      console.error("Lỗi đăng nhập:", error);
-      toast.error("Đăng nhập thất bại!");
+    const { accessToken } = response.data;
+    
+    if (!accessToken) {
+      toast.error("Đăng nhập thất bại: không nhận được accessToken");
+      return;
     }
-  };
+
+    const profileResponse = await axios.get("http://localhost:5294/api/User/get-by-id", {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    const fullName = profileResponse.data?.data?.fullName || "Người dùng";
+
+    const userInfo = {
+      name: fullName,
+      accessToken,
+    };
+
+    localStorage.setItem("user", JSON.stringify(userInfo));
+
+    toast.success("Đăng nhập thành công!");
+    onLoginSuccess?.(userInfo.name);
+    navigate("/");
+  } catch (error) {
+    console.error("Lỗi đăng nhập:", error);
+    toast.error("Đăng nhập thất bại!");
+  }
+};
 
   // ✅ Login bằng Google
   const handleGoogleLogin = async () => {
