@@ -1,16 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./Login.scss";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import {
   signInWithPopup,
   GoogleAuthProvider,
 } from "firebase/auth";
-import { useLocation } from "react-router";
-import { auth, db } from "../Firebase/firebase";
+import { auth } from "../Firebase/firebase";
 import ROUTE_PATH from "../Constants/route";
-import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
-// import userApi from "../api/userApi";
 import axios from "axios";
 
 function LoginPage({ onLoginSuccess }) {
@@ -20,19 +17,26 @@ function LoginPage({ onLoginSuccess }) {
   const location = useLocation();
   const hasShownToast = useRef(false);
 
+  // ✅ Login bằng Email
   const handleEmailLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:5294/api/User/login-email", {email, password});
+      const response = await axios.post("http://localhost:5294/api/User/login-email", {
+        email,
+        password
+      });
+
+      const { token, name } = response.data;
+
       const userInfo = {
-        name: response.data.name,
-        token: response.data.token,
+        name: name || "Người dùng",
+        accessToken: token,
       };
-      console.log(response.data);
+
       localStorage.setItem("user", JSON.stringify(userInfo));
 
       toast.success("Đăng nhập thành công!");
-      onLoginSuccess?.(userInfo.displayName || "Người dùng");
+      onLoginSuccess?.(userInfo.name);
       navigate("/");
     } catch (error) {
       console.error("Lỗi đăng nhập:", error);
@@ -40,43 +44,42 @@ function LoginPage({ onLoginSuccess }) {
     }
   };
 
-const handleGoogleLogin = async () => {
-  const provider = new GoogleAuthProvider();
-  try {
-    const result = await signInWithPopup(auth, provider);
+  // ✅ Login bằng Google
+  const handleGoogleLogin = async () => {
+    const provider = new GoogleAuthProvider();
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const idToken = await result.user.getIdToken();
 
-    // 👉 Lấy Google ID Token từ Firebase
-    const idToken = await result.user.getIdToken();
+      const response = await axios.post(
+        "http://localhost:5294/api/User/login-google",
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${idToken}`,
+          },
+        }
+      );
 
-    // 👉 Gửi lên server trong header Authorization
-    const response = await axios.post(
-      "http://localhost:5294/api/User/login-google",
-      {},
-      {
-        headers: {
-          Authorization: `Bearer ${idToken}`,
-        },
-      }
-    );
+      const { accessToken } = response.data;
 
-    const { accessToken } = response.data;
+      const userInfo = {
+        name: result.user.displayName || "Người dùng Google",
+        accessToken,
+      };
 
-    const userInfo = {
-      name: result.user.displayName || "Người dùng Google",
-      accessToken: accessToken,
-    };
+      localStorage.setItem("user", JSON.stringify(userInfo));
 
-    localStorage.setItem("user", JSON.stringify(userInfo));
+      toast.success("Đăng nhập bằng Google thành công!");
+      onLoginSuccess?.(userInfo.name);
+      navigate("/");
+    } catch (error) {
+      console.error("Lỗi đăng nhập Google:", error);
+      toast.error("Đăng nhập Google thất bại!");
+    }
+  };
 
-    toast.success("Đăng nhập bằng Google thành công!");
-    onLoginSuccess?.(result.user.displayName || "Người dùng Google");
-    navigate("/");
-  } catch (error) {
-    console.error("Lỗi đăng nhập Google:", error);
-    toast.error("Đăng nhập Google thất bại!");
-  }
-};
-
+  // ✅ Hiện cảnh báo nếu bị redirect từ route yêu cầu login
   useEffect(() => {
     if (location.state?.message && !hasShownToast.current) {
       toast.warning(location.state.message);
@@ -132,7 +135,7 @@ const handleGoogleLogin = async () => {
           </div>
         </div>
       </div>
-    </div >
+    </div>
   );
 }
 
