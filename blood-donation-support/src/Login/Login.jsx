@@ -3,7 +3,6 @@ import "./Login.scss";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
 import {
-  signInWithEmailAndPassword,
   signInWithPopup,
   GoogleAuthProvider,
 } from "firebase/auth";
@@ -20,22 +19,6 @@ function LoginPage({ onLoginSuccess }) {
   const [password, setPassword] = useState("");
   const location = useLocation();
   const hasShownToast = useRef(false);
-
-  const testAccounts = [
-    {
-      email: "manager@example.com",
-      password: "123456",
-      name: "Quản lý hệ thống",
-      role: "manager",
-    },
-    {
-      email: "user@example.com",
-      password: "123456",
-      name: "Người dùng thường",
-      role: "user",
-    },
-  ];
-
 
   const handleEmailLogin = async (e) => {
     e.preventDefault();
@@ -57,22 +40,42 @@ function LoginPage({ onLoginSuccess }) {
     }
   };
 
-  const handleGoogleLogin = async () => {
-    const provider = new GoogleAuthProvider();
-    try {
-      const result = await signInWithPopup(auth, provider);
-      const userInfo = {
-        name: result.user.displayName || "Người dùng Google", // 👉 lấy tên từ Google
-      };
-      localStorage.setItem("user", JSON.stringify(userInfo));
-      toast.success("Đăng nhập thành công!");
-      onLoginSuccess?.(userInfo.name);
-      navigate("/");
-    } catch (error) {
-      console.error("Lỗi đăng nhập Google:", error);
-      toast.error("Đăng nhập Google thất bại!");
-    }
-  };
+const handleGoogleLogin = async () => {
+  const provider = new GoogleAuthProvider();
+  try {
+    const result = await signInWithPopup(auth, provider);
+
+    // 👉 Lấy Google ID Token từ Firebase
+    const idToken = await result.user.getIdToken();
+
+    // 👉 Gửi lên server trong header Authorization
+    const response = await axios.post(
+      "http://localhost:5294/api/User/login-google",
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${idToken}`,
+        },
+      }
+    );
+
+    const { accessToken } = response.data;
+
+    const userInfo = {
+      name: result.user.displayName || "Người dùng Google",
+      accessToken: accessToken,
+    };
+
+    localStorage.setItem("user", JSON.stringify(userInfo));
+
+    toast.success("Đăng nhập bằng Google thành công!");
+    onLoginSuccess?.(result.user.displayName || "Người dùng Google");
+    navigate("/");
+  } catch (error) {
+    console.error("Lỗi đăng nhập Google:", error);
+    toast.error("Đăng nhập Google thất bại!");
+  }
+};
 
   useEffect(() => {
     if (location.state?.message && !hasShownToast.current) {

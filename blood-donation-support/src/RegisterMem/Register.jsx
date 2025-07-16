@@ -7,8 +7,8 @@ import {
   signInWithPopup,
   createUserWithEmailAndPassword,
 } from "firebase/auth";
-import { auth, db } from "../Firebase/firebase";
-import { doc, setDoc, serverTimestamp } from "firebase/firestore";
+import { auth } from "../Firebase/firebase";
+import axios from "axios";
 
 function Registermem() {
   const navigate = useNavigate();
@@ -17,71 +17,57 @@ function Registermem() {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const isValidPassword = (password) => {
-    // Ít nhất 6 ký tự, ít nhất 1 ký tự đặc biệt
     const regex = /^(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{6,}$/;
     return regex.test(password);
   };
 
   const handleRegister = async (e) => {
     e.preventDefault();
+
     if (password !== confirmPassword) {
       toast.error("Mật khẩu không khớp");
       return;
     }
+
     if (!isValidPassword(password)) {
       toast.error("Mật khẩu phải có ít nhất 6 ký tự và 1 ký tự đặc biệt");
       return;
     }
 
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
+   
+    const response = await axios.post("http://localhost:5294/api/User/register-email", {
+      email,
+      password,
+      verifyPassword: confirmPassword,
+    });
 
-      // ✅ Lưu thông tin vào Firestore
-      await setDoc(doc(db, "users", user.uid), {
-        uid: user.uid,
-        email: user.email,
-        createdAt: serverTimestamp(),
-        method: "email",
-      });
-
-      toast.success("Đăng ký thành công!");
-      navigate("/login");
-    } catch (error) {
-      console.error("Đăng ký lỗi:", error);
-      if (error.code === "auth/email-already-in-use") {
-        toast.error("Email đã được sử dụng.");
-      } else {
-        toast.error("Đăng ký thất bại!");
-      }
-    }
-  };
+    toast.success("Đăng ký thành công! Vui lòng kiểm tra email để xác thực.");
+    navigate("/login");
+  } catch (error) {
+    console.error("Đăng ký lỗi:", error);
+    toast.error(error?.response?.data?.error || "Đăng ký thất bại!");
+  }
+};
 
   const handleGoogleRegister = async () => {
     const provider = new GoogleAuthProvider();
     try {
       const result = await signInWithPopup(auth, provider);
-      const user = result.user;
+      const token = await result.user.getIdToken();
 
-      // ✅ Lưu thông tin vào Firestore
-      await setDoc(doc(db, "users", user.uid), {
-        uid: user.uid,
-        email: user.email,
-        displayName: user.displayName,
-        photoURL: user.photoURL,
-        createdAt: serverTimestamp(),
-        method: "google",
+      // Gọi BE đăng ký google
+      await axios.post("http://localhost:5294/api/User/register-google", {}, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       toast.success("Đăng ký bằng Google thành công!");
       navigate("/login");
     } catch (error) {
       console.error("Đăng ký Google lỗi:", error);
-      if (error.code === "auth/account-exists-with-different-credential") {
-        toast.error("Email đã được đăng ký bằng phương thức khác. Vui lòng dùng cách đăng nhập phù hợp.");
-      } else {
-        toast.error("Đăng ký Google thất bại!");
-      }
+      toast.error("Đăng ký Google thất bại!");
     }
   };
 

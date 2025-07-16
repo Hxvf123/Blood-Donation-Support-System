@@ -3,13 +3,13 @@ import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getFirestore } from "firebase/firestore"; 
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAsmIe3LqhqfWZ2D6Vwl-h08kasS2dWju0",
-  authDomain: "swp391-group1.firebaseapp.com",
-  projectId: "swp391-group1",
-  storageBucket: "swp391-group1.appspot.com",
-  messagingSenderId: "952206662709",
-  appId: "1:952206662709:web:5cfff737e0264cf876657c",
-  measurementId: "G-MHDZJDG04M",
+  apiKey: "AIzaSyDzQRePwPOBlo3QzhXgF3-pHbXpHUSlJvA",
+  authDomain: "blooddonationsystem-e6cf9.firebaseapp.com",
+  projectId: "blooddonationsystem-e6cf9",
+  storageBucket: "blooddonationsystem-e6cf9.firebasestorage.app",
+  messagingSenderId: "417075665786",
+  appId: "1:417075665786:web:21de2419bf2f0367df54c3",
+  measurementId: "G-VE6LLRLMSH"
 };
 
 // Khởi tạo Firebase App
