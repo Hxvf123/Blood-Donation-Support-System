@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import './ConsentForm.scss';
 import { toast } from 'react-toastify';
+import axios from "axios";
 
 const BloodDonationConsentForm = ({ data, onSubmit, onBack }) => {
   const [answers, setAnswers] = useState({
@@ -15,9 +16,11 @@ const BloodDonationConsentForm = ({ data, onSubmit, onBack }) => {
     setAnswers(prev => ({ ...prev, [question]: value }));
   };
 
+  const answerToBool = (value) => value === "Có";
+
   const handleSubmit = async () => {
     const unanswered = Object.entries(answers).filter(([key, v]) => {
-      if (key === "q14" && !showReasonField) return false; // Bỏ qua q14 nếu không cần
+      if (key === "q14" && !showReasonField) return false;
       return v === "";
     });
 
@@ -31,23 +34,61 @@ const BloodDonationConsentForm = ({ data, onSubmit, onBack }) => {
       return;
     }
 
+    const payload = {
+      registerId: data?.registerId,
+      userId: data?.userId,
+      everDonated: answerToBool(answers.q1),
+      chronicDisease: answerToBool(answers.q2),
+      pastSevereIllness: answerToBool(answers.q3),
+      surgeryLast12Months: answerToBool(answers.q4),
+      riskBehaviorLast6Months: answerToBool(answers.q5),
+      contactWithBlood: answerToBool(answers.q6),
+      travelToEpidemicArea: answerToBool(answers.q7),
+      fluSymptoms14Days: answerToBool(answers.q8),
+      takingMedication7Days: answerToBool(answers.q9),
+      pregnantOrBreastfeeding: answerToBool(answers.q10),
+      abortionLast12Months: answerToBool(answers.q11),
+      menstruation: answerToBool(answers.q12),
+      hivTestConsent: answerToBool(answers.q13),
+      reasonForPostpone: showReasonField ? answers.q14 : null,
+    };
+
     try {
-      await onSubmit({ ...data, healthAnswers: answers });
-      toast.success("Đăng ký hiến máu thành công! Cảm ơn bạn");
+      const token = localStorage.getItem("accessToken"); // hoặc từ context
+
+      const res = await axios.post(
+        "http://localhost:5294/api/BloodDonation/screening-completion",
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      toast.success("Đăng ký sàng lọc thành công!");
+      if (onSubmit) onSubmit(res.data);
     } catch (error) {
-      toast.error("Đăng ký thất bại. Vui lòng thử lại sau.");
+      const errMsg = error?.response?.data?.message || "Lỗi khi gửi đơn sàng lọc.";
+      toast.error(errMsg);
     }
   };
 
   const renderYesNoOptions = (name) => (
     <div className="yes-no-row">
-      <label><input type="radio" name={name} onChange={() => handleChange(name, "Có")} /> Có</label>
-      <label><input type="radio" name={name} onChange={() => handleChange(name, "Không")} /> Không</label>
+      <label>
+        <input type="radio" name={name} onChange={() => handleChange(name, "Có")} checked={answers[name] === "Có"} />
+        Có
+      </label>
+      <label>
+        <input type="radio" name={name} onChange={() => handleChange(name, "Không")} checked={answers[name] === "Không"} />
+        Không
+      </label>
     </div>
   );
 
   useEffect(() => {
-    const riskQuestions = ["q2", "q3", "q4", "q5", "q6", "q7", "q8", "q9", "q10", "q11", "q12", "q13"];
+    const riskQuestions = ["q2", "q3", "q4", "q5", "q6", "q7", "q8", "q9", "q10", "q11", "q12"];
     const hasRisk = riskQuestions.some(q => answers[q] === "Có");
     setIsIneligible(hasRisk);
     setShowReasonField(hasRisk);
@@ -83,7 +124,7 @@ const BloodDonationConsentForm = ({ data, onSubmit, onBack }) => {
       </div>
 
       <div className="question">
-<span>6. Anh/chị có từng tiếp xúc trực tiếp với máu người khác không?</span>
+        <span>6. Anh/chị có từng tiếp xúc trực tiếp với máu người khác không?</span>
         {renderYesNoOptions("q6")}
       </div>
 
@@ -136,7 +177,7 @@ const BloodDonationConsentForm = ({ data, onSubmit, onBack }) => {
 
       <div className="buttons">
         <button className="register-button back-button" onClick={onBack}>Quay lại</button>
-        <button className="register-button" onClick={handleSubmit}>Đăng ký</button>
+        <button className="register-button" onClick={handleSubmit}>Gửi đơn</button>
       </div>
     </div>
   );
