@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import { format } from "date-fns";
+import axios from "axios";
 import "../userInfoForm/userInfoForm.scss";
-import './CheckDate.scss';
+import "./CheckDate.scss";
+import { getAuth } from "firebase/auth";
 
 const bloodTypes = [
   { id: "BTI001", name: "A+" },
@@ -15,24 +17,72 @@ const bloodTypes = [
   { id: "BTI008", name: "AB−" }
 ];
 
-const CheckDate = ({ data, onSubmit, onBack }) => {
+const CheckDate = ({ data, onBack, onSuccess }) => {
   const [selectedDate, setSelectedDate] = useState(null);
+  const [events, setEvents] = useState([]);
+  const [selectedEventId, setSelectedEventId] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleContinue = () => {
-    console.log(" Ngày được chọn:", selectedDate);
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const auth = getAuth();
+        const user = auth.currentUser;
+        if (!user) return alert("Vui lòng đăng nhập trước khi tiếp tục");
 
-    if (!selectedDate || isNaN(new Date(selectedDate))) {
-      alert("Vui lòng chọn ngày hiến máu hợp lệ!");
-      return;
-    }
-
-    const updatedData = {
-      ...data,
-      donationDate: selectedDate.toISOString(), // chuẩn định dạng
+        const token = await user.getIdToken();
+        const res = await axios.get("http://localhost:5294/GetAllEvents", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setEvents(res.data.data);
+      } catch (err) {
+        console.error("Lỗi khi tải danh sách sự kiện:", err);
+        alert("Không thể tải danh sách sự kiện hiến máu.");
+      }
     };
 
-    console.log(" Gửi dữ liệu:", updatedData);
-    onSubmit(updatedData); // gọi handleFinalSubmit bên BloodDonationPage
+    fetchEvents();
+  }, []);
+
+  const handleSubmit = async () => {
+    if (!selectedDate || isNaN(new Date(selectedDate))) {
+      return alert("Vui lòng chọn ngày hiến máu hợp lệ!");
+    }
+
+    if (!selectedEventId) {
+      return alert("Vui lòng chọn địa điểm hiến máu!");
+    }
+
+    try {
+      setLoading(true);
+      const auth = getAuth();
+      const user = auth.currentUser;
+
+      if (!user) return alert("Vui lòng đăng nhập.");
+
+      const token = await user.getIdToken();
+
+      const payload = {
+        registerDate: selectedDate.toISOString(), 
+        donationId: selectedEventId
+      };
+
+      
+      const res = await axios.post("http://localhost:5294/api/BloodDonation/register-donation", payload, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      alert("Đăng ký hiến máu thành công!");
+      onSuccess?.(); // nếu có callback thành công
+    } catch (error) {
+      const errMsg =
+        error.response?.data?.error ||
+        error.response?.data?.message ||
+        "Đăng ký thất bại. Vui lòng thử lại.";
+      alert(errMsg);
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (!data) return null;
@@ -50,7 +100,10 @@ const CheckDate = ({ data, onSubmit, onBack }) => {
       <div className="info-group"><strong>Số điện thoại:</strong> {data.phone}</div>
       <div className="info-group"><strong>Email:</strong> {data.email}</div>
       <div className="info-group"><strong>Địa chỉ:</strong> {data.address}</div>
-      <div className="info-group"><strong>Nhóm máu:</strong> {bloodTypes.find(bt => bt.id === data.bloodGroup)?.name}</div>
+      <div className="info-group">
+        <strong>Nhóm máu:</strong>{" "}
+        {bloodTypes.find(bt => bt.id === data.bloodGroup)?.name}
+      </div>
 
       <div className="info-group">
         <label><strong>Chọn ngày hiến máu:</strong></label>
@@ -60,13 +113,37 @@ const CheckDate = ({ data, onSubmit, onBack }) => {
           dateFormat="dd/MM/yyyy"
           className="form-control"
           placeholderText="Chọn ngày"
-          minDate={new Date()} // không cho chọn ngày trong quá khứ
+          minDate={new Date()}
         />
       </div>
 
+      <div className="info-group">
+        <label><strong>Chọn địa điểm hiến máu:</strong></label>
+        <select
+          value={selectedEventId}
+          onChange={(e) => setSelectedEventId(e.target.value)}
+          className="form-control"
+        >
+          <option value="">-- Chọn địa điểm --</option>
+          {events.map((ev) => (
+            <option key={ev.eventId} value={ev.eventId}>
+              {ev.eventName} - {ev.donationLocation}
+            </option>
+          ))}
+        </select>
+      </div>
+
       <div className="buttons">
-        <button className="register-button back-button" onClick={onBack}>Chỉnh sửa</button>
-        <button className="register-button continue-button" onClick={handleContinue}>Tiếp tục</button>
+        <button className="register-button back-button" onClick={onBack}>
+          Quay lại
+        </button>
+        <button
+          className="register-button continue-button"
+          onClick={handleSubmit}
+          disabled={loading}
+        >
+          {loading ? "Đang gửi..." : "Đăng ký"}
+        </button>
       </div>
     </div>
   );
