@@ -4,10 +4,11 @@ import { Controller, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import DatePicker from 'react-datepicker';
-import './userInfoForm.scss';
 import { differenceInYears } from 'date-fns';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import './userInfoForm.scss';
+
 
 const schema = yup.object({
   fullName: yup.string().required('Vui lòng nhập Họ và Tên'),
@@ -25,8 +26,8 @@ const schema = yup.object({
     .required('Bắt buộc nhập số điện thoại'),
   email: yup.string().email('Email không hợp lệ').required('Vui lòng nhập email'),
   address: yup.string().required('Vui lòng nhập địa chỉ'),
-  bloodGroup: yup.string().required('Vui lòng nhập nhóm máu'),
-}).required();
+  bloodGroup: yup.string().required('Vui lòng chọn nhóm máu'),
+});
 
 const UserInfoForm = ({ onSubmit }) => {
   const {
@@ -47,10 +48,10 @@ const UserInfoForm = ({ onSubmit }) => {
     resolver: yupResolver(schema)
   });
 
+  //  Fetch user info từ API
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
-        // 👉 Lấy accessToken từ localStorage
         const accessToken = JSON.parse(localStorage.getItem("user"))?.accessToken;
 
         if (!accessToken) {
@@ -59,9 +60,7 @@ const UserInfoForm = ({ onSubmit }) => {
         }
 
         const response = await axios.get('http://localhost:5294/api/User/get-by-id', {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
+          headers: { Authorization: `Bearer ${accessToken}` },
         });
 
         const data = response.data.data;
@@ -94,6 +93,7 @@ const UserInfoForm = ({ onSubmit }) => {
     <div className="form-container">
       <h2>Thông Tin Của Bạn</h2>
       <Form onSubmit={handleSubmit(onHandleSubmit)}>
+
         {/* fullName */}
         <Form.Group className="mb-3 input-group">
           <Form.Label>Họ và tên</Form.Label>
@@ -133,14 +133,14 @@ const UserInfoForm = ({ onSubmit }) => {
         </Form.Group>
 
         {/* gender */}
-        <Form.Group className="mb-4 gender-group input-group">
+        <Form.Group className="mb-3 input-group">
           <Form.Label>Giới tính</Form.Label>
           <Controller
             name="gender"
             control={control}
             render={({ field }) => (
               <Form.Select {...field} isInvalid={!!errors.gender}>
-                <option value="">--Chọn--</option>
+                <option value="">-- Chọn --</option>
                 <option value="Nam">Nam</option>
                 <option value="Nữ">Nữ</option>
               </Form.Select>
@@ -211,10 +211,10 @@ const UserInfoForm = ({ onSubmit }) => {
           <Form.Control.Feedback type="invalid">{errors.bloodGroup?.message}</Form.Control.Feedback>
         </Form.Group>
 
-        {/* submit button */}
+        {/* Submit button */}
         <div className="buttons">
           <button type="submit" className="register-button">
-            Lưu thông tin
+            Chỉnh sửa thông tin
           </button>
         </div>
       </Form>

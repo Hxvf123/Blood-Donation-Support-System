@@ -1,10 +1,19 @@
 import React, { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import { Form } from "react-bootstrap";
+import "react-datepicker/dist/react-datepicker.css";
 import "./userInfoForm.scss";
 
-const UpdateInfo = ({ data, onBack, onUpdate }) => {
-  const [formData, setFormData] = useState({});
+const UpdateInfo = ({ data = {}, onBack, onUpdate }) => {
+  const [formData, setFormData] = useState({
+    fullName: "",
+    birthDate: null,
+    gender: "",
+    phone: "",
+    email: "",
+    address: "",
+    bloodGroup: ""
+  });
 
   useEffect(() => {
     if (data) {
@@ -30,7 +39,8 @@ const UpdateInfo = ({ data, onBack, onUpdate }) => {
     }));
   };
 
-  const handleContinue = () => {
+  const handleContinue = (e) => {
+    e.preventDefault();
     const submitData = {
       ...formData,
       birthDate: formData.birthDate ? formData.birthDate.toISOString() : null,
@@ -38,19 +48,16 @@ const UpdateInfo = ({ data, onBack, onUpdate }) => {
     onUpdate(submitData);
   };
 
-  if (!data) return null;
-
   return (
     <div className="form-container">
       <h2>Chỉnh sửa thông tin hiến máu</h2>
-      <Form>
-
+      <Form onSubmit={handleContinue}>
         <Form.Group className="mb-3 input-group">
           <Form.Label>Họ và tên</Form.Label>
           <Form.Control
             type="text"
             name="fullName"
-            value={formData.fullName || ""}
+            value={formData.fullName}
             onChange={handleChange}
             placeholder="Nhập họ và tên"
           />
@@ -75,7 +82,7 @@ const UpdateInfo = ({ data, onBack, onUpdate }) => {
           <Form.Label>Giới tính</Form.Label>
           <Form.Select
             name="gender"
-            value={formData.gender || ""}
+            value={formData.gender}
             onChange={handleChange}
           >
             <option value="">-- Chọn giới tính --</option>
@@ -89,7 +96,7 @@ const UpdateInfo = ({ data, onBack, onUpdate }) => {
           <Form.Control
             type="tel"
             name="phone"
-            value={formData.phone || ""}
+            value={formData.phone}
             onChange={handleChange}
             placeholder="Nhập số điện thoại"
           />
@@ -100,7 +107,7 @@ const UpdateInfo = ({ data, onBack, onUpdate }) => {
           <Form.Control
             type="email"
             name="email"
-            value={formData.email || ""}
+            value={formData.email}
             onChange={handleChange}
             placeholder="Nhập email"
           />
@@ -111,7 +118,7 @@ const UpdateInfo = ({ data, onBack, onUpdate }) => {
           <Form.Control
             type="text"
             name="address"
-            value={formData.address || ""}
+            value={formData.address}
             onChange={handleChange}
             placeholder="Nhập địa chỉ"
           />
@@ -121,7 +128,7 @@ const UpdateInfo = ({ data, onBack, onUpdate }) => {
           <Form.Label>Nhóm máu</Form.Label>
           <Form.Select
             name="bloodGroup"
-            value={formData.bloodGroup || ""}
+            value={formData.bloodGroup}
             onChange={handleChange}
           >
             <option value="">-- Chọn nhóm máu --</option>
@@ -137,10 +144,17 @@ const UpdateInfo = ({ data, onBack, onUpdate }) => {
         </Form.Group>
 
         <div className="buttons">
-          <button className="register-button back-button" onClick={onBack} type="button">
+          <button
+            className="register-button back-button"
+            onClick={onBack}
+            type="button"
+          >
             Quay lại
           </button>
-          <button className="register-button continue-button" onClick={handleContinue} type="button">
+          <button
+            className="register-button continue-button"
+            type="submit"
+          >
             Tiếp tục
           </button>
         </div>
