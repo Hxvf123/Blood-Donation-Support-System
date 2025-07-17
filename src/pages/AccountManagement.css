@@ -1,0 +1,78 @@
+.account-management {
+  padding: 24px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+}
+
+.account-management h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #0079ED;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.account-management .no-data {
+  text-align: center;
+  color: #666;
+  font-style: italic;
+  margin-top: 20px;
+}
+
+.account-management .table-container {
+  overflow-x: auto;
+  border-radius: 8px;
+}
+
+.account-management table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px;
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.account-management thead {
+  background-color: #0079ED; /* Màu xanh đậm */
+  color: white;
+}
+
+.account-management th,
+.account-management td {
+  padding: 14px 16px;
+  text-align: left;
+  font-size: 15px;
+}
+
+.account-management th {
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.account-management tbody tr:nth-child(even) {
+  background-color: #f4f9ff; /* Màu nền xen kẽ */
+}
+
+.account-management tbody tr:nth-child(odd) {
+  background-color: #ffffff;
+}
+
+.account-management tbody tr:hover {
+  background-color: #dbeeff; /* Hover màu xanh nhạt */
+  transition: background-color 0.2s ease-in-out;
+}
+
+.account-management select {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  background-color: #fff;
+  color: #333;
+}
+

@@ -6,6 +6,8 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   createUserWithEmailAndPassword,
+  fetchSignInMethodsForEmail,
+  signOut,
 } from "firebase/auth";
 import { auth, db } from "../FireBase/firebase";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
@@ -13,34 +15,43 @@ import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 function Registermem() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const isValidPassword = (password) => {
-    // Ít nhất 6 ký tự, ít nhất 1 ký tự đặc biệt
     const regex = /^(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{6,}$/;
     return regex.test(password);
   };
 
   const handleRegister = async (e) => {
     e.preventDefault();
+
     if (password !== confirmPassword) {
       toast.error("Mật khẩu không khớp");
       return;
     }
+
     if (!isValidPassword(password)) {
       toast.error("Mật khẩu phải có ít nhất 6 ký tự và 1 ký tự đặc biệt");
       return;
     }
 
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
+      const methods = await fetchSignInMethodsForEmail(auth, email);
+      if (methods.includes("google.com")) {
+        toast.error("Email này đã được đăng ký bằng Google. Vui lòng đăng nhập bằng Google.");
+        return;
+      }
 
-      // ✅ Lưu thông tin vào Firestore
+      const result = await createUserWithEmailAndPassword(auth, email, password);
+      const user = result.user;
+
       await setDoc(doc(db, "users", user.uid), {
         uid: user.uid,
         email: user.email,
+        name: name,
+        role: "user",
         createdAt: serverTimestamp(),
         method: "email",
       });
@@ -63,12 +74,18 @@ function Registermem() {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
 
-      // ✅ Lưu thông tin vào Firestore
+      const signInMethods = await fetchSignInMethodsForEmail(auth, user.email);
+      if (signInMethods.includes("password")) {
+        await signOut(auth); // Thoát tài khoản Google đã đăng nhập
+        toast.error("Email đã được đăng ký bằng Email & Mật khẩu. Vui lòng đăng nhập bằng Email.");
+        return;
+      }
+
       await setDoc(doc(db, "users", user.uid), {
         uid: user.uid,
         email: user.email,
-        displayName: user.displayName,
-        photoURL: user.photoURL,
+        name: user.displayName || "",
+        role: "user",
         createdAt: serverTimestamp(),
         method: "google",
       });
@@ -78,7 +95,7 @@ function Registermem() {
     } catch (error) {
       console.error("Đăng ký Google lỗi:", error);
       if (error.code === "auth/account-exists-with-different-credential") {
-        toast.error("Email đã được đăng ký bằng phương thức khác. Vui lòng dùng cách đăng nhập phù hợp.");
+        toast.error("Email đã được đăng ký bằng phương thức khác.");
       } else {
         toast.error("Đăng ký Google thất bại!");
       }
@@ -92,6 +109,14 @@ function Registermem() {
           <h2 className="register-title">Đăng ký tài khoản</h2>
 
           <form onSubmit={handleRegister}>
+            <label>Họ và tên</label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+
             <label>Email</label>
             <input
               type="email"
@@ -126,7 +151,6 @@ function Registermem() {
               src="https://png.pngtree.com/png-clipart/20230916/original/pngtree-google-logo-vector-png-image_12256710.png"
               alt="Google"
               className="google-icon"
-              style={{ width: "40px", marginRight: "20px" }}
             />
             Đăng ký bằng Google
           </button>

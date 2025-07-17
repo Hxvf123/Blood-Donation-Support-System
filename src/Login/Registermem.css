@@ -65,7 +65,7 @@ input:focus {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #007bff;
+  background: linear-gradient(90deg, #1877f2 60%, #3498db 100%);
   color: white;
   padding: 12px 0;
   border: none;
@@ -78,8 +78,10 @@ input:focus {
 }
 
 .primary-button:hover {
-  background-color: #0056b3;
+  background: linear-gradient(90deg, #3498db 60%, #1877f2 100%);
+  box-shadow: 0 4px 16px rgba(30, 144, 255, 0.13);
 }
+
 
 .google-register-button {
   width: 100%;

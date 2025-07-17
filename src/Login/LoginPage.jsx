@@ -6,9 +6,16 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
   GoogleAuthProvider,
+  fetchSignInMethodsForEmail,
+  signOut,
 } from "firebase/auth";
 import { auth, db } from "../FireBase/firebase";
-import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  setDoc,
+  serverTimestamp,
+} from "firebase/firestore";
 
 function LoginPage({ onLoginSuccess }) {
   const navigate = useNavigate();
@@ -19,21 +26,8 @@ function LoginPage({ onLoginSuccess }) {
     e.preventDefault();
     try {
       const result = await signInWithEmailAndPassword(auth, email, password);
-      const user = result.user;
-
-      // Kiểm tra nếu user chưa tồn tại trong Firestore
-      const userDoc = await getDoc(doc(db, "users", user.uid));
-      if (!userDoc.exists()) {
-        await setDoc(doc(db, "users", user.uid), {
-          uid: user.uid,
-          email: user.email,
-          createdAt: serverTimestamp(),
-          method: "email",
-        });
-      }
-
       toast.success("Đăng nhập thành công!");
-      onLoginSuccess?.(user.displayName || "Người dùng");
+      onLoginSuccess?.(result.user.displayName || "Người dùng");
       navigate("/");
     } catch (error) {
       console.error("Lỗi đăng nhập:", error);
@@ -47,14 +41,23 @@ function LoginPage({ onLoginSuccess }) {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
 
-      // Kiểm tra nếu user chưa tồn tại trong Firestore
-      const userDoc = await getDoc(doc(db, "users", user.uid));
-      if (!userDoc.exists()) {
-        await setDoc(doc(db, "users", user.uid), {
+      const methods = await fetchSignInMethodsForEmail(auth, user.email);
+
+      if (methods.includes("password")) {
+        await signOut(auth); // Đăng xuất user Google tạm
+        toast.error("Email đã đăng ký bằng Email & Mật khẩu. Vui lòng đăng nhập bằng Email.");
+        return;
+      }
+
+      const userRef = doc(db, "users", user.uid);
+      const userSnap = await getDoc(userRef);
+
+      if (!userSnap.exists()) {
+        await setDoc(userRef, {
           uid: user.uid,
           email: user.email,
-          displayName: user.displayName,
-          photoURL: user.photoURL,
+          name: user.displayName || "",
+          role: "user",
           createdAt: serverTimestamp(),
           method: "google",
         });
@@ -96,7 +99,9 @@ function LoginPage({ onLoginSuccess }) {
               <a href="/forgot-password">Quên mật khẩu?</a>
             </div>
 
-            <button type="submit" className="login-button">Đăng nhập</button>
+            <button type="submit" className="login-button">
+              Đăng nhập
+            </button>
           </form>
 
           <button onClick={handleGoogleLogin} className="google-login-button">
@@ -104,7 +109,6 @@ function LoginPage({ onLoginSuccess }) {
               src="https://png.pngtree.com/png-clipart/20230916/original/pngtree-google-logo-vector-png-image_12256710.png"
               alt="Google"
               className="google-icon"
-              style={{ width: "40px", marginRight: "20px" }}
             />
             Đăng nhập bằng Google
           </button>
