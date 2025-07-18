@@ -10,10 +10,10 @@ const bloodTypes = [
   { id: "BTI002", name: "A−" },
   { id: "BTI003", name: "B+" },
   { id: "BTI004", name: "B−" },
-  { id: "BTI005", name: "O+" },
-  { id: "BTI006", name: "O−" },
-  { id: "BTI007", name: "AB+" },
-  { id: "BTI008", name: "AB−" },
+  { id: "BTI005", name: "AB+" },
+  { id: "BTI006", name: "AB−" },
+  { id: "BTI007", name: "O+" },
+  { id: "BTI008", name: "O−" },
 ];
 
 const UpdateInfo = ({ data, onBack }) => {
@@ -21,11 +21,14 @@ const UpdateInfo = ({ data, onBack }) => {
 
   useEffect(() => {
     if (data) {
-      const bloodTypeName = bloodTypes.find(bt => bt.id === data.bloodTypeId)?.name || '';
       setFormData({
-        ...data,
+        fullName: data.fullName || '',
         birthDate: data.dayOfBirth ? new Date(data.dayOfBirth) : null,
-        bloodTypeId: bloodTypeName,
+        gender: data.gender || '',
+        phone: data.phoneNumber || '',
+        email: data.email || '',
+        address: data.address || '',
+        bloodGroup: data.bloodTypeId || '',
       });
     }
   }, [data]);
@@ -54,25 +57,32 @@ const UpdateInfo = ({ data, onBack }) => {
       return;
     }
 
-    const bloodId = bloodTypes.find(bt => bt.name === formData.bloodTypeId)?.id;
+    
 
     const submitData = {
-      fullName: formData.fullName,
-      phoneNumber: formData.phoneNumber,
-      address: formData.address,
-      dayOfBirth: formData.birthDate ? formData.birthDate.toISOString() : null,
-      gender: formData.gender,
-      role: "Member",
-      bloodId: bloodId,
-    };
+  FullName: formData.fullName,
+  PhoneNumber: formData.phoneNumber,
+  Address: formData.address,
+  DayOfBirth: formData.birthDate ? formData.birthDate.toISOString() : null,
+  Gender: formData.gender,
+  Role: "Member",
+  BloodTypeId: formData.bloodGroup,
+};
+
 
     try {
-      const res = await axios.put("http://localhost:5294/api/User/update", submitData, {
+      const res = await axios.put("http://localhost:5294/api/User/update-profile", submitData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
+
       toast.success("Cập nhật thành công!");
+
+      const updatedUser = { ...user, ...submitData };
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+
+      if (onBack) onBack();
     } catch (err) {
       toast.error("Lỗi khi cập nhật thông tin.");
       console.error(err);
@@ -160,13 +170,13 @@ const UpdateInfo = ({ data, onBack }) => {
         <Form.Group className="mb-3 input-group">
           <Form.Label>Nhóm máu</Form.Label>
           <Form.Select
-            name="bloodTypeId"
-            value={formData.bloodTypeId || ""}
+            name="bloodGroup"
+            value={formData.bloodGroup || ""}
             onChange={handleChange}
           >
             <option value="">-- Chọn nhóm máu --</option>
             {bloodTypes.map(bt => (
-              <option key={bt.id} value={bt.name}>{bt.name}</option>
+              <option key={bt.id} value={bt.id}>{bt.name}</option>
             ))}
           </Form.Select>
         </Form.Group>
@@ -184,7 +194,7 @@ const UpdateInfo = ({ data, onBack }) => {
             onClick={handleSubmit}
             type="button"
           >
-            Lưu thay đổi
+            Chỉnh sửa thông tin
           </button>
         </div>
       </Form>

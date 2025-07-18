@@ -17,7 +17,7 @@ const bloodTypes = [
   { id: "BTI008", name: "AB−" }
 ];
 
-const CheckDate = ({ data, onBack, onSuccess }) => {
+const CheckDate = ({ data, onBack, onSubmit }) => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [events, setEvents] = useState([]);
   const [selectedEventId, setSelectedEventId] = useState("");
@@ -25,12 +25,13 @@ const CheckDate = ({ data, onBack, onSuccess }) => {
 
   useEffect(() => {
     const fetchEvents = async () => {
-      try {
-        const auth = getAuth();
-        const user = auth.currentUser;
-        if (!user) return alert("Vui lòng đăng nhập trước khi tiếp tục");
+        try {
+          const user = JSON.parse(localStorage.getItem('user'));
+        const token = user?.accessToken;
+          
 
-        const token = await user.getIdToken();
+
+        
         const res = await axios.get("http://localhost:5294/GetAllEvents", {
           headers: { Authorization: `Bearer ${token}` }
         });
@@ -55,30 +56,35 @@ const CheckDate = ({ data, onBack, onSuccess }) => {
 
     try {
       setLoading(true);
-      const auth = getAuth();
-      const user = auth.currentUser;
-
-      if (!user) return alert("Vui lòng đăng nhập.");
-
-      const token = await user.getIdToken();
+      
+      const user = JSON.parse(localStorage.getItem('user'));
+        const token = user?.accessToken;
 
       const payload = {
-        registerDate: selectedDate.toISOString(), 
+        registerDate: selectedDate.toISOString().split("T")[0],
         donationId: selectedEventId
       };
 
-      
-      const res = await axios.post("http://localhost:5294/api/BloodDonation/register-donation", payload, {
+      console.log("payload:",payload);
+
+      const res = await axios.post("http://localhost:5294/api/BloodDonation/register-donation", payload, 
+      {
         headers: { Authorization: `Bearer ${token}` }
       });
 
-      alert("Đăng ký hiến máu thành công!");
-      onSuccess?.(); // nếu có callback thành công
+      onSubmit?.({
+        ...data,
+        donationDate: selectedDate,
+        donationId: selectedEventId
+      });
+
     } catch (error) {
+      console.error("loi:",error);
       const errMsg =
         error.response?.data?.error ||
         error.response?.data?.message ||
         "Đăng ký thất bại. Vui lòng thử lại.";
+        
       alert(errMsg);
     } finally {
       setLoading(false);

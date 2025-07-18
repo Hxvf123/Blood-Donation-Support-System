@@ -7,9 +7,9 @@ import HistoryBlood from "../Img/HistoryBlood.png"
 
 export default function DonationCard({ center, address, date, amount, status }) {
     const statusMap = {
-        "Đã đặt lịch": { class: "donation-card__button--yellow", text: "Đã đặt lịch" },
-        "Đã huỷ": { class: "donation-card__button--red", text: "Đã huỷ" },
-        "Đã hiến": { class: "donation-card__button--green", text: "Đã hiến" },
+        "Pending": { class: "donation-card__button--yellow", text: "Đã đặt lịch" },
+        "Cancelled": { class: "donation-card__button--red", text: "Đã huỷ" },
+        "Completed": { class: "donation-card__button--green", text: "Đã hiến" },
     };
 
     const statusInfo = statusMap[status] || statusMap["Đã đặt lịch"];
