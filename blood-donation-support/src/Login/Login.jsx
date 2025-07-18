@@ -26,8 +26,8 @@ function LoginPage({ onLoginSuccess }) {
       password,
     });
 
-    const { accessToken } = response.data;
-    
+  const { accessToken, refreshToken } = response.data;
+   
     if (!accessToken) {
       toast.error("Đăng nhập thất bại: không nhận được accessToken");
       return;
@@ -39,7 +39,7 @@ function LoginPage({ onLoginSuccess }) {
       },
     });
 
-    const fullName = profileResponse.data?.data?.fullName || "Người dùng";
+    const fullName = profileResponse.data?.fullName || "Người dùng";
 
     const userInfo = {
       name: fullName,
