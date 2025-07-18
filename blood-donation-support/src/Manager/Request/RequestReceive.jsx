@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router';
-import './RequestList.scss';
+import './RequestReceive.scss';
 import { User, Phone, Mail, CalendarDays } from "lucide-react";
 
 const mockRequests = [
@@ -58,6 +58,7 @@ const RequestList = () => {
 
   return (
     <div className="request-list">
+      <h2>Danh sách yêu cầu nhận máu</h2>
       {mockRequests.map((req) => (
         <div key={req.id} className="request-card">
           <div className="request-info">

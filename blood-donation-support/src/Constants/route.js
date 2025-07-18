@@ -12,8 +12,10 @@ const ROUTE_PATH = {
 
     DASHBOARD: "/dashboard",
     INVENTORY: "inventory",
-    REQUEST_LIST: "requests",
-    REQUEST_DETAIL: "requests/:id",
+    REQUEST_RECEIVE: "requestsReceive",
+    REQUEST_RECEIVE_DETAIL: "requestsReceive/:id",
+    REQUEST_DONATION: "requestsDonation",
+    REQUEST_DONATION_DETAIL: "requestsDonation/:id",
     EVENT: "event",
     MANAGE_ACCOUNT: "manage-account",
 };

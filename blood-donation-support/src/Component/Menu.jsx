@@ -1,11 +1,44 @@
-import React from "react";
-import { BarChart2, Droplet, ClipboardList, CalendarHeart, User } from "lucide-react";
-import { NavLink } from "react-router";
+import React, { useEffect, useState } from "react";
+import {
+    BarChart2,
+    Droplet,
+    ClipboardList,
+    CalendarHeart,
+    User,
+    LogOut,
+    Inbox,
+    HandHeart
+} from "lucide-react";
+import { NavLink, useNavigate, useLocation } from "react-router";
 import "./Menu.scss";
 import logo from "../Img/logo.png";
 import ROUTE_PATH from "../Constants/route";
+import { getAuth } from "firebase/auth";
 
 const MenuManager = () => {
+    const navigate = useNavigate();
+    const location = useLocation();
+    const [showRequestSub, setShowRequestSub] = useState(
+        location.pathname.startsWith("/requests")
+    );
+
+    useEffect(() => {
+        if (!location.pathname.startsWith("/requests")) {
+            setShowRequestSub(false);
+        }
+    }, [location.pathname]);
+
+    const handleLogout = async () => {
+        const auth = getAuth();
+        await auth.signOut();
+        localStorage.removeItem("user");
+        navigate(ROUTE_PATH.HOME);
+    };
+
+    const toggleRequestSub = () => {
+        setShowRequestSub((prev) => !prev);
+    };
+
     return (
         <div className="manager-menu">
             <div className="logo">
@@ -29,12 +62,30 @@ const MenuManager = () => {
                         <span>Kho máu</span>
                     </NavLink>
 
-                    <NavLink
-                        to={ROUTE_PATH.REQUEST_LIST}
-                        className={({ isActive }) => `menu-item ${isActive ? "active" : ""}`}>
+                    {/* Tab chính "Yêu cầu" không dẫn đến đâu, chỉ mở submenu */}
+                    <div className={`menu-item ${showRequestSub ? "active" : ""}`} onClick={toggleRequestSub}>
                         <ClipboardList size={20} />
                         <span>Yêu cầu</span>
-                    </NavLink>
+                    </div>
+
+                    {/* Submenu chỉ hiện khi ở route liên quan */}
+                    {showRequestSub && (
+                        <div className="sub-menu">
+                            <NavLink
+                                to={ROUTE_PATH.REQUEST_DONATION}
+                                className={({ isActive }) => `menu-item sub ${isActive ? "active" : ""}`}>
+                                <Inbox size={18} />
+                                <span>Hiến máu</span>
+                            </NavLink>
+
+                            <NavLink
+                                to={ROUTE_PATH.REQUEST_RECEIVE}
+                                className={({ isActive }) => `menu-item sub ${isActive ? "active" : ""}`}>
+                                <HandHeart size={18} />
+                                <span>Nhận máu</span>
+                            </NavLink>
+                        </div>
+                    )}
 
                     <NavLink
                         to={ROUTE_PATH.EVENT}
@@ -53,6 +104,13 @@ const MenuManager = () => {
                     </NavLink>
                 </ul>
             </nav>
+
+            <div className="logout-section">
+                <button className="menu-item logout-button" onClick={handleLogout}>
+                    <LogOut size={20} />
+                    <span>Đăng xuất</span>
+                </button>
+            </div>
         </div>
     );
 };

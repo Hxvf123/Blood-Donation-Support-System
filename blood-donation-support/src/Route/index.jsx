@@ -15,11 +15,14 @@ import Receive from "../BloodReceive/Receive";
 import Donation from "../BloodDonation/Donation";
 import Contact from "../Contact/Contact";
 
-import RequestList from "../Manager/Request/RequestList";
-import RequestDetail from "../Manager/Request/RequestDetail";
+import RequestReceive from "../Manager/Request/RequestReceive";
+import RequestReceiveDetail from "../Manager/Request/RequestReceiveDetail";
 import Dashboard from "../Manager/Dashboard/Dashboard";
 import Inventory from "../Manager/Inventory/BloodInventory"; 
 import Event from "../Manager/Event/EventForm";
+
+import RequestDonation from "../Staff/RequestDonation";
+import RequestDonationDetail from "../Staff/RequestDonationDetail";
 
 import ManageAccount from "../Admin/ManagerAccount";
 
@@ -48,8 +51,10 @@ function Routes() {
             children: [
                 { index: true, element: <Dashboard /> },
                 { path: ROUTE_PATH.INVENTORY, element: <Inventory /> },
-                { path: ROUTE_PATH.REQUEST_LIST, element: <RequestList /> },
-                { path: ROUTE_PATH.REQUEST_DETAIL, element: <RequestDetail /> },
+                { path: ROUTE_PATH.REQUEST_RECEIVE, element: <RequestReceive /> },
+                { path: ROUTE_PATH.REQUEST_RECEIVE_DETAIL, element: <RequestReceiveDetail /> },
+                { path: ROUTE_PATH.REQUEST_DONATION, element: <RequestDonation /> },
+                { path: ROUTE_PATH.REQUEST_DONATION_DETAIL, element: <RequestDonationDetail /> },
                 { path: ROUTE_PATH.EVENT, element: <Event /> },
                 { path: ROUTE_PATH.MANAGE_ACCOUNT, element: <ManageAccount /> },
             ]
