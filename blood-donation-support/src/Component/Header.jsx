@@ -46,7 +46,7 @@ export default function Header() {
     };
 
     const scrollToEvents = () => {
-        const section = document.getElementById("news-section");
+        const section = document.getElementById("event-section");
         if (section) section.scrollIntoView({ behavior: "smooth" });
     };
 
