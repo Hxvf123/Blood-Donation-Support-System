@@ -1,7 +1,7 @@
 import { createBrowserRouter, RouterProvider } from "react-router";
 import ROUTE_PATH from "../Constants/route";
 
-import MainLayout from "../Layout/index";
+import MainLayout from "../Layout/User";
 import ManagerLayout from "../Layout/Manager";
 
 import Home from "../Home/Home";
@@ -10,15 +10,17 @@ import Registermem from "../RegisterMem/Register";
 import Login from "../Login/Login";
 import ForgotPass from "../Login/ForgotPass";
 import Profile from "../userInfoForm/userInfoForm";
+import UpdateInfo from "../userInfoForm/updateUser";
 import Receive from "../BloodReceive/Receive";
 import Donation from "../BloodDonation/Donation";
 import Contact from "../Contact/Contact";
 
-import RequestList from "../Request/RequestList";
-import RequestDetail from "../Request/RequestDetail";
-import Dashboard from "../Dashboard/Dashboard";
-import Inventory from "../Inventory/BloodInventory"; 
-import Event from "../Event/EventForm";
+import RequestList from "../Manager/Request/RequestList";
+import RequestDetail from "../Manager/Request/RequestDetail";
+import Dashboard from "../Manager/Dashboard/Dashboard";
+import Inventory from "../Manager/Inventory/BloodInventory"; 
+import Event from "../Manager/Event/EventForm";
+
 import ManageAccount from "../Admin/ManagerAccount";
 
 function Routes() {
@@ -33,6 +35,7 @@ function Routes() {
                 { path: ROUTE_PATH.LOGIN, element: <Login /> },
                 { path: ROUTE_PATH.FORGOT_PASSWORD, element: <ForgotPass /> },
                 { path: ROUTE_PATH.PROFILE, element: <Profile /> },
+                { path: ROUTE_PATH.UPDATE, element: <UpdateInfo /> },
                 { path: ROUTE_PATH.BLOOD_RECEIVE, element: <Receive /> },
                 { path: ROUTE_PATH.BLOOD_DONATION, element: <Donation /> },
                 { path: ROUTE_PATH.CONTACT, element: <Contact /> },

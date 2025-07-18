@@ -5,8 +5,9 @@ const ROUTE_PATH = {
     LOGIN: "/login",
     FORGOT_PASSWORD: "/forgot-password",
     PROFILE: "/user-info",
+    UPDATE: "/user-info/update",
+    BLOOD_DONATION: "/donation",
     BLOOD_RECEIVE: "/blood-receive",
-    BLOOD_DONATION: "/blood-donation",
     CONTACT: "/contact",
 
     DASHBOARD: "/dashboard",
