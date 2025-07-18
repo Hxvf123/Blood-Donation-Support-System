@@ -14,6 +14,7 @@ const ROUTE_PATH = {
     REQUEST_LIST: "requests",
     REQUEST_DETAIL: "requests/:id",
     EVENT: "event",
+    MANAGE_ACCOUNT: "manage-account",
 };
 
 export default ROUTE_PATH;

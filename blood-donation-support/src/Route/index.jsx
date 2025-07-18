@@ -17,7 +17,9 @@ import Contact from "../Contact/Contact";
 import RequestList from "../Request/RequestList";
 import RequestDetail from "../Request/RequestDetail";
 import Dashboard from "../Dashboard/Dashboard";
-import Inventory from "../Inventory/BloodInventory";    
+import Inventory from "../Inventory/BloodInventory"; 
+import Event from "../Event/EventForm";
+import ManageAccount from "../Admin/ManagerAccount";
 
 function Routes() {
     const route = createBrowserRouter([
@@ -45,6 +47,8 @@ function Routes() {
                 { path: ROUTE_PATH.INVENTORY, element: <Inventory /> },
                 { path: ROUTE_PATH.REQUEST_LIST, element: <RequestList /> },
                 { path: ROUTE_PATH.REQUEST_DETAIL, element: <RequestDetail /> },
+                { path: ROUTE_PATH.EVENT, element: <Event /> },
+                { path: ROUTE_PATH.MANAGE_ACCOUNT, element: <ManageAccount /> },
             ]
         }
     ]);
