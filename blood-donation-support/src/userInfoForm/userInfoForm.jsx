@@ -68,17 +68,21 @@ const UserInfoForm = ({ onSubmit }) => {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        const data = response.data.data;
+        const data = response.data.Data;
 
-        reset({
-          fullName: data.fullName || '',
-          birthDate: data.dayOfBirth ? new Date(data.dayOfBirth) : null,
-          gender: data.gender || '',
-          phone: data.phoneNumber || '',
-          email: data.email || '',
-          address: data.address || '',
-          bloodGroup: data.bloodTypeId || '',
-        });
+        if (data) {
+  reset({
+    fullName: data.FullName || '',
+    birthDate: data.DayOfBirth ? new Date(data.DayOfBirth) : null,
+    gender: data.Gender || '',
+    phone: data.PhoneNumber || '',
+    email: data.Email || '',
+    address: data.Address || '',
+    bloodGroup: data.BloodTypeId || '',
+  });
+} else {
+  toast.error("Không nhận được dữ liệu người dùng.");
+}
       } catch (error) {
         console.error('Không thể lấy thông tin người dùng:', error);
         toast.error('Không thể tải thông tin người dùng.');

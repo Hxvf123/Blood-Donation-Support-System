@@ -23,19 +23,55 @@ const CheckDate = ({ data, onBack, onSubmit }) => {
   const [selectedEventId, setSelectedEventId] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // useEffect(() => {
+  //   const fetchEvents = async () => {
+  //       try {
+  //         const user = JSON.parse(localStorage.getItem('user'));
+  //       const token = user?.accessToken;
+
+
+
+
+  //       const res = await axios.get("http://localhost:5294/GetAllEvents", {
+  //         headers: { Authorization: `Bearer ${token}` }
+  //       });
+  //       setEvents(res.data.data);
+  //     } catch (err) {
+  //       console.error("Lỗi khi tải danh sách sự kiện:", err);
+  //       alert("Không thể tải danh sách sự kiện hiến máu.");
+  //     }
+  //   };
+
+  //   fetchEvents();
+  // }, []);
   useEffect(() => {
     const fetchEvents = async () => {
-        try {
-          const user = JSON.parse(localStorage.getItem('user'));
+      try {
+        const user = JSON.parse(localStorage.getItem('user'));
         const token = user?.accessToken;
-          
 
-
-        
         const res = await axios.get("http://localhost:5294/GetAllEvents", {
           headers: { Authorization: `Bearer ${token}` }
         });
-        setEvents(res.data.data);
+
+        const fetchedEvents = res.data?.Data;
+
+        if (!Array.isArray(fetchedEvents)) {
+          console.warn("Events không phải là mảng hợp lệ:", fetchedEvents);
+          setEvents([]);
+        } else {
+          const formattedEvents = fetchedEvents.map((ev) => ({
+            eventId: ev.EventId,
+            eventName: ev.EventName,
+            donationLocation: ev.DonationLocation,
+            startDate: ev.StartDate,
+            endDate: ev.EndDate,
+            description: ev.Description,
+            img: ev.Img,
+          }));
+          setEvents(formattedEvents);
+        }
+
       } catch (err) {
         console.error("Lỗi khi tải danh sách sự kiện:", err);
         alert("Không thể tải danh sách sự kiện hiến máu.");
@@ -44,6 +80,8 @@ const CheckDate = ({ data, onBack, onSubmit }) => {
 
     fetchEvents();
   }, []);
+
+
 
   const handleSubmit = async () => {
     if (!selectedDate || isNaN(new Date(selectedDate))) {
@@ -56,21 +94,21 @@ const CheckDate = ({ data, onBack, onSubmit }) => {
 
     try {
       setLoading(true);
-      
+
       const user = JSON.parse(localStorage.getItem('user'));
-        const token = user?.accessToken;
+      const token = user?.accessToken;
 
       const payload = {
         registerDate: selectedDate.toISOString().split("T")[0],
         donationId: selectedEventId
       };
 
-      console.log("payload:",payload);
+      console.log("payload:", payload);
 
-      const res = await axios.post("http://localhost:5294/api/BloodDonation/register-donation", payload, 
-      {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await axios.post("http://localhost:5294/api/BloodDonation/register-donation", payload,
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        });
 
       onSubmit?.({
         ...data,
@@ -79,12 +117,12 @@ const CheckDate = ({ data, onBack, onSubmit }) => {
       });
 
     } catch (error) {
-      console.error("loi:",error);
+      console.error("loi:", error);
       const errMsg =
         error.response?.data?.error ||
         error.response?.data?.message ||
         "Đăng ký thất bại. Vui lòng thử lại.";
-        
+
       alert(errMsg);
     } finally {
       setLoading(false);

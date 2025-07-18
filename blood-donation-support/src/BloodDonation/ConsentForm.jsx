@@ -35,21 +35,25 @@ const BloodDonationConsentForm = ({ data, onSubmit, onBack }) => {
     }
 
     const payload = {
-      EverDonated: answerToBool(answers.q1),
-      ChronicDisease: answerToBool(answers.q2),
-      PastSevereIllness: answerToBool(answers.q3),
-      SurgeryLast12Months: answerToBool(answers.q4),
-      RiskBehaviorLast6Months: answerToBool(answers.q5),
-      ContactWithBlood: answerToBool(answers.q6),
-      TravelToEpidemicArea: answerToBool(answers.q7),
-      FluSymptoms14Days: answerToBool(answers.q8),
-      TakingMedication7Days: answerToBool(answers.q9),
-      PregnantOrBreastfeeding: answerToBool(answers.q10),
-      AbortionLast12Months: answerToBool(answers.q11),
-      Menstruation: answerToBool(answers.q12),
-      HivTestConsent: answerToBool(answers.q13),
-      ReasonForPostpone: showReasonField ? answers.q14 : null,
-    };
+  everDonated: answerToBool(answers.q1),
+  chronicDisease: answerToBool(answers.q2),
+  pastSevereIllness: answerToBool(answers.q3),
+  surgeryLast12Months: answerToBool(answers.q4),
+  riskBehaviorLast6Months: answerToBool(answers.q5),
+  contactWithBlood: answerToBool(answers.q6),
+  travelToEpidemicArea: answerToBool(answers.q7),
+  fluSymptoms14Days: answerToBool(answers.q8),
+  takingMedication7Days: answerToBool(answers.q9),
+  pregnantOrBreastfeeding: answerToBool(answers.q10),
+  abortionLast12Months: answerToBool(answers.q11),
+  menstruation: answerToBool(answers.q12),
+  hivTestConsent: answerToBool(answers.q13),
+  reasonForPostpone: showReasonField ? answers.q14 : null,
+};
+
+
+
+
 
     try {
       const user = JSON.parse(localStorage.getItem('user'));
