@@ -46,7 +46,7 @@ export default function Header() {
     };
 
     const scrollToEvents = () => {
-        const section = document.getElementById("news-section");
+        const section = document.getElementById("event-section");
         if (section) section.scrollIntoView({ behavior: "smooth" });
     };
 
@@ -106,7 +106,8 @@ export default function Header() {
                                                 state: { message: "Bạn phải đăng nhập trước!" },
                                             });
                                         } else {
-                                            navigate(ROUTE_PATH.BLOOD_DONATION);
+                                            navigate(ROUTE_PATH.BLOOD_DONATION, { 
+                                            });
                                         }
                                     }}
                                 >
