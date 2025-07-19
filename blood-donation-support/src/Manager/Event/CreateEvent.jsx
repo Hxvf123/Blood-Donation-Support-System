@@ -1,6 +1,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import "./CreateEvent.scss";
+import { toast } from 'react-toastify';
 
 const CreateEventPage = () => {
   const {
@@ -12,7 +13,7 @@ const CreateEventPage = () => {
 
   const onSubmit = (data) => {
     console.log("Submitted Event Data:", data);
-    alert("Sự kiện đã được tạo!");
+    toast.success("Sự kiện đã được tạo!");
     reset();
   };
 
