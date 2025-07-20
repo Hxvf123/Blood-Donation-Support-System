@@ -1,83 +1,114 @@
 import React, { useState, useEffect } from "react";
-import UserInfomation from "../userInfoForm/userInfoForm";
+import { useNavigate } from "react-router";
 import CheckDate from "./CheckDate";
 import UpdateInfo from "../userInfoForm/updateUser";
 import ConsentForm from "./ConsentForm";
-import "../userInfoForm/userInfoForm.scss";
-import { useNavigate } from "react-router";
+import ROUTE_PATH from "../Constants/route";
+import axios from "axios";
 
-const BloodDonationPage = ({ formData, setFormData }) => {
-  const [step, setStep] = useState(1);
-  const [localData, setLocalData] = useState(formData || null);
+const BloodDonationPage = () => {
+  const [formData, setFormData] = useState(null);
+  const [step, setStep] = useState(1); // Step 1 = CheckDate
+
   const navigate = useNavigate();
 
-  // Nếu có dữ liệu ban đầu => sang bước 2
-  useEffect(() => {
-    if (formData) {
-      setLocalData(formData);
-      setStep(2);
-    }
-  }, [formData]);
+  // ✅ Gọi API lấy thông tin người dùng sau khi đăng nhập
+   useEffect(() => {
+    const fetchUserData = async () => {
+      const userLocal = localStorage.getItem("user");
+      if (!userLocal) {
+        navigate(ROUTE_PATH.LOGIN, {
+          state: { message: "Bạn phải đăng nhập trước!" },
+        });
+        return;
+      }
 
-  // Nếu có ngày hiến máu => sang bước 4
-  useEffect(() => {
-    if (localData?.donationDate) {
-      setStep(4);
-    }
-  }, [localData?.donationDate]);
+      try {
+        const { accessToken } = JSON.parse(userLocal);
+        const res = await axios.get("http://localhost:5294/api/User/get-by-id", {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
 
-  // Xử lý submit từ bước nhập thông tin ban đầu
-  const handleFormSubmit = (data) => {
-    console.log("Thông tin ban đầu:", data);
-    setLocalData(data);
-    setFormData?.(data);
+        const data = res.data?.Data;
+
+        if (data) {
+          // ✅ Mapping đúng định dạng `CheckDate` cần
+          const mappedData = {
+            userId: data.UserId,
+            fullName: data.FullName,
+            birthDate: data.DayOfBirth ? new Date(data.DayOfBirth) : null,
+            gender: data.Gender,
+            phone: data.PhoneNumber,
+            email: data.Email,
+            address: data.Address,
+            bloodGroup: data.BloodTypeId,
+          };
+
+          setFormData(mappedData);
+        } else {
+          console.warn("API không trả về thông tin người dùng hợp lệ.");
+        }
+      } catch (error) {
+        console.error("Không thể lấy dữ liệu người dùng:", error);
+        navigate(ROUTE_PATH.LOGIN, {
+          state: { message: "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại!" },
+        });
+      }
+    };
+
+    fetchUserData();
+  }, [navigate]);
+
+  // Nhấn "Chỉnh sửa" từ CheckDate
+  const handleGoToUpdate = () => {
     setStep(2);
   };
 
-  // Xử lý sau khi chọn ngày hiến máu
-  const handleFinalSubmit = (finalData) => {
-    console.log("Ngày hiến máu đã chọn:", finalData);
-    setLocalData(finalData);
-    setFormData?.(finalData);
-  };
-
-  // Xử lý cập nhật thông tin người dùng
+  // Nhấn "Lưu" từ UpdateInfo → quay lại CheckDate
   const handleUpdateSubmit = (updatedData) => {
-    setLocalData(updatedData);
-    setFormData?.(updatedData);
-    setStep(2);
+    setFormData(updatedData);
+    setStep(1);
+  };
+
+  // Nhấn "Tiếp theo" từ CheckDate → sang ConsentForm
+  const handleFinalSubmit = (finalData) => {
+    setFormData(finalData);
+    setStep(3);
+  };
+
+  // Nhấn "Đăng ký" từ ConsentForm → hoàn tất
+  const handleConsentSubmit = (consentData) => {
+    console.log("Dữ liệu gửi đi:", consentData);
+    navigate("/"); // hoặc setStep(1) nếu muốn quay lại
   };
 
   return (
-    <div>
-      {step === 1 && <UserInfomation onSubmit={handleFormSubmit} />}
+    <div style={{ padding: "20px" }}>
+      {!formData && <p>Đang tải dữ liệu...</p>}
 
-      {step === 2 && localData && (
+      {formData && step === 1 && (
         <CheckDate
-          data={localData}
-          onBack={() => setStep(3)}
+          data={formData}
           onSubmit={handleFinalSubmit}
+          onBack={handleGoToUpdate}
         />
       )}
 
-      {step === 3 && localData && (
+      {formData && step === 2 && (
         <UpdateInfo
-          data={localData}
+          data={formData}
           onUpdate={handleUpdateSubmit}
-          onBack={() => setStep(2)}
+          onBack={() => setStep(1)}
         />
       )}
 
-      {step === 4 && localData && (
+      {formData && step === 3 && (
         <ConsentForm
-          data={localData}
-          onBack={() => setStep(2)}
-          onSubmit={(finalConsentData) => {
-            console.log("Dữ liệu cuối cùng:", finalConsentData);
-            setLocalData(null);
-            setFormData?.(null);
-            navigate("/");
-          }}
+          data={formData}
+          onSubmit={handleConsentSubmit}
+          onBack={() => setStep(1)}
         />
       )}
     </div>

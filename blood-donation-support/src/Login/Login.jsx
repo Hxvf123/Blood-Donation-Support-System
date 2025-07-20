@@ -19,43 +19,57 @@ function LoginPage({ onLoginSuccess }) {
 
   // ✅ Login bằng Email
   const handleEmailLogin = async (e) => {
-  e.preventDefault();
-  try {
-    const response = await axios.post("http://localhost:5294/api/User/login-email", {
-      email,
-      password,
-    });
+    e.preventDefault();
+    try {
+      const response = await axios.post("http://localhost:5294/api/User/login-email", {
+        email,
+        password,
+      });
 
-  const { accessToken, refreshToken } = response.data;
-   
-    if (!accessToken) {
-      toast.error("Đăng nhập thất bại: không nhận được accessToken");
-      return;
+      const { accessToken, refreshToken } = response.data;
+
+      if (!accessToken) {
+        toast.error("Đăng nhập thất bại: không nhận được accessToken");
+        return;
+      }
+
+      const profileResponse = await axios.get("http://localhost:5294/api/User/get-by-id", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      const userData = profileResponse.data?.Data;
+
+      if (!userData) {
+        toast.error("Không lấy được thông tin người dùng.");
+        return; 
+      }
+      const fullName = userData.FullName || "Người dùng";
+      const role = userData.Role || "Role";
+      
+      const userInfo = {
+        name: fullName,
+        accessToken,
+        role,
+      };
+
+
+      localStorage.setItem("user", JSON.stringify(userInfo));
+
+      toast.success("Đăng nhập thành công!");
+      onLoginSuccess?.(userInfo.name);
+      navigate("/");
+
+      if (role === "Manager") {
+        navigate("/dashboard");
+      } else {
+        navigate("/");
+      }
+    } catch (error) {
+      console.error("Lỗi đăng nhập:", error);
+      toast.error("Đăng nhập thất bại!");
     }
-
-    const profileResponse = await axios.get("http://localhost:5294/api/User/get-by-id", {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-
-    const fullName = profileResponse.data?.fullName || "Người dùng";
-
-    const userInfo = {
-      name: fullName,
-      accessToken,
-    };
-
-    localStorage.setItem("user", JSON.stringify(userInfo));
-
-    toast.success("Đăng nhập thành công!");
-    onLoginSuccess?.(userInfo.name);
-    navigate("/");
-  } catch (error) {
-    console.error("Lỗi đăng nhập:", error);
-    toast.error("Đăng nhập thất bại!");
-  }
-};
+  };
 
   // ✅ Login bằng Google
   const handleGoogleLogin = async () => {

@@ -4,6 +4,24 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import "./Receive.scss";
 
+const staticBloodTypes = [
+  { bloodTypeId: "BTI001", bloodName: "A+", compatibleFrom: ["BTI001", "BTI005"] },
+  { bloodTypeId: "BTI002", bloodName: "A−", compatibleFrom: ["BTI002", "BTI006"] },
+  { bloodTypeId: "BTI003", bloodName: "B+", compatibleFrom: ["BTI003", "BTI005"] },
+  { bloodTypeId: "BTI004", bloodName: "B−", compatibleFrom: ["BTI004", "BTI006"] },
+  { bloodTypeId: "BTI005", bloodName: "O+", compatibleFrom: ["BTI005"] },
+  { bloodTypeId: "BTI006", bloodName: "O−", compatibleFrom: ["BTI006"] },
+  { bloodTypeId: "BTI007", bloodName: "AB+", compatibleFrom: ["BTI001", "BTI003", "BTI005", "BTI007"] },
+  { bloodTypeId: "BTI008", bloodName: "AB−", compatibleFrom: ["BTI002", "BTI004", "BTI006", "BTI008"] },
+];
+
+const staticComponents = [
+  { componentTypeId: "BCT003", componentName: "Plasma" },
+  { componentTypeId: "BCT004", componentName: "Platelets" },
+  { componentTypeId: "BCT002", componentName: "Red Blood Cells" },
+  { componentTypeId: "BCT001", componentName: "Whole Blood" },
+];
+
 const schema = yup.object().shape({
   bloodTypeId: yup.string().required("Vui lòng chọn nhóm máu"),
   componentTypeId: yup.string().required("Vui lòng chọn loại chế phẩm"),
@@ -15,7 +33,7 @@ const schema = yup.object().shape({
   requestDate: yup.string().required("Vui lòng chọn ngày"),
 });
 
-const BloodReceiveForm = ({ userId, onSuccess }) => {
+const BloodReceiveForm = ({ onSuccess }) => {
   const {
     register,
     handleSubmit,
@@ -30,20 +48,10 @@ const BloodReceiveForm = ({ userId, onSuccess }) => {
   const [imageFile, setImageFile] = useState(null);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const bloodRes = await fetch("/api/blood-types");
-        const compRes = await fetch("/api/blood-components");
-        const bloodData = await bloodRes.json();
-        const compData = await compRes.json();
-        setBloodTypes(bloodData);
-        setComponents(compData);
-      } catch (err) {
-        console.error("Lỗi tải dữ liệu:", err);
-      }
-    };
-    fetchData();
-  }, []);
+  
+  setBloodTypes(staticBloodTypes);
+  setComponents(staticComponents);
+}, []);
 
   const handleBloodTypeChange = (e) => {
     const selectedId = e.target.value;
@@ -62,34 +70,42 @@ const BloodReceiveForm = ({ userId, onSuccess }) => {
 
   const onSubmit = async (data) => {
     try {
+      const user = JSON.parse(localStorage.getItem("user"));
+      const token = user?.accessToken;
+
       const formData = new FormData();
       formData.append("bloodTypeId", data.bloodTypeId);
       formData.append("componentTypeId", data.componentTypeId);
       formData.append("quantity", data.quantity);
       formData.append("requestDate", data.requestDate);
-      formData.append("userId", userId);
       if (imageFile) {
-        formData.append("image", imageFile);
+        formData.append("img", imageFile); // đúng tên field backend
       }
 
-      const res = await fetch("/api/blood-receive", {
+      const res = await fetch("http://localhost:5294/api/BloodReceive/register-receive", {
         method: "POST",
         body: formData,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       if (res.ok) {
+        const result = await res.json();
         alert("Gửi yêu cầu nhận máu thành công!");
         reset();
         setImageFile(null);
-        onSuccess();
+        onSuccess && onSuccess();
       } else {
-        alert("Gửi yêu cầu thất bại.");
+        const err = await res.json();
+        alert("Gửi yêu cầu thất bại: " + err.error);
       }
     } catch (err) {
-      console.error(err);
+      console.error("Lỗi khi gửi yêu cầu:", err);
       alert("Lỗi kết nối server.");
     }
   };
+
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="blood-form">
@@ -110,12 +126,12 @@ const BloodReceiveForm = ({ userId, onSuccess }) => {
 
       {selectedBloodType && compatibleDonors.length > 0 && (
         <div className="blood-form-group">
-          <label>Nhóm máu có thể nhận từ:</label>
-          <ul>
+          <label>Có thể nhận máu từ:</label>
+          <div>
             {compatibleDonors.map((donor) => (
-              <li key={donor.bloodTypeId}>{donor.bloodName}</li>
+              <div key={donor.bloodTypeId}>{donor.bloodName}</div>
             ))}
-          </ul>
+          </div>
         </div>
       )}
 
@@ -149,7 +165,7 @@ const BloodReceiveForm = ({ userId, onSuccess }) => {
       </div>
 
       <div className="blood-form-group">
-        <label>Tải ảnh liên quan đến bệnh lí (bắt buộc) </label>
+        <label>Tải ảnh liên quan đến bệnh lý (bắt buộc)</label>
         <input
           type="file"
           accept="image/*"

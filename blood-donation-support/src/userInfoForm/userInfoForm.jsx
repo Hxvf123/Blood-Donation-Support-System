@@ -8,6 +8,8 @@ import './userInfoForm.scss';
 import { differenceInYears } from 'date-fns';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router';
+import ROUTE_PATH from '../Constants/route';
 
 const bloodTypes = [
   { id: "BTI001", name: "A+" },
@@ -68,17 +70,21 @@ const UserInfoForm = ({ onSubmit }) => {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        const data = response.data.data;
+        const data = response.data.Data;
 
-        reset({
-          fullName: data.fullName || '',
-          birthDate: data.dayOfBirth ? new Date(data.dayOfBirth) : null,
-          gender: data.gender || '',
-          phone: data.phoneNumber || '',
-          email: data.email || '',
-          address: data.address || '',
-          bloodGroup: data.bloodTypeId || '',
-        });
+        if (data) {
+          reset({
+            fullName: data.FullName || '',
+            birthDate: data.DayOfBirth ? new Date(data.DayOfBirth) : null,
+            gender: data.Gender || '',
+            phone: data.PhoneNumber || '',
+            email: data.Email || '',
+            address: data.Address || '',
+            bloodGroup: data.BloodTypeId || '',
+          });
+        } else {
+          toast.error("Không nhận được dữ liệu người dùng.");
+        }
       } catch (error) {
         console.error('Không thể lấy thông tin người dùng:', error);
         toast.error('Không thể tải thông tin người dùng.');
@@ -93,6 +99,8 @@ const UserInfoForm = ({ onSubmit }) => {
       onSubmit(data); // chuyển sang trang update
     }
   };
+
+  const navigate = useNavigate();
 
   return (
     <div className="form-container">
@@ -192,8 +200,12 @@ const UserInfoForm = ({ onSubmit }) => {
         </Form.Group>
 
         <div className="buttons">
-          <button type="submit" className="register-button">
-            Cập nhật thông tin
+          <button
+            type="button"
+            className="register-button"
+            onClick={() => navigate(ROUTE_PATH.UPDATE)}
+          >
+            Chỉnh sửa thông tin
           </button>
         </div>
       </Form>
