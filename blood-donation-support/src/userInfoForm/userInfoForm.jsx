@@ -203,7 +203,7 @@ const UserInfoForm = ({ onSubmit }) => {
           <button
             type="button"
             className="register-button"
-            onClick={() => navigate(ROUTE_PATH.UPDATE_USER)}
+            onClick={() => navigate(ROUTE_PATH.UPDATE)}
           >
             Chỉnh sửa thông tin
           </button>

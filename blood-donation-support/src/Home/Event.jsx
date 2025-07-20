@@ -7,7 +7,6 @@ import { Navigation } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 
-
 const AllEventsPage = () => {
     const [events, setEvents] = useState([]);
     const [selectedEvent, setSelectedEvent] = useState(null);
@@ -47,7 +46,7 @@ const AllEventsPage = () => {
       }
     };
 
-    fetchEvents();
+        fetchEvents();
     }, []);
 
     const handleCardClick = (event) => {
@@ -64,9 +63,11 @@ const AllEventsPage = () => {
         const date = new Date(dateStr);
         return date.toLocaleDateString('vi-VN'); // xuất ra định dạng: dd/mm/yyyy
     };
+
     return (
         <div className="events-page" id="event-section">
             <h2 className="title text-black">SỰ KIỆN</h2>
+
             <Swiper
                 modules={[Navigation]}
                 spaceBetween={20}
@@ -82,7 +83,7 @@ const AllEventsPage = () => {
                             onClick={() => handleCardClick(event)}
                             style={{ cursor: 'pointer' }}
                         >
-                            <img src={event.imageUrl} alt={event.name} className="event-image" />
+                            <img src={event.img} alt={event.name} className="event-image" />
                             <div className="event-content">
                                 <h3>{event.name}</h3>
                                 <p><strong>Thời gian:</strong> {formatDate(event.startDate)} - {formatDate(event.endDate)}</p>

@@ -44,7 +44,7 @@ const Home = () => {
 
             {/* Về chúng tôi */}
             <section className="about-us" id="about-us">
-                <h2 className="about-us_title">Về chúng tôi</h2>
+                <h2 className="about-us_title">VỀ CHÚNG TÔI</h2>
                 <div className="about-us__content">
                     <div className="about-us__text">
                         <p>
@@ -74,7 +74,7 @@ const Home = () => {
 
             {/* Blog */}
             <section className="blog" id="blog">
-                <h2>Blog</h2>
+                <h2>BLOG</h2>
                 <div className="blog__container">
                     <div className="blog__list">
                         <div className="blog__item">

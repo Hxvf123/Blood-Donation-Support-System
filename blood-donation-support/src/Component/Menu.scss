@@ -85,4 +85,72 @@
         min-height: 100vh;
         background-color: #f9f9f9;
     }
+
+    .manager-menu {
+        background-color: #80d0f6;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .menu {
+        flex-grow: 1;
+
+        ul {
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+    }
+
+    .menu-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 20px;
+        color: white;
+        cursor: pointer;
+        text-decoration: none;
+
+        &:hover {
+            background-color: #66bde4;
+        }
+
+        &.active {
+            background-color: #a7def7;
+            color: #333;
+            font-weight: bold;
+        }
+    }
+
+    .sub-menu {
+        margin-left: 20px;
+
+        .menu-item.sub {
+            font-size: 14px;
+            padding-left: 28px;
+        }
+    }
+
+    .logout-section {
+        padding: 16px;
+
+        .logout-button {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 16px;
+            cursor: pointer;
+
+            &:hover {
+                opacity: 0.8;
+            }
+        }
+    }
+
+
 }
