@@ -59,13 +59,15 @@ const RequestList = () => {
  
         if (data) {
           const formatted = data.map(item => ({
-            id: item.RequestId,
+            id: item.RegisterId,
             userId: item.UserId,
             name: item.FullName || 'Không rõ',
             phone: item.PhoneNumber || 'Không rõ',
             email: item.Email || 'Không rõ',
-            date: formatDate(item.RequestDate),
-            status: mapStatus(item.Status)
+            date: formatDate(item.RegisterDate),
+            status: mapStatus(item.Status),
+            img: item.Img || null,
+  note: item.Notes || '',
           }));
 
           setRequests(formatted);
