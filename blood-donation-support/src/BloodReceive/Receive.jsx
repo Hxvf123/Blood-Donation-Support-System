@@ -16,11 +16,13 @@ const staticBloodTypes = [
 ];
 
 const staticComponents = [
-  { componentTypeId: "BCT003", componentName: "Plasma" },
-  { componentTypeId: "BCT004", componentName: "Platelets" },
-  { componentTypeId: "BCT002", componentName: "Red Blood Cells" },
-  { componentTypeId: "BCT001", componentName: "Whole Blood" },
+  { componentTypeId: "BCT003", componentName: "Huyết tương" },
+  { componentTypeId: "BCT004", componentName: "Tiểu cầu" },
+  { componentTypeId: "BCT002", componentName: "Hồng cầu" },
+  { componentTypeId: "BCT001", componentName: "Máu toàn phần" },
 ];
+
+
 
 const schema = yup.object().shape({
   bloodTypeId: yup.string().required("Vui lòng chọn nhóm máu"),

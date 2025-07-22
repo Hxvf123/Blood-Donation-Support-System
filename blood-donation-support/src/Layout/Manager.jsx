@@ -15,7 +15,6 @@ const ManagerLayout = () => {
       <div className="manager-main-content">
         <HeaderManager />
         <Outlet />
-        <Footer />
       </div>
     </div>
   );
