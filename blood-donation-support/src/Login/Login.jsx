@@ -14,8 +14,14 @@ function LoginPage({ onLoginSuccess }) {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordVisible, setPasswordVisible] = useState(false); // Manage password visibility
   const location = useLocation();
   const hasShownToast = useRef(false);
+
+  // Toggle password visibility
+  const togglePasswordVisibility = () => {
+    setPasswordVisible((prev) => !prev);
+  };
 
   // ✅ Login bằng Email
   const handleEmailLogin = async (e) => {
@@ -42,17 +48,16 @@ function LoginPage({ onLoginSuccess }) {
 
       if (!userData) {
         toast.error("Không lấy được thông tin người dùng.");
-        return; 
+        return;
       }
       const fullName = userData.FullName || "Người dùng";
       const role = userData.Role || "Role";
-      
+
       const userInfo = {
         name: fullName,
         accessToken,
         role,
       };
-
 
       localStorage.setItem("user", JSON.stringify(userInfo));
 
@@ -96,7 +101,6 @@ function LoginPage({ onLoginSuccess }) {
       };
 
       localStorage.setItem("user", JSON.stringify(userInfo));
-
       toast.success("Đăng nhập bằng Google thành công!");
       onLoginSuccess?.(userInfo.name);
       navigate("/");
@@ -131,12 +135,24 @@ function LoginPage({ onLoginSuccess }) {
             />
 
             <label>Mật khẩu</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+            <div className="password-container">
+              <input
+                type={passwordVisible ? "text" : "password"} // Toggle password visibility
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <span
+                className="password-icon"
+                onClick={togglePasswordVisibility}
+              >
+                {passwordVisible ? (
+                  <i className="fas fa-eye-slash"></i>
+                ) : (
+                  <i className="fas fa-eye"></i>
+                )}
+              </span>
+            </div>
 
             <div className="forgot-password">
               <a href={ROUTE_PATH.FORGOT_PASSWORD}>Quên mật khẩu?</a>

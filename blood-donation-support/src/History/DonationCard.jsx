@@ -12,7 +12,7 @@ export default function DonationCard({ center, address, date, amount, status }) 
         "Completed": { class: "donation-card__button--green", text: "Đã hiến" },
     };
 
-    const statusInfo = statusMap[status] || statusMap["Đã đặt lịch"];
+    const statusInfo = statusMap[status] || statusMap["Pending"];
 
     return (
         <div className="donation-card">
@@ -35,7 +35,7 @@ export default function DonationCard({ center, address, date, amount, status }) 
 
                 <div className="donation-card__detail">
                     <FaHeart color="#f87171" size={18} />
-                    <span>{amount} ml</span>
+                    <span>{amount ? `${amount} ml` : "Chưa rõ"}</span>
                 </div>
             </div>
 

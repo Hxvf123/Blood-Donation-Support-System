@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import "./Receive.scss";
+import { toast } from "react-toastify";
 
 const staticBloodTypes = [
   { bloodTypeId: "BTI001", bloodName: "A+", compatibleFrom: ["BTI001", "BTI005"] },
@@ -50,10 +51,10 @@ const BloodReceiveForm = ({ onSuccess }) => {
   const [imageFile, setImageFile] = useState(null);
 
   useEffect(() => {
-  
-  setBloodTypes(staticBloodTypes);
-  setComponents(staticComponents);
-}, []);
+
+    setBloodTypes(staticBloodTypes);
+    setComponents(staticComponents);
+  }, []);
 
   const handleBloodTypeChange = (e) => {
     const selectedId = e.target.value;
@@ -94,7 +95,7 @@ const BloodReceiveForm = ({ onSuccess }) => {
 
       if (res.ok) {
         const result = await res.json();
-        alert("Gửi yêu cầu nhận máu thành công!");
+        toast.success("Gửi yêu cầu nhận máu thành công!");
         reset();
         setImageFile(null);
         onSuccess && onSuccess();
@@ -162,6 +163,7 @@ const BloodReceiveForm = ({ onSuccess }) => {
           type="date"
           {...register("requestDate")}
           defaultValue={new Date().toISOString().split("T")[0]}
+          min={new Date().toISOString().split("T")[0]}
         />
         {errors.requestDate && <p className="error">{errors.requestDate.message}</p>}
       </div>
