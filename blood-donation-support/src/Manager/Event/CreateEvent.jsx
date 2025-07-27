@@ -1,9 +1,13 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import "./CreateEvent.scss";
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import axios from "axios";
 
 const CreateEventPage = () => {
+  const [isAuthorized, setIsAuthorized] = useState(null); // null = loading, true/false = xác định quyền
+
   const {
     register,
     handleSubmit,
@@ -11,11 +15,68 @@ const CreateEventPage = () => {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
-    console.log("Submitted Event Data:", data);
-    toast.success("Sự kiện đã được tạo!");
-    reset();
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user?.role === "Manager") {
+      setIsAuthorized(true);
+    } else {
+      toast.error("Bạn không có quyền truy cập trang này.");
+      setIsAuthorized(false);
+    }
+  }, []);
+
+  const onSubmit = async (data) => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const token = user?.accessToken;
+
+    if (!token) {
+      toast.warning("Không tìm thấy accessToken. Vui lòng đăng nhập lại.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("eventName", data.eventName);
+    formData.append("startDate", data.startDate);
+    formData.append("endDate", data.endDate);
+    formData.append("description", data.description);
+    formData.append("donationLocation", data.location);
+    formData.append("img", data.image[0]);
+
+    try {
+      const response = await axios.post(
+        "http://localhost:5294/create-event",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        toast.success("Sự kiện đã được tạo!");
+        reset();
+      } else {
+        toast.error("Tạo sự kiện thất bại.");
+      }
+    } catch (error) {
+      console.error("API Error:", error);
+      toast.error("Lỗi khi gọi API.");
+    }
   };
+
+  if (isAuthorized === null) return null;
+
+  if (!isAuthorized) {
+    return (
+      <div className="create-event-page">
+        <ToastContainer />
+        <h2 style={{ color: "red", textAlign: "center", marginTop: "100px" }}>
+          Bạn không có quyền truy cập trang này.
+        </h2>
+      </div>
+    );
+  }
 
   return (
     <div className="create-event-page">
@@ -78,6 +139,7 @@ const CreateEventPage = () => {
           </form>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 };

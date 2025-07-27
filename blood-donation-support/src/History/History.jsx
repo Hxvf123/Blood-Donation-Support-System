@@ -33,12 +33,12 @@ function DonationHistory() {
       ) : (
         history.map((item) => (
           <DonationCard
-            key={item.registerId}
-            center={item.eventName}
-            address={item.donationLocation}
-            date={item.registerDate}
-            amount={item.volume}
-            status={item.status}
+            key={item.RegisterId}
+            center={item.EventName}
+            address={item.DonationLocation}
+            date={item.RegisterDate}
+            amount={item.Volume}
+            status={item.Status}
           />
         ))
       )}

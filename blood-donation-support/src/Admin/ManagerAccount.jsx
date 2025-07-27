@@ -1,39 +1,65 @@
 import React, { useEffect, useState } from 'react';
-import { collection, getDocs, doc, updateDoc } from 'firebase/firestore';
-import { db } from '../Firebase/firebase';
+import axios from 'axios';
 import './ManagerAccount.scss';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { FaIdCard, FaUser, FaEnvelope, FaUserTag, FaUserCog } from 'react-icons/fa';
 
-
 function AccountManagement() {
   const [accounts, setAccounts] = useState([]);
+  const [hasPermission, setHasPermission] = useState(false);
+  const [checkedRole, setCheckedRole] = useState(false); // để đảm bảo đã kiểm tra quyền xong
 
   useEffect(() => {
     const fetchAccounts = async () => {
       try {
-        const querySnapshot = await getDocs(collection(db, 'users'));
-        const accountsList = querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        }));
-        setAccounts(accountsList);
+        const user = JSON.parse(localStorage.getItem('user'));
+        const token = user?.accessToken;
+        const role = user?.role; // 👈 thêm kiểm tra role từ localStorage
+
+        if (role !== "Admin") {
+          toast.error("Bạn không có quyền truy cập trang này!");
+          setHasPermission(false);
+          setCheckedRole(true);
+          return;
+        }
+
+        setHasPermission(true);
+        setCheckedRole(true);
+
+        const res = await axios.get("http://localhost:5294/api/User/get-all-user", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        const data = res.data?.Data || [];
+        setAccounts(data);
       } catch (error) {
         console.error('Lỗi khi lấy dữ liệu:', error);
+        toast.error("Lỗi khi lấy danh sách người dùng");
       }
     };
 
     fetchAccounts();
   }, []);
 
-  const handleRoleChange = async (id, newRole) => {
+  const handleRoleChange = async (userId, newRole) => {
     try {
-      const userRef = doc(db, 'users', id);
-      await updateDoc(userRef, { role: newRole });
+      const user = JSON.parse(localStorage.getItem('user'));
+      const token = user?.accessToken;
+
+      await axios.post(
+        'http://localhost:5294/api/User/set-role',
+        {
+          UserId: userId,
+          Role: newRole
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
 
       setAccounts(prev =>
-        prev.map(user => (user.id === id ? { ...user, role: newRole } : user))
+        prev.map(user => (user.UserId === userId ? { ...user, Role: newRole } : user))
       );
 
       toast.success("Cập nhật vai trò thành công!");
@@ -43,9 +69,24 @@ function AccountManagement() {
     }
   };
 
+  if (!checkedRole) {
+    return <p>Đang kiểm tra quyền truy cập...</p>;
+  }
+
+  if (!hasPermission) {
+    return (
+      <div className="create-event-page">
+        <ToastContainer />
+        <h2 style={{ color: "red", textAlign: "center", marginTop: "100px" }}>
+          Bạn không có quyền truy cập trang này.
+        </h2>
+      </div>
+    );
+  }
+
   return (
     <div className="account-management">
-      <h2> Danh sách tài khoản</h2>
+      <h2>Danh sách tài khoản</h2>
 
       {accounts.length === 0 ? (
         <p className="no-data">Không có tài khoản nào.</p>
@@ -64,21 +105,21 @@ function AccountManagement() {
 
             <tbody>
               {accounts.map((acc) => (
-                <tr key={acc.id}>
-                  <td>{acc.id}</td>
-                  <td>{acc.name}</td>
-                  <td>{acc.email}</td>
-                  <td>{acc.role}</td>
+                <tr key={acc.UserId}>
+                  <td>{acc.UserId}</td>
+                  <td>{acc.FullName}</td>
+                  <td>{acc.Email}</td>
+                  <td>{acc.Role}</td>
                   <td>
                     <select
-                      value={acc.role}
-                      onChange={(e) => handleRoleChange(acc.id, e.target.value)}
+                      value={acc.Role}
+                      onChange={(e) => handleRoleChange(acc.UserId, e.target.value)}
                     >
-                      <option value="admin">Admin</option>
-                      <option value="user">User</option>
-                      <option value="staff">Staff</option>
-                      <option value="manager">Manager</option>
-
+                      <option value="Admin">Admin</option>
+                      <option value="User">User</option>
+                      <option value="Staff">Staff</option>
+                      <option value="Manager">Manager</option>
+                      <option value="Member">Member</option>
                     </select>
                   </td>
                 </tr>
@@ -87,7 +128,6 @@ function AccountManagement() {
           </table>
         </div>
       )}
-
     </div>
   );
 }

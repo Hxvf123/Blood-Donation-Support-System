@@ -3,9 +3,8 @@ import axios from 'axios';
 import { useNavigate } from 'react-router';
 import './RequestReceive.scss';
 import { User, Phone, Mail, CalendarDays } from "lucide-react";
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 
-// Map status code từ BE sang tiếng Việt
 const mapStatus = (status) => {
   switch (status) {
     case 'Pending': return 'Đã đăng kí';
@@ -16,7 +15,6 @@ const mapStatus = (status) => {
   }
 };
 
-// Màu sắc theo trạng thái
 const getStatusClass = (status) => {
   switch (status) {
     case 'Đã đăng kí': return 'status-label yellow';
@@ -27,7 +25,6 @@ const getStatusClass = (status) => {
   }
 };
 
-// Format ngày
 const formatDate = (isoDate) => {
   if (!isoDate) return 'Không rõ';
   const date = new Date(isoDate);
@@ -38,16 +35,23 @@ const RequestList = () => {
   const navigate = useNavigate();
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [unauthorized, setUnauthorized] = useState(false);
 
   useEffect(() => {
     const fetchRequests = async () => {
       try {
         const user = JSON.parse(localStorage.getItem('user'));
         const token = user?.accessToken;
+        const role = user?.role;
 
-        if (!token) {
-          toast.warning("Không tìm thấy accessToken. Vui lòng đăng nhập lại.");
+        if (!token || !role) {
+          toast.warning("Không tìm thấy accessToken hoặc vai trò. Vui lòng đăng nhập lại.");
+          setUnauthorized(true);
+          return;
+        }
+
+        if (role !== 'Manager') {
+          setUnauthorized(true);
           return;
         }
 
@@ -56,7 +60,7 @@ const RequestList = () => {
         });
 
         const data = response.data?.Data;
- 
+
         if (data) {
           const formatted = data.map(item => ({
             id: item.RegisterId,
@@ -66,8 +70,11 @@ const RequestList = () => {
             email: item.Email || 'Không rõ',
             date: formatDate(item.RegisterDate),
             status: mapStatus(item.Status),
+            bloodTypeId: item.BloodTypeId,
+            componentId: item.ComponentTypeId || 'Không rõ',
+            quantity: item.Quantity || 0,
+            note: item.Notes || '',
             img: item.Img || null,
-  note: item.Notes || '',
           }));
 
           setRequests(formatted);
@@ -86,11 +93,22 @@ const RequestList = () => {
     fetchRequests();
   }, []);
 
+  if (unauthorized) {
+    return (
+      <div className="create-event-page">
+        <ToastContainer />
+        <h2 style={{ color: "red", textAlign: "center", marginTop: "100px" }}>
+          Bạn không có quyền truy cập trang này.
+        </h2>
+      </div>
+    );
+  }
+
   if (loading) return <p>Đang tải dữ liệu...</p>;
-  if (error) return <p>{error}</p>;
 
   return (
     <div className="request-list">
+      <ToastContainer />
       <h2>Danh sách yêu cầu nhận máu</h2>
       {requests.length === 0 ? (
         <p>Không có yêu cầu nào.</p>

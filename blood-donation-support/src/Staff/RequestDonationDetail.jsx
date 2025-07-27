@@ -7,9 +7,7 @@ import "./RequestDonationDetail.scss";
 
 const statusOptions = [
   { label: "Đã đăng kí", value: "Pending" },
-  { label: "Đã xác nhận", value: "Confirmed" },
   { label: "Đang tiến hành", value: "Processing" },
-  { label: "Đã bị hủy", value: "Canceled" }
 ];
 
 const RequestDetail = () => {
@@ -51,7 +49,7 @@ const RequestDetail = () => {
             Authorization: `Bearer ${token}`
           }
         });
-
+        console.log("Request object:", request);
         toast.success("Đã check-in thành công!");
       } else {
         toast.info("Chỉ hỗ trợ cập nhật sang 'Đang tiến hành' thông qua API.");

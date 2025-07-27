@@ -1,23 +1,48 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import DashboardCharts from "./DashboardChart";
 import StatCard from "./StatCard";
+import axios from "axios";
 import "./Dashboard.scss";
 
-const mockData = {
-  totalEvents: 18,
-  totalRegistrations: 142,
-  totalBloodAvailable: 90,
-  totalExpiredBlood: 10,
-  totalUsedBlood: 65,
-  totalUsers: 210,
-  totalSuccessfulDonors: 120,
-  totalFailedDonors: 15,
-  totalCancelledRegistrations: 7,
-  totalReceivedBlood: 80
-};
-
 const Dashboard = () => {
-  const data = mockData;
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const response = await axios.get("http://localhost:5294/api/ReportLog/dashboard-summary");
+        const apiData = response.data?.Data;
+
+        if (apiData) {
+          // Mapping từ API sang format cũ
+          const mappedData = {
+            totalEvents: apiData.TotalEvents,
+            totalRegistrations: apiData.TotalDonationForms,
+            totalBloodAvailable: apiData.TotalBloodAvailable,
+            totalExpiredBlood: apiData.TotalBloodExpiry,
+            totalUsedBlood: apiData.TotalBloodUsed,
+            totalUsers: apiData.TotalUserRegisters,
+            totalSuccessfulDonors: apiData.TotalDonorSuccessDonations,
+            totalFailedDonors: apiData.TotalDonorFailDonations,
+            totalCancelledRegistrations: apiData.TotalDonorCancels,
+            totalReceivedBlood: apiData.TotalBloodRecipients,
+          };
+          setData(mappedData);
+          console.log("Mapp",mappedData)
+        } else {
+          console.error("Không có dữ liệu từ API.");
+        }
+      } catch (error) {
+        console.error("Lỗi khi gọi API:", error);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
+
+  if (!data) {
+    return <div>Đang tải dữ liệu...</div>;
+  }
 
   return (
     <div className="dashboard">
