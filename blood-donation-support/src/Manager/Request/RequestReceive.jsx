@@ -10,7 +10,8 @@ const mapStatus = (status) => {
     case 'Pending': return 'Đã đăng kí';
     case 'Confirmed': return 'Đã xác nhận';
     case 'Processing': return 'Đang tiến hành';
-    case 'Canceled': return 'Đã bị hủy';
+    case 'Completed': return 'Hoàn thành';
+    case 'Rejected': return 'Đã bị hủy';
     default: return 'Không rõ';
   }
 };

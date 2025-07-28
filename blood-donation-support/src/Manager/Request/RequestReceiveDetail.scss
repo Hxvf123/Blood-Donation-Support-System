@@ -68,4 +68,19 @@
       }
     }
   }
+  .status-action-buttons {
+  display: flex;
+  gap: 10px;
+  margin: 10px 0;
+
+  .confirm-btn {
+    background-color: #4caf50;
+    color: white;
+  }
+
+  .reject-btn {
+    background-color: #f44336;
+    color: white;
+  }
+}
 }
