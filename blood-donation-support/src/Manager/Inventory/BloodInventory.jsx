@@ -5,6 +5,7 @@ import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell
 } from "recharts";
+import { useNavigate } from "react-router";
 import "./BloodInventory.scss";
 
 const COLORS = ["#FF6384", "#36A2EB", "#FFCE56"];
@@ -12,7 +13,7 @@ const COLORS = ["#FF6384", "#36A2EB", "#FFCE56"];
 const BloodInventory = () => {
   const [summaryData, setSummaryData] = useState(null);
   const [isManager, setIsManager] = useState(false);
-
+  const navigate = useNavigate();
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
     const token = user?.accessToken;
@@ -98,6 +99,12 @@ const BloodInventory = () => {
           </PieChart>
         </ResponsiveContainer>
       </div>
+      <button
+            className="btn update-btn"
+            onClick={() => navigate("/dashboard/inventory/AddBloodBag")}
+          >
+            Cập nhật kho máu
+          </button>
     </div>
   );
 };

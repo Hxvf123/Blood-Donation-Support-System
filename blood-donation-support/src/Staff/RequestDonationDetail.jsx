@@ -81,6 +81,12 @@ const RequestDetail = () => {
         </p>
         <div className="button-group">
           <button className="btn back-btn" onClick={() => navigate("/dashboard/requestsDonation")}>Quay lại</button>
+          <button
+            className="btn update-btn"
+            onClick={() => navigate(`/dashboard/requestsDonation/${request.id}/add-blood`, { state: { request } })}
+          >
+            Cập nhật kho máu
+          </button>
           <button className="btn save-btn" onClick={handleSave}>Lưu</button>
         </div>
       </div>

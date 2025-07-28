@@ -67,7 +67,11 @@ function LoginPage({ onLoginSuccess }) {
 
       if (role === "Manager") {
         navigate("/dashboard");
-      } else {
+      } else if (role === "Admin") {
+        navigate("/dashboard/manage-account");
+      }else if (role === "Staff") {
+        navigate("/dashboard/requestsDonation");
+      }else{
         navigate("/");
       }
     } catch (error) {

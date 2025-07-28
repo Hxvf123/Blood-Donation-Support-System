@@ -4,20 +4,19 @@ import { format } from "date-fns";
 import axios from "axios";
 import "../userInfoForm/userInfoForm.scss";
 import "./CheckDate.scss";
-import { getAuth } from "firebase/auth";
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import ROUTE_PATH from "../Constants/route";
 
 const bloodTypes = [
   { id: "BTI001", name: "A+" },
-  { id: "BTI002", name: "A−" },
+  { id: "BTI002", name: "A-" },
   { id: "BTI003", name: "B+" },
-  { id: "BTI004", name: "B−" },
-  { id: "BTI005", name: "O+" },
-  { id: "BTI006", name: "O−" },
-  { id: "BTI007", name: "AB+" },
-  { id: "BTI008", name: "AB−" }
+  { id: "BTI004", name: "B-" },
+  { id: "BTI005", name: "AB+" },
+  { id: "BTI006", name: "AB-" },
+  { id: "BTI007", name: "O+" },
+  { id: "BTI008", name: "O-" }
 ];
 
 const CheckDate = ({ data, onBack, onSubmit }) => {
@@ -27,27 +26,6 @@ const CheckDate = ({ data, onBack, onSubmit }) => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   const fetchEvents = async () => {
-  //       try {
-  //         const user = JSON.parse(localStorage.getItem('user'));
-  //       const token = user?.accessToken;
-
-
-
-
-  //       const res = await axios.get("http://localhost:5294/GetAllEvents", {
-  //         headers: { Authorization: `Bearer ${token}` }
-  //       });
-  //       setEvents(res.data.data);
-  //     } catch (err) {
-  //       console.error("Lỗi khi tải danh sách sự kiện:", err);
-  //       alert("Không thể tải danh sách sự kiện hiến máu.");
-  //     }
-  //   };
-
-  //   fetchEvents();
-  // }, []);
   useEffect(() => {
     const fetchEvents = async () => {
       try {
