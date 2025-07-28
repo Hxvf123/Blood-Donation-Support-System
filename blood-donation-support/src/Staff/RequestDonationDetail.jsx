@@ -24,7 +24,6 @@ const RequestDetail = () => {
     if (passedData && passedData.id === id) {
       setRequest(passedData);
 
-      // tìm giá trị value từ label (map ngược)
       const matched = statusOptions.find(opt => opt.label === passedData.status);
       setStatus(matched?.value || "Pending");
     } else {
@@ -32,27 +31,41 @@ const RequestDetail = () => {
     }
   }, [id, location.state]);
 
-  const handleSave = async () => {
+  const updateStatusAndSave = async (newStatus) => {
     try {
-      const user = JSON.parse(localStorage.getItem('user'));
+      const user = JSON.parse(localStorage.getItem("user"));
       const token = user?.accessToken;
 
       if (!token) {
         toast.warning("Không tìm thấy token. Vui lòng đăng nhập lại.");
+        navigate("/login");
         return;
       }
 
-      // Nếu chọn là "Đang tiến hành" thì gọi API check-in
-      if (status === "Processing") {
-        const res = await axios.put(`http://localhost:5294/api/BloodDonation/check-in-by-id?userId=${request.userId}`, {}, {
-          headers: {
-            Authorization: `Bearer ${token}`
+      if (newStatus === "Processing") {
+        const res = await axios.put(
+          `http://localhost:5294/api/BloodDonation/check-in-by-id?userId=${request.userId}`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
-        });
-        console.log("Request object:", request);
+        );
+
         toast.success("Đã check-in thành công!");
-      } else {
-        toast.info("Chỉ hỗ trợ cập nhật sang 'Đang tiến hành' thông qua API.");
+        setStatus("Processing");
+        setRequest((prev) => ({
+          ...prev,
+          status: "Processing",
+        }));
+      } else if (newStatus === "Rejected") {
+        toast.info("Yêu cầu đã bị từ chối.");
+        setStatus("Rejected");
+        setRequest((prev) => ({
+          ...prev,
+          status: "Rejected",
+        }));
       }
 
     } catch (err) {
@@ -73,21 +86,19 @@ const RequestDetail = () => {
         <p><strong>Email:</strong> {request.email}</p>
         <p>
           <strong>Trạng thái:</strong>
-          <select value={status} onChange={(e) => setStatus(e.target.value)}>
+          <select value={status} onChange={(e) => setStatus(e.target.value)} disabled>
             {statusOptions.map((opt) => (
               <option key={opt.value} value={opt.value}>{opt.label}</option>
             ))}
           </select>
         </p>
+
         <div className="button-group">
           <button className="btn back-btn" onClick={() => navigate("/dashboard/requestsDonation")}>Quay lại</button>
-          <button
-            className="btn update-btn"
-            onClick={() => navigate(`/dashboard/requestsDonation/${request.id}/add-blood`, { state: { request } })}
-          >
-            Cập nhật kho máu
-          </button>
-          <button className="btn save-btn" onClick={handleSave}>Lưu</button>
+          
+          <div className="status-action-buttons">
+            <button className="btn confirm-btn" onClick={() => updateStatusAndSave("Processing")}>Xác nhận</button>
+          </div>
         </div>
       </div>
     </div>

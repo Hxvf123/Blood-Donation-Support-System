@@ -5,15 +5,13 @@ import "react-toastify/dist/ReactToastify.css";
 import "./RequestReceiveDetail.scss";
 import axios from "axios";
 
-const statusOptions = ["Đã đăng kí", "Đã xác nhận", "Đang tiến hành", "Đã bị hủy"];
-
-const mapLabelToValue = (label) => {
-  switch (label) {
-    case "Đã đăng kí": return "Pending";
-    case "Đã xác nhận": return "Confirmed";
-    case "Đang tiến hành": return "Processing";
-    case "Đã bị hủy": return "Canceled";
-    default: return "Pending";
+const mapValueToLabel = (value) => {
+  switch (value) {
+    case "Pending": return "Đã đăng kí";
+    case "Processing": return "Đang tiến hành";
+    case "Completed": return "Hoàn thành";
+    case "Rejected": return "Đã bị hủy";
+    default: return value;
   }
 };
 
@@ -44,53 +42,59 @@ const RequestDetail = () => {
 
   useEffect(() => {
     const passedData = location.state?.request;
-    console.log("Chi tiết request:", passedData);
-    if (passedData && passedData.id === id) {
+    if (passedData && (passedData.id === id || passedData.RequestId === id)) {
       setRequest(passedData);
-
-      const matched = statusOptions.find(opt => opt.label === passedData.status);
-      setStatus(matched?.value || "Pending");
+      setStatus(passedData.status || passedData.Status || "Pending");
     } else {
       toast.error("Không tìm thấy thông tin yêu cầu. Vui lòng quay lại.");
     }
   }, [id, location.state]);
 
-  const handleSave = async () => {
-  const user = JSON.parse(localStorage.getItem("user"));
-  const token = user?.accessToken;
+  const updateStatusAndSave = (newStatus) => {
+    handleSave(newStatus);
+  };
 
-  if (!token) {
-    toast.warning("Không tìm thấy token. Vui lòng đăng nhập lại.");
-    navigate("/login");
-    return;
-  }
+  const handleSave = async (newStatus) => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const token = user?.accessToken;
 
-  try {
-    const payload = {
-      userId: request.userId,
-      status: status,
-    };
-    console.log("payload",payload)
-    const response = await axios.put(
-      "http://localhost:5294/api/BloodDonation/check-in-by-id",
-      payload,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    if (response.data?.Success) {
-      toast.success("Cập nhật trạng thái thành công!");
-    } else {
-      toast.error(response.data?.Message || "Cập nhật thất bại!");
+    if (!token) {
+      toast.warning("Không tìm thấy token. Vui lòng đăng nhập lại.");
+      navigate("/login");
+      return;
     }
-  } catch (error) {
-    console.error("Lỗi khi cập nhật trạng thái:", error);
-    toast.error("Cập nhật thất bại. Vui lòng thử lại.");
-  }
-};
+
+    try {
+      const payload = {
+        RequestId: request.id,
+        Status: newStatus,
+      };
+      const response = await axios.post(
+        "http://localhost:5294/api/BloodReceive/change-status",
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+       if (response.status === 200) {
+        toast.success("Cập nhật trạng thái thành công!");
+
+        setStatus(newStatus);
+        setRequest((prev) => ({
+          ...prev,
+          status: newStatus,
+        }));
+      } else {
+        toast.error(response.data?.Message || "Cập nhật thất bại!");
+      }
+    } catch (error) {
+      console.error("Lỗi khi cập nhật trạng thái:", error);
+      toast.error("Cập nhật thất bại. Vui lòng thử lại.");
+    }
+  };
 
   if (!request) return <p>Không tìm thấy yêu cầu.</p>;
 
@@ -109,15 +113,7 @@ const RequestDetail = () => {
           components.find(c => c.id === request.componentId)?.name || request.componentId
         }</p>
         <p><strong>Số lượng:</strong> {request.quantity || 0} ml</p>
-        
-        <p>
-          <strong>Trạng thái:</strong>
-          <select value={status} onChange={(e) => setStatus(e.target.value)}>
-            {statusOptions.map((label) => (
-              <option key={label} value={mapLabelToValue(label)}>{label}</option>
-            ))}
-          </select>
-        </p>
+        <p><strong>Trạng thái hiện tại:</strong> {mapValueToLabel(status)}</p>
 
         {request.img && (
           <img
@@ -126,10 +122,14 @@ const RequestDetail = () => {
             className="img-fluid mb-3"
           />
         )}
-          <p><strong>Ghi chú:</strong> {request.note || "Không có ghi chú"} </p>
+
+        <p><strong>Ghi chú:</strong> {request.note || "Không có ghi chú"}</p>
         <div className="button-group">
           <button className="btn back-btn" onClick={() => navigate("/dashboard/requestsReceive")}>Quay lại</button>
-          <button className="btn save-btn" onClick={handleSave}>Lưu</button>
+          <div className="status-action-buttons">
+            <button className="btn confirm-btn" onClick={() => updateStatusAndSave("Processing")}>Xác nhận</button>
+            <button className="btn reject-btn" onClick={() => updateStatusAndSave("Rejected")}>Từ chối</button>
+          </div>
         </div>
       </div>
     </div>
