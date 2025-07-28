@@ -62,6 +62,7 @@ const RequestList = () => {
             name: item.FullName || 'Không rõ',
             phone: item.PhoneNumber || 'Không rõ',
             email: item.Email || 'Không rõ',
+            bloodTypeId: item.BloodTypeId,
             date: formatDate(item.RegisterDate),
             status: mapStatus(item.Status),
           }));

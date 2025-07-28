@@ -7,13 +7,13 @@ import { toast } from "react-toastify";
 
 const staticBloodTypes = [
   { bloodTypeId: "BTI001", bloodName: "A+", compatibleFrom: ["BTI001", "BTI005"] },
-  { bloodTypeId: "BTI002", bloodName: "A−", compatibleFrom: ["BTI002", "BTI006"] },
+  { bloodTypeId: "BTI002", bloodName: "A-", compatibleFrom: ["BTI002", "BTI006"] },
   { bloodTypeId: "BTI003", bloodName: "B+", compatibleFrom: ["BTI003", "BTI005"] },
-  { bloodTypeId: "BTI004", bloodName: "B−", compatibleFrom: ["BTI004", "BTI006"] },
-  { bloodTypeId: "BTI005", bloodName: "O+", compatibleFrom: ["BTI005"] },
-  { bloodTypeId: "BTI006", bloodName: "O−", compatibleFrom: ["BTI006"] },
-  { bloodTypeId: "BTI007", bloodName: "AB+", compatibleFrom: ["BTI001", "BTI003", "BTI005", "BTI007"] },
-  { bloodTypeId: "BTI008", bloodName: "AB−", compatibleFrom: ["BTI002", "BTI004", "BTI006", "BTI008"] },
+  { bloodTypeId: "BTI004", bloodName: "B-", compatibleFrom: ["BTI004", "BTI006"] },
+  { bloodTypeId: "BTI005", bloodName: "AB+", compatibleFrom: ["BTI001", "BTI003", "BTI005", "BTI007"] },
+  { bloodTypeId: "BTI006", bloodName: "AB-", compatibleFrom: ["BTI002", "BTI004", "BTI006", "BTI008"] },
+  { bloodTypeId: "BTI007", bloodName: "O+", compatibleFrom: ["BTI005"] },
+  { bloodTypeId: "BTI008", bloodName: "O-", compatibleFrom: ["BTI006"] }
 ];
 
 const staticComponents = [

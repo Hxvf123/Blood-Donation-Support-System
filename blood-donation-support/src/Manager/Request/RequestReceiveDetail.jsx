@@ -3,6 +3,7 @@ import { useNavigate, useParams, useLocation } from "react-router";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./RequestReceiveDetail.scss";
+import axios from "axios";
 
 const statusOptions = ["Đã đăng kí", "Đã xác nhận", "Đang tiến hành", "Đã bị hủy"];
 
@@ -18,13 +19,13 @@ const mapLabelToValue = (label) => {
 
 const bloodTypes = [
   { id: "BTI001", name: "A+" },
-  { id: "BTI002", name: "A−" },
+  { id: "BTI002", name: "A-" },
   { id: "BTI003", name: "B+" },
-  { id: "BTI004", name: "B−" },
-  { id: "BTI005", name: "O+" },
-  { id: "BTI006", name: "O−" },
-  { id: "BTI007", name: "AB+" },
-  { id: "BTI008", name: "AB−" }
+  { id: "BTI004", name: "B-" },
+  { id: "BTI005", name: "AB+" },
+  { id: "BTI006", name: "AB-" },
+  { id: "BTI007", name: "O+" },
+  { id: "BTI008", name: "O-" }
 ];
 
 const components = [
@@ -55,17 +56,41 @@ const RequestDetail = () => {
   }, [id, location.state]);
 
   const handleSave = async () => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    const token = user?.accessToken;
+  const user = JSON.parse(localStorage.getItem("user"));
+  const token = user?.accessToken;
 
-    if (!token) {
-      toast.warning("Không tìm thấy token. Vui lòng đăng nhập lại.");
-      navigate("/login");
-      return;
+  if (!token) {
+    toast.warning("Không tìm thấy token. Vui lòng đăng nhập lại.");
+    navigate("/login");
+    return;
+  }
+
+  try {
+    const payload = {
+      userId: request.userId,
+      status: status,
+    };
+    console.log("payload",payload)
+    const response = await axios.put(
+      "http://localhost:5294/api/BloodDonation/check-in-by-id",
+      payload,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (response.data?.Success) {
+      toast.success("Cập nhật trạng thái thành công!");
+    } else {
+      toast.error(response.data?.Message || "Cập nhật thất bại!");
     }
-
-
-  };
+  } catch (error) {
+    console.error("Lỗi khi cập nhật trạng thái:", error);
+    toast.error("Cập nhật thất bại. Vui lòng thử lại.");
+  }
+};
 
   if (!request) return <p>Không tìm thấy yêu cầu.</p>;
 
