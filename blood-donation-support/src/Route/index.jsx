@@ -18,11 +18,12 @@ import Contact from "../Contact/Contact";
 import RequestReceive from "../Manager/Request/RequestReceive";
 import RequestReceiveDetail from "../Manager/Request/RequestReceiveDetail";
 import Dashboard from "../Manager/Dashboard/Dashboard";
-import Inventory from "../Manager/Inventory/BloodInventory"; 
+import Inventory from "../Manager/Inventory/BloodInventory";
 import Event from "../Manager/Event/CreateEvent";
 
 import RequestDonation from "../Staff/RequestDonation";
 import RequestDonationDetail from "../Staff/RequestDonationDetail";
+import CheckIn from "../Staff/Checkin/CheckIn";
 
 import ManageAccount from "../Admin/ManagerAccount";
 
@@ -56,6 +57,7 @@ function Routes() {
                 { path: ROUTE_PATH.REQUEST_DONATION, element: <RequestDonation /> },
                 { path: ROUTE_PATH.REQUEST_DONATION_DETAIL, element: <RequestDonationDetail /> },
                 { path: ROUTE_PATH.EVENT, element: <Event /> },
+                { path: ROUTE_PATH.CHECKIN, element: <CheckIn /> },
                 { path: ROUTE_PATH.MANAGE_ACCOUNT, element: <ManageAccount /> },
             ]
         }

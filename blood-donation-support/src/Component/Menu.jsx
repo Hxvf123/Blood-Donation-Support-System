@@ -7,7 +7,8 @@ import {
     User,
     LogOut,
     Inbox,
-    HandHeart
+    HandHeart,
+    ScanLine
 } from "lucide-react";
 import { NavLink, useNavigate, useLocation } from "react-router";
 import "./Menu.scss";
@@ -62,13 +63,11 @@ const MenuManager = () => {
                         <span>Kho máu</span>
                     </NavLink>
 
-                    {/* Tab chính "Yêu cầu" không dẫn đến đâu, chỉ mở submenu */}
                     <div className={`menu-item ${showRequestSub ? "active" : ""}`} onClick={toggleRequestSub}>
                         <ClipboardList size={20} />
                         <span>Yêu cầu</span>
                     </div>
 
-                    {/* Submenu chỉ hiện khi ở route liên quan */}
                     {showRequestSub && (
                         <div className="sub-menu">
                             <NavLink
@@ -93,6 +92,14 @@ const MenuManager = () => {
                         className={({ isActive }) => `menu-item ${isActive ? "active" : ""}`}>
                         <CalendarHeart size={20} />
                         <span>Tạo sự kiện</span>
+                    </NavLink>
+
+                    <NavLink
+                        to={ROUTE_PATH.CHECKIN}
+                        end
+                        className={({ isActive }) => `menu-item ${isActive ? "active" : ""}`}>
+                        <ScanLine size={20} />
+                        <span>Check-in</span>
                     </NavLink>
 
                     <NavLink

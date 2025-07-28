@@ -21,7 +21,7 @@ const CheckDate = ({ data, onBack, onSubmit }) => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [events, setEvents] = useState([]);
   const [selectedEventId, setSelectedEventId] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
 
   useEffect(() => {
     const fetchEvents = async () => {

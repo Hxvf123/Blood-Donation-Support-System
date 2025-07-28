@@ -1,20 +1,17 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router";
-import { Bell, LogIn } from "lucide-react";
+import { LogIn } from "lucide-react";
 import "./Header.scss";
 
 import logo from "../Img/logo.png";
 import defaultAvatar from "../Img/user.png";
-import NotificationPopup from "./notiPopup";
 import ROUTE_PATH from "../Constants/route";
 import { auth } from "../Firebase/firebase";
 
 export default function Header() {
-    const [showPopup, setShowPopup] = useState(false);
     const [showRegisterMenu, setShowRegisterMenu] = useState(false);
     const [showUserMenu, setShowUserMenu] = useState(false);
 
-    const bellRef = useRef(null);
     const registerRef = useRef(null);
     const userMenuRef = useRef(null);
     const navigate = useNavigate();
@@ -23,9 +20,6 @@ export default function Header() {
 
     useEffect(() => {
         const handleClickOutside = (event) => {
-            if (bellRef.current && !bellRef.current.contains(event.target)) {
-                setShowPopup(false);
-            }
             if (registerRef.current && !registerRef.current.contains(event.target)) {
                 setShowRegisterMenu(false);
             }
@@ -60,10 +54,6 @@ export default function Header() {
                 </div>
 
                 <div className="header__actions">
-                    <div className="notification-bell" ref={bellRef}>
-                        <Bell size={28} style={{ cursor: "pointer" }} onClick={() => setShowPopup((prev) => !prev)} />
-                        {showPopup && <NotificationPopup />}
-                    </div>
 
                     {user ? (
                         <div className="user-avatar" ref={userMenuRef}>

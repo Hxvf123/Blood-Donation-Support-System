@@ -28,7 +28,7 @@ const schema = yup.object({
   phone: yup
     .string()
     .matches(/^(0|\+84)[3|5|7|8|9][0-9]{8}$/, "Số điện thoại không hợp lệ")
-    .required("Bắt buộc nhập số điện thoại"),
+    .required("Vui lòng nhập số điện thoại"),
 
   email: yup.string().email("Email không hợp lệ").required("Vui lòng nhập email"),
 
