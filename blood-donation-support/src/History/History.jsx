@@ -1,38 +1,74 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import DonationCard from "./DonationCard";
-import "./History.scss";
+import axios from "axios";
+import { toast } from "react-toastify";
 
-const donationHistory = [
-    {
-        id: 1,
-        center: "Trung tâm hiến máu Quốc gia",
-        address: "123 Đường ABC, Quận 1",
-        date: "12/06/2025",
-        amount: 350, // ml
-    },
-    {
-        id: 2,
-        center: "Bệnh viện Chợ Rẫy",
-        address: "201B Nguyễn Chí Thanh, Q.5",
-        date: "22/04/2025",
-        amount: 450,
-    },
-    {
-        id: 3,
-        center: "Viện Huyết học",
-        address: "14 Trần Thái Tông, Cầu Giấy",
-        date: "10/01/2025",
-        amount: 250,
-    },
-];
+function DonationHistory() {
+  const [history, setHistory] = useState([]);
 
-export default function DonationHistory() {
-    return (
-        <div className="donation-history">
-            <h2 className="donation-history__title">Lịch sử hiến máu</h2>
-            {donationHistory.map((item) => (
-                <DonationCard key={item.id} {...item} />
-            ))}
-        </div>
-    );
+  const fetchData = async () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const token = user?.accessToken;
+
+    try {
+      const res = await axios.get("http://localhost:5294/api/User/get-history-donation", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setHistory(res.data?.data || []);
+    } catch (error) {
+      console.error("Lỗi khi tải lịch sử hiến máu:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const handleCancel = async (donationId) => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const token = user?.accessToken;
+
+    try {
+      await axios.post(
+        "http://localhost:5294/api/BloodDonation/cancel-donation",
+        { donationId },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      toast.success("Hủy đăng ký hiến máu thành công");
+      fetchData();
+    } catch (error) {
+      toast.error("Hủy thất bại");
+      console.error("Lỗi khi hủy đăng ký:", error);
+    }
+  };
+
+  return (
+    <div className="donation-history">
+      {history.length === 0 ? (
+        <p>Chưa có lịch sử hiến máu.</p>
+      ) : (
+        history.map((item) => (
+          <DonationCard
+            key={item.RegisterId}
+            center={item.EventName}
+            address={item.DonationLocation}
+            date={item.RegisterDate}
+            amount={item.Volume}
+            status={item.Status}
+            onCancel={() => handleCancel(item.RegisterId)} // truyền onCancel
+          />
+        ))
+      )}
+    </div>
+  );
 }
+
+export default DonationHistory;
