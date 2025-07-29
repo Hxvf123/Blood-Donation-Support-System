@@ -3,8 +3,7 @@ import "./Login.scss";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { sendPasswordResetEmail } from "firebase/auth";
-import { auth } from "../Firebase/firebase";
+import axios from "axios";
 import { toast } from "react-toastify";
 
 const schema = yup.object({
@@ -25,9 +24,28 @@ function ForgotPassword() {
 
   const onSubmit = async (data) => {
     try {
-      await sendPasswordResetEmail(auth, data.email);
-      setSubmitted(true);
-      toast.success("Đã gửi email đặt lại mật khẩu!");
+      // Gọi API để kiểm tra email, tạo token
+      const res = await axios.post("http://localhost:3000/api/forgot-password", {
+        email: data.email,
+      });
+
+      if (res.data.success) {
+        const { userId, token } = res.data;
+
+        // Dựng link reset password có userId & token
+        const resetLink = `https://your-frontend.com/reset-password?userId=${userId}&token=${token}`;
+
+        // Gửi link về backend để gửi mail
+        await axios.post("http://localhost:3000/api/send-reset-email", {
+          email: data.email,
+          resetLink,
+        });
+
+        setSubmitted(true);
+        toast.success("✅ Đã gửi email đặt lại mật khẩu!");
+      } else {
+        toast.error(res.data.message || "Không thể gửi yêu cầu.");
+      }
     } catch (error) {
       console.error("Lỗi gửi yêu cầu:", error);
       toast.error("Không thể gửi yêu cầu. Hãy kiểm tra email.");
@@ -49,7 +67,6 @@ function ForgotPassword() {
                 {...register("email")}
               />
               {errors.email && <p className="error-message">{errors.email.message}</p>}
-
               <button type="submit" className="login-button-2">Gửi yêu cầu</button>
             </form>
           ) : (

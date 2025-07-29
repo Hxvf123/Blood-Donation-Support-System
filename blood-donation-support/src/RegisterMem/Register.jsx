@@ -35,20 +35,20 @@ function Registermem() {
     }
 
     try {
-   
-    const response = await axios.post("http://localhost:5294/api/User/register-email", {
-      email,
-      password,
-      verifyPassword: confirmPassword,
-    });
 
-    toast.success("Đăng ký thành công! Vui lòng kiểm tra email để xác thực.");
-    navigate("/login");
-  } catch (error) {
-    console.error("Đăng ký lỗi:", error);
-    toast.error(error?.response?.data?.error || "Đăng ký thất bại!");
-  }
-};
+      const response = await axios.post("http://localhost:5294/api/User/register-email", {
+        email,
+        password,
+        verifyPassword: confirmPassword,
+      });
+
+      toast.success("Đăng ký thành công! Vui lòng kiểm tra email để xác thực.");
+      navigate("/login");
+    } catch (error) {
+      console.error("Đăng ký lỗi:", error);
+      toast.error(error?.response?.data?.error || "Đăng ký thất bại!");
+    }
+  };
 
   const handleGoogleRegister = async () => {
     const provider = new GoogleAuthProvider();
@@ -92,6 +92,13 @@ function Registermem() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$"
+              onInvalid={(e) =>
+                e.target.setCustomValidity(
+                  "Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, số và ký tự đặc biệt."
+                )
+              }
+              onInput={(e) => e.target.setCustomValidity("")}
             />
 
             <label>Xác nhận mật khẩu</label>
@@ -100,7 +107,16 @@ function Registermem() {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
+              onBlur={(e) => {
+                if (e.target.value !== password) {
+                  e.target.setCustomValidity("Mật khẩu xác nhận không khớp.");
+                } else {
+                  e.target.setCustomValidity("");
+                }
+              }}
+              onInput={(e) => e.target.setCustomValidity("")}
             />
+
 
             <button type="submit" className="primary-button">
               Đăng ký

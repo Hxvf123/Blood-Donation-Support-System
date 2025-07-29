@@ -14,14 +14,9 @@ function LoginPage({ onLoginSuccess }) {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [passwordVisible, setPasswordVisible] = useState(false); // Manage password visibility
+  const [showPassword, setShowPassword] = useState(false);
   const location = useLocation();
   const hasShownToast = useRef(false);
-
-  // Toggle password visibility
-  const togglePasswordVisibility = () => {
-    setPasswordVisible((prev) => !prev);
-  };
 
   // ✅ Login bằng Email
   const handleEmailLogin = async (e) => {
@@ -44,19 +39,12 @@ function LoginPage({ onLoginSuccess }) {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      const userData = profileResponse.data?.Data;
 
-      if (!userData) {
-        toast.error("Không lấy được thông tin người dùng.");
-        return; 
-      }
-      const fullName = userData.FullName || "Người dùng";
-      const role = userData.Role || "Role";
-      
+      const fullName = profileResponse.data?.fullName || "Người dùng";
+
       const userInfo = {
         name: fullName,
         accessToken,
-        role,
       };
 
       localStorage.setItem("user", JSON.stringify(userInfo));
@@ -64,12 +52,6 @@ function LoginPage({ onLoginSuccess }) {
       toast.success("Đăng nhập thành công!");
       onLoginSuccess?.(userInfo.name);
       navigate("/");
-
-      if (role === "Manager") {
-        navigate("/dashboard");
-      } else {
-        navigate("/");
-      }
     } catch (error) {
       console.error("Lỗi đăng nhập:", error);
       toast.error("Đăng nhập thất bại!");
@@ -133,26 +115,37 @@ function LoginPage({ onLoginSuccess }) {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              pattern="^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$"
+              onInvalid={(e) => e.target.setCustomValidity("Vui lòng nhập đúng định dạng email.")}
+              onInput={(e) => e.target.setCustomValidity("")}
             />
 
+
             <label>Mật khẩu</label>
-            <div className="password-container">
+            <div style={{ position: "relative" }}>
               <input
-                type={passwordVisible ? "text" : "password"} // Toggle password visibility
+                type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                style={{ width: "100%", paddingRight: "30px" }}
               />
-              <span
-                className="password-icon"
-                onClick={togglePasswordVisibility}
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                style={{
+                  position: "absolute",
+                  right: "10px",
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  fontSize: "18px",
+                }}
               >
-                {passwordVisible ? (
-                  <i className="fas fa-eye-slash"></i> 
-                ) : (
-                  <i className="fas fa-eye"></i> 
-                )}
-              </span>
+                {showPassword ? "" : ""}
+              </button>
             </div>
 
             <div className="forgot-password">
@@ -183,4 +176,4 @@ function LoginPage({ onLoginSuccess }) {
   );
 }
 
-export default LoginPage;  
+export default LoginPage;
