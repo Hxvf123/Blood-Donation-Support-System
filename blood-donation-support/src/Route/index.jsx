@@ -10,7 +10,8 @@ import Registermem from "../RegisterMem/Register";
 import Login from "../Login/Login";
 import ForgotPass from "../Login/ForgotPass";
 import Profile from "../userInfoForm/userInfoForm";
-import UpdateInfo from "../userInfoForm/UpdateInfo"; //  thêm update
+import UpdateInfo from "../userInfoForm/updateUser";
+
 import Receive from "../BloodReceive/Receive";
 import Donation from "../BloodDonation/Donation";
 import Contact from "../Contact/Contact";

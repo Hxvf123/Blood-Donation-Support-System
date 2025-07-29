@@ -14,8 +14,14 @@ function LoginPage({ onLoginSuccess }) {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordVisible, setPasswordVisible] = useState(false); // Manage password visibility
   const location = useLocation();
   const hasShownToast = useRef(false);
+
+  // Toggle password visibility
+  const togglePasswordVisibility = () => {
+    setPasswordVisible((prev) => !prev);
+  };
 
   // ✅ Login bằng Email
   const handleEmailLogin = async (e) => {
@@ -23,14 +29,34 @@ function LoginPage({ onLoginSuccess }) {
     try {
       const response = await axios.post("http://localhost:5294/api/User/login-email", {
         email,
-        password
+        password,
       });
 
-      const { token, name } = response.data;
+      const { accessToken, refreshToken } = response.data;
 
+      if (!accessToken) {
+        toast.error("Đăng nhập thất bại: không nhận được accessToken");
+        return;
+      }
+
+      const profileResponse = await axios.get("http://localhost:5294/api/User/get-by-id", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      const userData = profileResponse.data?.Data;
+
+      if (!userData) {
+        toast.error("Không lấy được thông tin người dùng.");
+        return; 
+      }
+      const fullName = userData.FullName || "Người dùng";
+      const role = userData.Role || "Role";
+      
       const userInfo = {
-        name: name || "Người dùng",
-        accessToken: token,
+        name: fullName,
+        accessToken,
+        role,
       };
 
       localStorage.setItem("user", JSON.stringify(userInfo));
@@ -38,6 +64,12 @@ function LoginPage({ onLoginSuccess }) {
       toast.success("Đăng nhập thành công!");
       onLoginSuccess?.(userInfo.name);
       navigate("/");
+
+      if (role === "Manager") {
+        navigate("/dashboard");
+      } else {
+        navigate("/");
+      }
     } catch (error) {
       console.error("Lỗi đăng nhập:", error);
       toast.error("Đăng nhập thất bại!");
@@ -104,12 +136,24 @@ function LoginPage({ onLoginSuccess }) {
             />
 
             <label>Mật khẩu</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+            <div className="password-container">
+              <input
+                type={passwordVisible ? "text" : "password"} // Toggle password visibility
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <span
+                className="password-icon"
+                onClick={togglePasswordVisibility}
+              >
+                {passwordVisible ? (
+                  <i className="fas fa-eye-slash"></i> 
+                ) : (
+                  <i className="fas fa-eye"></i> 
+                )}
+              </span>
+            </div>
 
             <div className="forgot-password">
               <a href={ROUTE_PATH.FORGOT_PASSWORD}>Quên mật khẩu?</a>
@@ -139,4 +183,4 @@ function LoginPage({ onLoginSuccess }) {
   );
 }
 
-export default LoginPage;
+export default LoginPage;  
