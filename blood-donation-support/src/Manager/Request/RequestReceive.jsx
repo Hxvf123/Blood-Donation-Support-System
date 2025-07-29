@@ -8,7 +8,6 @@ import { toast, ToastContainer } from 'react-toastify';
 const mapStatus = (status) => {
   switch (status) {
     case 'Pending': return 'Đã đăng kí';
-    case 'Confirmed': return 'Đã xác nhận';
     case 'Processing': return 'Đang tiến hành';
     case 'Completed': return 'Hoàn thành';
     case 'Rejected': return 'Đã bị hủy';
@@ -19,7 +18,7 @@ const mapStatus = (status) => {
 const getStatusClass = (status) => {
   switch (status) {
     case 'Đã đăng kí': return 'status-label yellow';
-    case 'Đã xác nhận': return 'status-label green';
+    case 'Hoàn thành': return 'status-label green';
     case 'Đang tiến hành': return 'status-label blue';
     case 'Đã bị hủy': return 'status-label red';
     default: return 'status-label gray';

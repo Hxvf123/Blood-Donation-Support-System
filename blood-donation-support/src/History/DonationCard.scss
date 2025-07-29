@@ -72,3 +72,24 @@
 .donation-card__button--green {
     background-color: #22c55e;
 }
+
+.donation-card__button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.donation-card__button--cancel {
+    background-color: #ef4444;
+    color: #fff;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover {
+        background-color: #dc2626;
+    }
+}

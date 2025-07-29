@@ -99,12 +99,7 @@ const BloodInventory = () => {
           </PieChart>
         </ResponsiveContainer>
       </div>
-      <button
-            className="btn update-btn"
-            onClick={() => navigate("/dashboard/inventory/AddBloodBag")}
-          >
-            Cập nhật kho máu
-          </button>
+      
     </div>
   );
 };
