@@ -40,7 +40,7 @@ const schema = yup.object({
   phone: yup
     .string()
     .matches(/^(0|\+84)[3|5|7|8|9][0-9]{8}$/, "Số điện thoại không hợp lệ")
-    .required("Bắt buộc nhập số điện thoại"),
+    .required("Vui lòng nhập số điện thoại"),
 
   email: yup.string().email("Email không hợp lệ").required("Vui lòng nhập email"),
 
@@ -76,10 +76,6 @@ const UpdateInfo = () => {
         const user = JSON.parse(localStorage.getItem("user"));
         const token = user?.accessToken;
 
-        if (!token) {
-          toast.warning("Không tìm thấy accessToken. Vui lòng đăng nhập lại.");
-          return;
-        }
 
         const response = await axios.get("http://localhost:5294/api/User/get-by-id", {
           headers: { Authorization: `Bearer ${token}` },

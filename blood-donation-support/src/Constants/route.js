@@ -17,6 +17,8 @@ const ROUTE_PATH = {
   REQUEST_DONATION: "requestsDonation",
   REQUEST_DONATION_DETAIL: "requestsDonation/:id",
   EVENT: "event",
+  CHECKIN: "checkin",
+  MANAGE_ACCOUNT: "manage-account",
   ADD_BLOOD_BAG: "/dashboard/inventory/AddBloodBag",
 };
 
