@@ -24,7 +24,7 @@ const CheckinPage = () => {
       const response = await axios.put("http://localhost:5294/api/BloodDonation/check-in-by-id", JSON.stringify(inputValue.trim()), {
         headers: {
           Authorization: `Bearer ${token}`,
-           "Content-Type": "application/json"
+           "Content-Type": "application/json",
         },
       });
 
@@ -64,6 +64,7 @@ const CheckinPage = () => {
         >
           Check-in
         </Button>
+        
       </Form>
     </Container>
   );

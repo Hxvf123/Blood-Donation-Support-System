@@ -8,7 +8,7 @@ import { toast, ToastContainer } from 'react-toastify';
 const mapStatus = (status) => {
   switch (status) {
     case 'Pending': return 'Đã đăng kí';
-    case 'Confirmed': return 'Đã xác nhận';
+    case 'Completed': return 'Hoàn thành';
     case 'Processing': return 'Đang tiến hành';
     case 'Canceled': return 'Đã bị hủy';
     default: return 'Không rõ';
@@ -18,7 +18,7 @@ const mapStatus = (status) => {
 const getStatusClass = (status) => {
   switch (status) {
     case 'Đã đăng kí': return 'status-label yellow';
-    case 'Đã xác nhận': return 'status-label green';
+    case 'Hoàn thành': return 'status-label green';
     case 'Đang tiến hành': return 'status-label blue';
     case 'Đã bị hủy': return 'status-label red';
     default: return 'status-label gray';
@@ -44,7 +44,7 @@ const RequestList = () => {
         const token = user?.accessToken;
         const role = user?.role;
 
-        if (!token || role !== "Staff") {
+        if (!token || (role !== "Staff" && role !== "Manager")) {
           setHasPermission(false);
           return;
         }
@@ -62,7 +62,6 @@ const RequestList = () => {
             name: item.FullName || 'Không rõ',
             phone: item.PhoneNumber || 'Không rõ',
             email: item.Email || 'Không rõ',
-            bloodTypeId: item.BloodTypeId,
             date: formatDate(item.RegisterDate),
             status: mapStatus(item.Status),
           }));
@@ -84,7 +83,7 @@ const RequestList = () => {
 
   if (!hasPermission) {
     return (
-      <div className="create-event-page">
+      <div>
         <ToastContainer />
         <h2 style={{ color: "red", textAlign: "center", marginTop: "100px" }}>
           Bạn không có quyền truy cập trang này.
@@ -113,9 +112,13 @@ const RequestList = () => {
               <span className={getStatusClass(req.status)}>{req.status}</span>
               <button
                 className="detail-button"
-                onClick={() => navigate(`${req.id}`, { state: { request: req } })}
+                onClick={() =>
+                  navigate(`/dashboard/inventory/AddBloodBag/${req.id}`, {
+                    state: { registerId: req.id }
+                  })
+                }
               >
-                Chi tiết
+                Thêm túi máu
               </button>
             </div>
           </div>

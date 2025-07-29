@@ -28,7 +28,7 @@ const Dashboard = () => {
             totalReceivedBlood: apiData.TotalBloodRecipients,
           };
           setData(mappedData);
-          console.log("Mapp",mappedData)
+          console.log("Mapp", mappedData)
         } else {
           console.error("Không có dữ liệu từ API.");
         }
@@ -39,6 +39,12 @@ const Dashboard = () => {
 
     fetchDashboardData();
   }, []);
+
+const handleExportReport = () => {
+    const downloadUrl = "http://localhost:5294/api/ReportLog/export/aggregated-csv";
+    // Mở link trong tab mới hoặc tải về
+    window.open(downloadUrl, "_blank");
+  };
 
   if (!data) {
     return <div>Đang tải dữ liệu...</div>;
@@ -61,6 +67,9 @@ const Dashboard = () => {
       </div>
 
       <DashboardCharts data={data} />
+      <button className="export-btn" onClick={handleExportReport}>
+        Xuất báo cáo
+      </button>
     </div>
   );
 };

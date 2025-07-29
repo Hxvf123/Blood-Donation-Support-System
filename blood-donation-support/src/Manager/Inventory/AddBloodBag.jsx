@@ -5,7 +5,7 @@ import axios from "axios";
 import "./AddBloodBag.scss";
 
 const staticBloodTypes = [
-   { bloodTypeId: "BTI001", bloodName: "A+" },
+  { bloodTypeId: "BTI001", bloodName: "A+" },
   { bloodTypeId: "BTI002", bloodName: "A-" },
   { bloodTypeId: "BTI003", bloodName: "B+" },
   { bloodTypeId: "BTI004", bloodName: "B-" },
@@ -27,26 +27,43 @@ const AddBloodBag = () => {
   const navigate = useNavigate();
   const request = location.state?.request;
 
+  const [unauthorized, setUnauthorized] = useState(false);
+
   const [form, setForm] = useState({
-    BloodTypeName: "",
-    ComponentTypeName: "",
+    RegisterId: "",
+    BloodTypeId: "",
+    ComponentTypeId: "",
     Volume: 0,
     CollectionDate: "",
     ExpiryDate: "",
     Status: "Available"
   });
 
-  // Tự động cập nhật ExpiryDate mỗi khi CollectionDate thay đổi
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const role = user?.role;
+    if (role !== "Manager") {
+      setUnauthorized(true);
+    }
+  }, []);
+
   useEffect(() => {
     if (form.CollectionDate) {
       const colDate = new Date(form.CollectionDate);
       const expiry = new Date(colDate);
       expiry.setDate(expiry.getDate() + 35);
-
       const formattedExpiry = expiry.toISOString().split("T")[0];
       setForm(prev => ({ ...prev, ExpiryDate: formattedExpiry }));
     }
   }, [form.CollectionDate]);
+
+  useEffect(() => {
+  const registerId = location.state?.registerId;
+  console.log("Received registerId:",registerId)
+  if (registerId) {
+    setForm(prev => ({ ...prev, RegisterId: registerId }));
+  }
+}, [location.state]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -81,12 +98,22 @@ const AddBloodBag = () => {
     }
   };
 
+  if (unauthorized) {
+    return (
+      <div className="create-event-page">
+        <ToastContainer />
+        <h2 style={{ color: "red", textAlign: "center", marginTop: "100px" }}>
+          Bạn không có quyền truy cập trang này.
+        </h2>
+      </div>
+    );
+  }
+
   return (
     <div className="add-blood-bag-page">
       <ToastContainer />
       <h2>Thêm túi máu vào kho</h2>
 
-      {/* Blood Type Dropdown */}
       <div className="form-group">
         <label>Nhóm máu:</label>
         <select
@@ -104,7 +131,6 @@ const AddBloodBag = () => {
         </select>
       </div>
 
-      {/* Component Dropdown */}
       <div className="form-group">
         <label>Loại thành phần:</label>
         <select
@@ -155,10 +181,10 @@ const AddBloodBag = () => {
         />
       </div>
 
-    <div className="form-group">
-  <label>Trạng thái:</label>
-  <input type="text" value="Available" readOnly />
-</div>
+      <div className="form-group">
+        <label>Trạng thái:</label>
+        <input type="text" value="Available" readOnly />
+      </div>
 
       <div className="button-group">
         <button className="btn back-btn" onClick={() => navigate(-1)}>Quay lại</button>

@@ -19,7 +19,7 @@ const ROUTE_PATH = {
   EVENT: "event",
   CHECKIN: "checkin",
   MANAGE_ACCOUNT: "manage-account",
-  ADD_BLOOD_BAG: "/dashboard/inventory/AddBloodBag",
+  ADD_BLOOD_BAG: "/dashboard/inventory/AddBloodBag/:id",
 };
 
 export default ROUTE_PATH;

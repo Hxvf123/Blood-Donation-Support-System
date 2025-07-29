@@ -79,7 +79,7 @@ const RequestDetail = () => {
         }
       );
 
-       if (response.status === 200) {
+      if (response.status === 200) {
         toast.success("Cập nhật trạng thái thành công!");
 
         setStatus(newStatus);
@@ -127,10 +127,14 @@ const RequestDetail = () => {
         <div className="button-group">
           <button className="btn back-btn" onClick={() => navigate("/dashboard/requestsReceive")}>Quay lại</button>
           <div className="status-action-buttons">
+
             <button className="btn confirm-btn" onClick={() => updateStatusAndSave("Processing")}>Xác nhận</button>
             <button className="btn reject-btn" onClick={() => updateStatusAndSave("Rejected")}>Từ chối</button>
+
           </div>
+          <button className="btn complete-btn" onClick={() => updateStatusAndSave("Completed")}>Hoàn thành</button>
         </div>
+
       </div>
     </div>
   );
