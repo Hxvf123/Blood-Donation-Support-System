@@ -44,7 +44,7 @@ const RequestDetail = () => {
 
       if (newStatus === "Processing") {
         const res = await axios.put(
-          `http://localhost:5294/api/BloodDonation/check-in-by-id?userId=${request.userId}`,
+          `https://hienmau-se1864-eqfyh4edege7g5b0.koreacentral-01.azurewebsites.net/api/BloodDonation/check-in-by-id?userId=${request.userId}`,
           {},
           {
             headers: {

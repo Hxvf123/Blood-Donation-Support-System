@@ -55,7 +55,7 @@ const RequestList = () => {
           return;
         }
 
-        const response = await axios.get('http://localhost:5294/api/BloodReceive/all', {
+        const response = await axios.get('https://hienmau-se1864-eqfyh4edege7g5b0.koreacentral-01.azurewebsites.net/api/BloodReceive/all', {
           headers: { Authorization: `Bearer ${token}` }
         });
 

@@ -60,7 +60,7 @@ const BloodDonationConsentForm = ({ data, onSubmit, onBack }) => {
       const token = user?.accessToken;
       console.log("Payload:", payload);
       const res = await axios.post(
-        "http://localhost:5294/api/BloodDonation/screening-completion",
+        "https://hienmau-se1864-eqfyh4edege7g5b0.koreacentral-01.azurewebsites.net/api/BloodDonation/screening-completion",
         payload,
         {
           headers: {

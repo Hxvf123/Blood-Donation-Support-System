@@ -24,7 +24,7 @@ const BloodInventory = () => {
 
       const fetchData = async () => {
         try {
-          const res = await axios.get("http://localhost:5294/api/BloodInventory/summary-blood-inventory", {
+          const res = await axios.get("https://hienmau-se1864-eqfyh4edege7g5b0.koreacentral-01.azurewebsites.net/api/BloodInventory/summary-blood-inventory", {
             headers: {
               Authorization: `Bearer ${token}`,
             },

@@ -10,7 +10,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const response = await axios.get("http://localhost:5294/api/ReportLog/dashboard-summary");
+        const response = await axios.get("https://hienmau-se1864-eqfyh4edege7g5b0.koreacentral-01.azurewebsites.net/api/ReportLog/dashboard-summary");
         const apiData = response.data?.Data;
 
         if (apiData) {
@@ -41,7 +41,7 @@ const Dashboard = () => {
   }, []);
 
 const handleExportReport = () => {
-    const downloadUrl = "http://localhost:5294/api/ReportLog/export/aggregated-csv";
+    const downloadUrl = "https://hienmau-se1864-eqfyh4edege7g5b0.koreacentral-01.azurewebsites.net/api/ReportLog/export/aggregated-csv";
     // Mở link trong tab mới hoặc tải về
     window.open(downloadUrl, "_blank");
   };

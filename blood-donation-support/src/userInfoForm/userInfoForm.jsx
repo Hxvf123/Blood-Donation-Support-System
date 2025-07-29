@@ -66,7 +66,7 @@ const UserInfoForm = ({ onSubmit }) => {
           return;
         }
 
-        const response = await axios.get("http://localhost:5294/api/User/get-by-id", {
+        const response = await axios.get("https://hienmau-se1864-eqfyh4edege7g5b0.koreacentral-01.azurewebsites.net/api/User/get-by-id", {
           headers: { Authorization: `Bearer ${token}` },
         });
 

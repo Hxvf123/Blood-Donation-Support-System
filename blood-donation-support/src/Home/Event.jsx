@@ -18,7 +18,7 @@ const AllEventsPage = () => {
         const user = JSON.parse(localStorage.getItem('user'));
         const token = user?.accessToken;
 
-        const res = await axios.get("http://localhost:5294/GetAllEvents", {
+        const res = await axios.get("https://hienmau-se1864-eqfyh4edege7g5b0.koreacentral-01.azurewebsites.net/GetAllEvents", {
           headers: { Authorization: `Bearer ${token}` }
         });
 
@@ -63,11 +63,9 @@ const AllEventsPage = () => {
         const date = new Date(dateStr);
         return date.toLocaleDateString('vi-VN'); // xuất ra định dạng: dd/mm/yyyy
     };
-
     return (
         <div className="events-page" id="event-section">
             <h2 className="title text-black">SỰ KIỆN</h2>
-
             <Swiper
                 modules={[Navigation]}
                 spaceBetween={20}
@@ -83,7 +81,7 @@ const AllEventsPage = () => {
                             onClick={() => handleCardClick(event)}
                             style={{ cursor: 'pointer' }}
                         >
-                            <img src={event.img} alt={event.name} className="event-image" />
+                            <img src={event.imageUrl} alt={event.name} className="event-image" />
                             <div className="event-content">
                                 <h3>{event.name}</h3>
                                 <p><strong>Thời gian:</strong> {formatDate(event.startDate)} - {formatDate(event.endDate)}</p>

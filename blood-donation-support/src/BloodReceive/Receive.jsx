@@ -85,7 +85,7 @@ const BloodReceiveForm = ({ onSuccess }) => {
         formData.append("img", imageFile); // đúng tên field backend
       }
 
-      const res = await fetch("http://localhost:5294/api/BloodReceive/register-receive", {
+      const res = await fetch("https://hienmau-se1864-eqfyh4edege7g5b0.koreacentral-01.azurewebsites.net/api/BloodReceive/register-receive", {
         method: "POST",
         body: formData,
         headers: {

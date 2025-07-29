@@ -77,7 +77,7 @@ const UpdateInfo = () => {
         const token = user?.accessToken;
 
 
-        const response = await axios.get("http://localhost:5294/api/User/get-by-id", {
+        const response = await axios.get("https://hienmau-se1864-eqfyh4edege7g5b0.koreacentral-01.azurewebsites.net/api/User/get-by-id", {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -138,13 +138,13 @@ const UpdateInfo = () => {
         bloodTypeId: bloodTypeId,
       };
 
-      await axios.put("http://localhost:5294/api/User/update-profile", payload, {
+      await axios.put("https://hienmau-se1864-eqfyh4edege7g5b0.koreacentral-01.azurewebsites.net/api/User/update-profile", payload, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
       console.log("payload",payload)
-      const response = await axios.get("http://localhost:5294/api/User/get-by-id", {
+      const response = await axios.get("https://hienmau-se1864-eqfyh4edege7g5b0.koreacentral-01.azurewebsites.net/api/User/get-by-id", {
         headers: {
           Authorization: `Bearer ${token}`,
         },

@@ -81,7 +81,7 @@ const AddBloodBag = () => {
       }
 
       await axios.post(
-        "http://localhost:5294/api/BloodInventory/add-blood-bag",
+        "https://hienmau-se1864-eqfyh4edege7g5b0.koreacentral-01.azurewebsites.net/api/BloodInventory/add-blood-bag",
         form,
         {
           headers: {

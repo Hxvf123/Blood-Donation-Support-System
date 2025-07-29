@@ -27,19 +27,19 @@ function LoginPage({ onLoginSuccess }) {
   const handleEmailLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:5294/api/User/login-email", {
+      const response = await axios.post("https://hienmau-se1864-eqfyh4edege7g5b0.koreacentral-01.azurewebsites.net/api/User/login-email", {
         email,
         password,
       });
 
-      const { accessToken, refreshToken } = response.data;
+      const { accessToken } = response.data;
 
       if (!accessToken) {
         toast.error("Đăng nhập thất bại: không nhận được accessToken");
         return;
       }
 
-      const profileResponse = await axios.get("http://localhost:5294/api/User/get-by-id", {
+      const profileResponse = await axios.get("https://hienmau-se1864-eqfyh4edege7g5b0.koreacentral-01.azurewebsites.net/api/User/get-by-id", {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -70,7 +70,7 @@ function LoginPage({ onLoginSuccess }) {
       } else if (role === "Admin") {
         navigate("/dashboard/manage-account");
       }else if (role === "Staff") {
-        navigate("/dashboard/requestsDonation");
+        navigate("/dashboard/checkin");
       }else{
         navigate("/");
       }
@@ -88,7 +88,7 @@ function LoginPage({ onLoginSuccess }) {
       const idToken = await result.user.getIdToken();
 
       const response = await axios.post(
-        "http://localhost:5294/api/User/login-google",
+        "https://hienmau-se1864-eqfyh4edege7g5b0.koreacentral-01.azurewebsites.net/api/User/login-google",
         {},
         {
           headers: {

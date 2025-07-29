@@ -12,7 +12,7 @@ const BloodInventory = () => {
   const [summaryData, setSummaryData] = useState(null);
 
   useEffect(() => {
-    axios.get("http://localhost:5294/api/BloodInventory/summary-blood-inventory", {
+    axios.get("https://hienmau-se1864-eqfyh4edege7g5b0.koreacentral-01.azurewebsites.net/api/BloodInventory/summary-blood-inventory", {
       params: { userId: "USR001" }
     })
     .then(res => {

@@ -36,7 +36,7 @@ function Registermem() {
 
     try {
    
-    const response = await axios.post("http://localhost:5294/api/User/register-email", {
+    const response = await axios.post("https://hienmau-se1864-eqfyh4edege7g5b0.koreacentral-01.azurewebsites.net/api/User/register-email", {
       email,
       password,
       verifyPassword: confirmPassword,
@@ -57,7 +57,7 @@ function Registermem() {
       const token = await result.user.getIdToken();
 
       // Gọi BE đăng ký google
-      await axios.post("http://localhost:5294/api/User/register-google", {}, {
+      await axios.post("https://hienmau-se1864-eqfyh4edege7g5b0.koreacentral-01.azurewebsites.net/api/User/login-google", {}, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

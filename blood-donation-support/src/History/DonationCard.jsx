@@ -12,6 +12,7 @@ export default function DonationCard({ center, address, date, amount, status, on
     const statusMap = {
         "Pending": { class: "donation-card__button--yellow", text: "Đã đặt lịch" },
         "Canceled": { class: "donation-card__button--red", text: "Đã huỷ" },
+        "Cancelled": { class: "donation-card__button--red", text: "Đã huỷ" },
         "Completed": { class: "donation-card__button--green", text: "Đã hiến" },
     };
 
