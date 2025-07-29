@@ -25,6 +25,7 @@ import Event from "../Manager/Event/CreateEvent";
 
 import RequestDonation from "../Staff/RequestDonation";
 import RequestDonationDetail from "../Staff/RequestDonationDetail";
+import CheckIn from "../Staff/Checkin/CheckIn";
 
 import ManageAccount from "../Admin/ManagerAccount";
 
@@ -59,6 +60,7 @@ function Routes() {
                 { path: ROUTE_PATH.REQUEST_DONATION, element: <RequestDonation /> },
                 { path: ROUTE_PATH.REQUEST_DONATION_DETAIL, element: <RequestDonationDetail /> },
                 { path: ROUTE_PATH.EVENT, element: <Event /> },
+                { path: ROUTE_PATH.CHECKIN, element: <CheckIn /> },
                 { path: ROUTE_PATH.MANAGE_ACCOUNT, element: <ManageAccount /> },
                 { path: ROUTE_PATH.ADD_BLOOD_BAG, element: <AddBloodBag /> },
             ]

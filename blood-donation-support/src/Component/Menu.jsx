@@ -7,7 +7,8 @@ import {
     User,
     LogOut,
     Inbox,
-    HandHeart
+    HandHeart,
+    ScanLine
 } from "lucide-react";
 import { NavLink, useNavigate, useLocation } from "react-router";
 import "./Menu.scss";
@@ -93,6 +94,14 @@ const MenuManager = () => {
                         className={({ isActive }) => `menu-item ${isActive ? "active" : ""}`}>
                         <CalendarHeart size={20} />
                         <span>Tạo sự kiện</span>
+                    </NavLink>
+                    
+                    <NavLink
+                        to={ROUTE_PATH.CHECKIN}
+                        end
+                        className={({ isActive }) => `menu-item ${isActive ? "active" : ""}`}>
+                        <ScanLine size={20} />
+                        <span>Check-in</span>
                     </NavLink>
 
                     <NavLink
