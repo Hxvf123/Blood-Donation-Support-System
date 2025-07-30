@@ -9,6 +9,7 @@ import History from "../History/History";
 import Registermem from "../RegisterMem/Register";
 import Login from "../Login/Login";
 import ForgotPass from "../Login/ForgotPass";
+import ResetPassword from "../Login/ResetPassword"; 
 import Profile from "../userInfoForm/userInfoForm";
 import UpdateInfo from "../userInfoForm/updateUser"; 
 import Receive from "../BloodReceive/Receive";
@@ -41,6 +42,7 @@ function Routes() {
                 { path: ROUTE_PATH.REGISTER, element: <Registermem /> },
                 { path: ROUTE_PATH.LOGIN, element: <Login /> },
                 { path: ROUTE_PATH.FORGOT_PASSWORD, element: <ForgotPass /> },
+                { path: ROUTE_PATH.RESET_PASSWORD, element: <ResetPassword /> },
                 { path: ROUTE_PATH.PROFILE, element: <Profile /> },
                 { path: ROUTE_PATH.UPDATE, element: <UpdateInfo /> },
                 { path: ROUTE_PATH.BLOOD_RECEIVE, element: <Receive /> },

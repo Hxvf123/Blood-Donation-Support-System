@@ -11,7 +11,7 @@ function DonationHistory() {
     const token = user?.accessToken;
 
     try {
-      const res = await axios.get("http://localhost:5294/api/User/get-history-donation", {
+      const res = await axios.get("https://hienmau-se1864-eqfyh4edege7g5b0.koreacentral-01.azurewebsites.net/api/User/get-history-donation", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -35,7 +35,7 @@ function DonationHistory() {
 
     try {
       await axios.post(
-        "http://localhost:5294/api/BloodDonation/cancel-donation",
+        "https://hienmau-se1864-eqfyh4edege7g5b0.koreacentral-01.azurewebsites.net/api/BloodDonation/cancel-donation",
         JSON.stringify(registerId),
         {
           headers: {

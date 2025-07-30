@@ -3,8 +3,7 @@ import "./Login.scss";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { sendPasswordResetEmail } from "firebase/auth";
-import { auth } from "../Firebase/firebase";
+import axios from "axios";
 import { toast } from "react-toastify";
 
 const schema = yup.object({
@@ -13,6 +12,7 @@ const schema = yup.object({
 
 function ForgotPassword() {
   const [submitted, setSubmitted] = useState(false);
+  const [sentEmail, setSentEmail] = useState("");
 
   const {
     register,
@@ -24,13 +24,22 @@ function ForgotPassword() {
   });
 
   const onSubmit = async (data) => {
+    console.log("Email gửi lên API:", data.email);
     try {
-      await sendPasswordResetEmail(auth, data.email);
+      const res = await axios.post("https://hienmau-se1864-eqfyh4edege7g5b0.koreacentral-01.azurewebsites.net/api/User/forgot-password", {
+        email: data.email,
+
+      });
+
+
+      setSentEmail(data.email);
       setSubmitted(true);
-      toast.success("Đã gửi email đặt lại mật khẩu!");
+      toast.success(res.data.message || "Yêu cầu đã được gửi. Vui lòng kiểm tra email.");
     } catch (error) {
       console.error("Lỗi gửi yêu cầu:", error);
-      toast.error("Không thể gửi yêu cầu. Hãy kiểm tra email.");
+
+      const apiError = error.response?.data?.error || "Không thể gửi yêu cầu. Hãy kiểm tra lại email.";
+      toast.error(apiError);
     }
   };
 
@@ -49,12 +58,11 @@ function ForgotPassword() {
                 {...register("email")}
               />
               {errors.email && <p className="error-message">{errors.email.message}</p>}
-
               <button type="submit" className="login-button-2">Gửi yêu cầu</button>
             </form>
           ) : (
             <p className="success-message">
-              ✅ Yêu cầu đã được gửi. Vui lòng kiểm tra email để đặt lại mật khẩu.
+              Yêu cầu đã được gửi tới <strong>{sentEmail}</strong>. Vui lòng kiểm tra email để đặt lại mật khẩu.
             </p>
           )}
         </div>

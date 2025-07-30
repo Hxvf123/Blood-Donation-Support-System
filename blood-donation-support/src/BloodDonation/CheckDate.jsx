@@ -32,7 +32,7 @@ const CheckDate = ({ data, onBack, onSubmit }) => {
         const user = JSON.parse(localStorage.getItem('user'));
         const token = user?.accessToken;
 
-        const res = await axios.get("http://localhost:5294/GetAllEvents", {
+        const res = await axios.get("https://hienmau-se1864-eqfyh4edege7g5b0.koreacentral-01.azurewebsites.net/GetAllEvents", {
           headers: { Authorization: `Bearer ${token}` }
         });
 
@@ -87,7 +87,7 @@ const CheckDate = ({ data, onBack, onSubmit }) => {
 
       console.log("payload:", payload);
 
-      const res = await axios.post("http://localhost:5294/api/BloodDonation/register-donation", payload,
+      const res = await axios.post("https://hienmau-se1864-eqfyh4edege7g5b0.koreacentral-01.azurewebsites.net/api/BloodDonation/register-donation", payload,
         {
           headers: { Authorization: `Bearer ${token}` }
         });

@@ -12,7 +12,6 @@ const BloodDonationPage = () => {
 
   const navigate = useNavigate();
 
-  // ✅ Gọi API lấy thông tin người dùng sau khi đăng nhập
    useEffect(() => {
     const fetchUserData = async () => {
       const userLocal = localStorage.getItem("user");
@@ -25,7 +24,7 @@ const BloodDonationPage = () => {
 
       try {
         const { accessToken } = JSON.parse(userLocal);
-        const res = await axios.get("http://localhost:5294/api/User/get-by-id", {
+        const res = await axios.get("https://hienmau-se1864-eqfyh4edege7g5b0.koreacentral-01.azurewebsites.net/api/User/get-by-id", {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
@@ -34,7 +33,6 @@ const BloodDonationPage = () => {
         const data = res.data?.Data;
 
         if (data) {
-          // ✅ Mapping đúng định dạng `CheckDate` cần
           const mappedData = {
             userId: data.UserId,
             fullName: data.FullName,

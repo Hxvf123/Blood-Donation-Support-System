@@ -70,7 +70,7 @@ const RequestDetail = () => {
         Status: newStatus,
       };
       const response = await axios.post(
-        "http://localhost:5294/api/BloodReceive/change-status",
+        "https://hienmau-se1864-eqfyh4edege7g5b0.koreacentral-01.azurewebsites.net/api/BloodReceive/change-status",
         payload,
         {
           headers: {

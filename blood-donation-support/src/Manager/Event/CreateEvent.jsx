@@ -44,7 +44,7 @@ const CreateEventPage = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5294/create-event",
+        "https://hienmau-se1864-eqfyh4edege7g5b0.koreacentral-01.azurewebsites.net/create-event",
         formData,
         {
           headers: {

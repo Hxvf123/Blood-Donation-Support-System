@@ -27,7 +27,7 @@ function AccountManagement() {
         setHasPermission(true);
         setCheckedRole(true);
 
-        const res = await axios.get("http://localhost:5294/api/User/get-all-user", {
+        const res = await axios.get("https://hienmau-se1864-eqfyh4edege7g5b0.koreacentral-01.azurewebsites.net/api/User/get-all-user", {
           headers: { Authorization: `Bearer ${token}` }
         });
 
@@ -48,7 +48,7 @@ function AccountManagement() {
       const token = user?.accessToken;
 
       await axios.post(
-        'http://localhost:5294/api/User/set-role',
+        'https://hienmau-se1864-eqfyh4edege7g5b0.koreacentral-01.azurewebsites.net/api/User/set-role',
         {
           UserId: userId,
           Role: newRole
